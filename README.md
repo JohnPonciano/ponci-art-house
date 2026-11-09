@@ -1,44 +1,42 @@
 # PONCI — Rede privada de arte
 
-Protótipo de uma **rede fechada (por convite)** de artistas e colecionadores para compra e venda de obras,
-no mesmo design do protótipo original da PONCI (brutalismo paulista: réguas de 2px, laje de concreto,
-Archivo larga + Instrument Serif itálica + IBM Plex Mono).
+Rede **fechada, por convite**, onde artistas e colecionadores compram e vendem obras.
+Next.js 15 (App Router) + Supabase (Postgres, Auth, Storage) + Cloudflare Workers (OpenNext), no design
+brutalista do protótipo original (`docs/referencia/`).
 
-## Páginas
+## Rotas
 
-| Arquivo | O que é |
+| Rota | O que é |
 |---|---|
-| `index.html` | Landing page: as duas portas (artista / colecionador), vitrine com preço trancado, manifesto, como funciona, regras, FAQ e pedido de convite. |
-| `artista.html` | Área do artista: ateliê (painel), obras com status de curadoria, cadastro de nova obra (com upload de foto ou composição gerada), propostas (aceitar / recusar / contrapropor), vendas e repasse, perfil. |
-| `comprador.html` | Área do colecionador: acervo com filtros e preços, detalhe da obra (reservar pelo preço ou fazer proposta), favoritos, propostas (aceitar contraproposta), aquisições com custódia e certificado. |
+| `/` | Landing: duas portas, vitrine com preço trancado, manifesto, como funciona, FAQ, pedido de convite (grava em `access_requests`). |
+| `/entrar?perfil=artista\|colecionador` | Login. Botão de conta demo. |
+| `/cadastro` | Criar conta com **código de convite** (o código define o papel). |
+| `/artista` … `/obras`, `/obras/nova`, `/obras/[slug]`, `/propostas`, `/vendas`, `/perfil` | Área do artista: ateliê, curadoria, upload de foto, aceitar/recusar/contrapropor, custódia e repasse. |
+| `/colecionador` … `/obras/[slug]`, `/favoritos`, `/propostas`, `/aquisicoes` | Área do colecionador: acervo com filtros, reserva pelo preço, propostas, aceitar contraproposta, etapas de custódia e certificado. |
 
-## Como testar
+O `middleware.ts` bloqueia as áreas para quem não está logado; os layouts redirecionam por papel.
 
-Abra `index.html` direto no navegador ou sirva a pasta:
+## Banco (Supabase)
+
+- `supabase/migrations/` — esquema, RLS e regras de negócio em funções (`make_proposal`, `respond_proposal`,
+  `reserve_work`, `advance_order`, …). Reserva trava a linha da obra e encerra as outras propostas.
+- Privacidade: o colecionador aparece para a artista só por `member_code` + cidade; o nome (`profile_private`)
+  só é legível pela contraparte depois que existe um pedido entre os dois.
+- `supabase/seed.sql` — convites `PONCI-ARTISTA-2026` / `PONCI-COLECAO-2026`, contas demo e obras.
+- Contas demo: `helena@demo.ponci.art` e `marina@demo.ponci.art`, senha `ponci-demo-2026`.
+
+## Rodar local
 
 ```bash
-python3 -m http.server 8000
+cp .env.example .env.local   # preencha URL e publishable key
+npm install
+npm run dev
 ```
 
-Nas áreas restritas, use **qualquer e-mail + código `PONCI-2026`**, ou o botão de conta de demonstração
-(artista: Helena Vasques; colecionadora: Marina Alves, COL-0147).
+## Deploy (Cloudflare Workers + ponci.art)
 
-As duas áreas compartilham o mesmo "banco" no `localStorage`: abra `artista.html` e `comprador.html`
-em abas lado a lado — uma proposta enviada pela colecionadora aparece no painel da artista na hora,
-e uma contraproposta da artista aparece para a colecionadora. Em *Perfil* (área do artista) há
-"Restaurar dados de demonstração".
+`wrangler.jsonc` publica o Worker `ponci-art-house` com os domínios `ponci.art` e `www.ponci.art`.
+O workflow `.github/workflows/deploy.yml` faz build e deploy a cada push. Ele precisa do secret
+**`CLOUDFLARE_API_TOKEN`** no GitHub (Settings → Secrets and variables → Actions).
 
-## Estrutura
-
-```
-assets/css/ponci.css   design system original + componentes da rede
-assets/js/core.js      ícones, arte generativa, concreto, tipografia ajustada, cabeçalho/rodapé, formulários, roteador
-assets/js/store.js     dados de demonstração e regras (propostas, reservas, custódia) em localStorage
-assets/js/lp.js | artista.js | comprador.js
-docs/referencia/       HTML original usado como referência de design
-```
-
-## Próximos passos para produção
-
-Autenticação real e convites, banco de dados (ex.: Supabase/Postgres), upload de imagens em storage,
-pagamento com custódia (split/escrow), notificações por e-mail e painel de curadoria.
+Manual: `CLOUDFLARE_API_TOKEN=... npm run deploy`.

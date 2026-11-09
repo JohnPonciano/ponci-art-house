@@ -1,0 +1,19 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "ponci-art-house",
+  "account_id": "44becfef790b57a9c1c4a8c113da84c2",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2026-10-01",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "assets": { "directory": ".open-next/assets", "binding": "ASSETS" },
+  "services": [{ "binding": "WORKER_SELF_REFERENCE", "service": "ponci-art-house" }],
+  "routes": [
+    { "pattern": "ponci.art", "custom_domain": true },
+    { "pattern": "www.ponci.art", "custom_domain": true }
+  ],
+  "vars": {
+    "NEXT_PUBLIC_SUPABASE_URL": "https://wcdetrugbkgmapeehyxg.supabase.co",
+    "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY": "sb_publishable_I9Nx_Frq7An3zxhh8kPIJw_q6a5QlqC"
+  },
+  "observability": { "enabled": true }
+}

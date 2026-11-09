@@ -1,0 +1,30 @@
+name: Deploy (Cloudflare Workers)
+
+on:
+  push:
+    branches: [main, claude/great-franklin-797oje]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-cloudflare
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      # Valores públicos (vão para o navegador); precisam existir no build.
+      NEXT_PUBLIC_SUPABASE_URL: https://wcdetrugbkgmapeehyxg.supabase.co
+      NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: sb_publishable_I9Nx_Frq7An3zxhh8kPIJw_q6a5QlqC
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: 44becfef790b57a9c1c4a8c113da84c2
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx tsc --noEmit
+      - run: npx opennextjs-cloudflare build
+      - run: npx opennextjs-cloudflare deploy

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getMe } from "@/lib/supabase/server";
+import { requireMember } from "@/lib/supabase/server";
 import { worksByArtist } from "@/lib/data";
 import { PageHead, Empty } from "@/components/ui";
 import { WorkCard } from "@/components/area";
@@ -9,7 +9,7 @@ import { brl, STATUS } from "@/lib/format";
 export const metadata = { title: "Minhas obras" };
 
 export default async function Obras({ searchParams }: { searchParams: Promise<{ status?: string }> }) {
-  const me = (await getMe())!;
+  const me = await requireMember("artist");
   const f = (await searchParams).status || "all";
   const ws = await worksByArtist(me.id);
   const list = ws.filter((a) => f === "all" || a.status === f);

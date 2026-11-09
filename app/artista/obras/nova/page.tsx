@@ -1,10 +1,10 @@
-import { getMe } from "@/lib/supabase/server";
+import { requireMember } from "@/lib/supabase/server";
 import { NewWorkForm } from "@/components/forms/NewWorkForm";
 
 export const metadata = { title: "Nova obra" };
 
 export default async function Nova() {
-  const me = (await getMe())!;
+  const me = await requireMember("artist");
   return (
     <div className="wrap">
       <header className="page-head">

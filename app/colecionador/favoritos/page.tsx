@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getMe } from "@/lib/supabase/server";
+import { requireMember } from "@/lib/supabase/server";
 import { catalogue, favoriteIds } from "@/lib/data";
 import { PageHead, Empty } from "@/components/ui";
 import { WorkCard } from "@/components/area";
@@ -9,7 +9,7 @@ import { brl } from "@/lib/format";
 export const metadata = { title: "Favoritos" };
 
 export default async function Favoritos() {
-  const me = (await getMe())!;
+  const me = await requireMember("buyer");
   const [ids, cat] = await Promise.all([favoriteIds(me.id), catalogue()]);
   const list = cat.filter((a) => ids.includes(a.id));
   return (

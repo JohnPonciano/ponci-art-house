@@ -18,6 +18,8 @@ export function LoginForm({ perfil, next }: { perfil: "artista" | "colecionador"
     const sb = createClient();
     const { data, error } = await sb.auth.signInWithPassword({ email: e.trim(), password: p });
     if (error) { setBusy(false); setStatus(error.message === "Invalid login credentials" ? "E-mail ou senha incorretos." : error.message === "Email not confirmed" ? "Confirme seu e-mail pelo link que enviamos antes de entrar." : error.message); return; }
+    const { data: admin } = await sb.rpc("is_admin");
+    if (admin === true) { router.replace("/admin"); router.refresh(); return; }
     const { data: prof } = await sb.from("profiles").select("role").eq("id", data.user.id).maybeSingle();
     const home = prof?.role === "artist" ? "/artista" : "/colecionador";
     const dest = next && next.startsWith(home) ? next : home;

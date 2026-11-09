@@ -5,9 +5,9 @@ import { createClient } from "@/lib/supabase/client";
 import { Field, isEmail } from "./Field";
 import { Icon } from "../Icon";
 
-export function SignupForm({ perfil }: { perfil: "artista" | "colecionador" }) {
+export function SignupForm({ perfil, code = "" }: { perfil: "artista" | "colecionador"; code?: string }) {
   const router = useRouter();
-  const [v, setV] = useState({ code: "", name: "", email: "", city: "", password: "" });
+  const [v, setV] = useState({ code: code.toUpperCase(), name: "", email: "", city: "", password: "" });
   const [err, setErr] = useState<Record<string, string>>({}); const [status, setStatus] = useState(""); const [busy, setBusy] = useState(false);
   const [sent, setSent] = useState("");
   const on = (k: string) => (e: any) => setV({ ...v, [k]: e.target.value });
@@ -32,7 +32,7 @@ export function SignupForm({ perfil }: { perfil: "artista" | "colecionador" }) {
       setStatus(/database error/i.test(error.message) ? "Convite inválido ou esgotado. Confira o código recebido." : /registered/i.test(error.message) ? "Este e-mail já é membro. Entre com sua senha." : error.message);
       return;
     }
-    if (data.session) { router.replace("/entrar/redirecionar"); router.refresh(); return; }
+    if (data.session) { router.replace(perfil === "artista" ? "/artista" : "/colecionador"); router.refresh(); return; }
     setSent(v.email.trim());
   }
   if (sent) return (

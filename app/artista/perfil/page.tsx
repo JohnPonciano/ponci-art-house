@@ -1,11 +1,11 @@
-import { getMe } from "@/lib/supabase/server";
+import { requireMember } from "@/lib/supabase/server";
 import { PageHead, Notice } from "@/components/ui";
 import { ProfileForm } from "@/components/forms/ProfileForm";
 
 export const metadata = { title: "Perfil" };
 
 export default async function Perfil() {
-  const me = (await getMe())!;
+  const me = await requireMember("artist");
   return (
     <div className="wrap">
       <PageHead title="Perfil" label="Artista membro" intro="O perfil aparece para colecionadores ao lado das suas obras. Dados bancários e documentos ficam fora deste protótipo." count={<>{me.member_code}<br />{me.email}</>} />

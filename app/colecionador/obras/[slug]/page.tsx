@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getMe } from "@/lib/supabase/server";
+import { requireMember } from "@/lib/supabase/server";
 import { catalogue, favoriteIds, ordersForBuyer, proposalsForBuyer, workBySlug } from "@/lib/data";
 import { SecHead, Slab, Notice } from "@/components/ui";
 import { WorkCard } from "@/components/area";
@@ -13,7 +13,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 }
 
 export default async function ObraColecionador({ params }: { params: Promise<{ slug: string }> }) {
-  const me = (await getMe())!;
+  const me = await requireMember("buyer");
   const a = await workBySlug((await params).slug);
   if (!a || a.status === "review") notFound();
   const [ps, os, favs, cat] = await Promise.all([proposalsForBuyer(me.id), ordersForBuyer(me.id), favoriteIds(me.id), catalogue()]);

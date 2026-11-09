@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getMe } from "@/lib/supabase/server";
+import { requireMember } from "@/lib/supabase/server";
 import { ordersForArtist, proposalsForArtist, workBySlug } from "@/lib/data";
 import { SecHead, Slab, Tag, Notice } from "@/components/ui";
 import { Ledger, ArtistProposalRow } from "@/components/area";
@@ -13,7 +13,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 }
 
 export default async function ObraArtista({ params }: { params: Promise<{ slug: string }> }) {
-  const me = (await getMe())!;
+  const me = await requireMember("artist");
   const a = await workBySlug((await params).slug);
   if (!a || a.artist_id !== me.id) notFound();
   const [ps, os] = await Promise.all([proposalsForArtist(me.id), ordersForArtist(me.id)]);
@@ -35,7 +35,7 @@ export default async function ObraArtista({ params }: { params: Promise<{ slug: 
           {a.status === "review" && <div className="d-buy">
             <span className="price">{brl(a.price)}<small>Preço proposto</small></span>
             <Notice>A curadoria revisa documentação e imagem em até 3 dias úteis. Até lá, a obra não aparece para colecionadores.</Notice>
-            <ActButton action="approveWorkDemo" args={[a.id]} ok="Obra aprovada e publicada na vitrine.">Simular aprovação da curadoria <Icon n="check" /></ActButton>
+            {me.email.endsWith("@demo.ponci.art") && <ActButton action="approveWorkDemo" args={[a.id]} ok="Obra aprovada e publicada na vitrine.">Simular aprovação da curadoria <Icon n="check" /></ActButton>}
             <ActButton action="withdrawWork" args={[a.id]} ok="Envio retirado." className="linkbtn" go="/artista/obras" confirm="Retirar o envio? A obra será apagada.">Retirar envio</ActButton>
           </div>}
           {a.status === "published" && <PriceForm workId={a.id} price={a.price} />}

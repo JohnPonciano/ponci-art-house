@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { AreaShell } from "@/components/Shells";
+import { PendingMember } from "@/components/PendingMember";
 import { getMe } from "@/lib/supabase/server";
 import { favoriteIds, proposalsForBuyer } from "@/lib/data";
 
@@ -9,6 +10,8 @@ export default async function ColecionadorLayout({ children }: { children: React
   const me = await getMe();
   if (!me) redirect("/entrar?perfil=colecionador");
   if (me.role !== "buyer") redirect("/artista");
+  if (me.status !== "active")
+    return <AreaShell me={me} nav={[]} tag={"Área do colecionador"}><PendingMember me={me} /></AreaShell>;
   const [ps, favs] = await Promise.all([proposalsForBuyer(me.id), favoriteIds(me.id)]);
   const c = ps.filter((p) => p.status === "countered").length;
   const nav = [

@@ -40,3 +40,15 @@ O workflow `.github/workflows/deploy.yml` faz build e deploy a cada push. Ele pr
 **`CLOUDFLARE_API_TOKEN`** no GitHub (Settings → Secrets and variables → Actions).
 
 Manual: `CLOUDFLARE_API_TOKEN=... npm run deploy`.
+
+## Painel de admin (`/admin`)
+
+Acesso só para e-mails da tabela `public.admins` (hoje: o do dono da rede), com login em `/admin/entrar`.
+
+- **Pedidos**: aprovar um pedido de convite gera um código de uso único (`PONCI-A-XXXXXX` / `PONCI-C-XXXXXX`),
+  com botões para copiar a mensagem ou abrir o e-mail já escrito. Conta criada com esse código entra ativa.
+- **Membros**: contas criadas com códigos genéricos ficam *aguardando*; aprovar, suspender ou reativar.
+  Membro que não está ativo não vê obras, preços nem negociações (RLS via `is_member()`).
+- **Curadoria**: aprovar (publica) ou recusar (apaga) obras enviadas.
+- **Convites**: gerar códigos avulsos (usos, nota, ativação direta ou não) e revogar.
+- **Conta**: troca de senha.

@@ -6,8 +6,9 @@ import { DEMO_ART } from "@/lib/demoArt";
 
 export const metadata: Metadata = { title: "Aceitar convite" };
 
-export default async function Cadastro({ searchParams }: { searchParams: Promise<{ perfil?: string }> }) {
-  const perfil = (await searchParams).perfil === "colecionador" ? "colecionador" : "artista";
+export default async function Cadastro({ searchParams }: { searchParams: Promise<{ perfil?: string; codigo?: string }> }) {
+  const sp = await searchParams;
+  const perfil = sp.perfil === "colecionador" ? "colecionador" : "artista";
   return (
     <PublicShell>
       <div className="wrap">
@@ -18,8 +19,8 @@ export default async function Cadastro({ searchParams }: { searchParams: Promise
             <p className="lab">Cadastro</p>
             <h2 id="cad-t">Aceite o seu <em>convite.</em></h2>
             <p>Cada código tem um número limitado de usos e é ligado a um perfil.</p>
-            <SignupForm perfil={perfil} />
-            <Notice>Para testar: <b>PONCI-ARTISTA-2026</b> (artista) ou <b>PONCI-COLECAO-2026</b> (colecionador).</Notice>
+            <SignupForm perfil={perfil} code={sp.codigo} />
+            <Notice>Para testar: <b>PONCI-ARTISTA-2026</b> (artista) ou <b>PONCI-COLECAO-2026</b> (colecionador). Contas criadas com esses códigos ficam aguardando a aprovação da curadoria.</Notice>
           </div>
         </section>
       </div>

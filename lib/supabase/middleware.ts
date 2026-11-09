@@ -22,6 +22,11 @@ export async function updateSession(request: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
 
   const path = request.nextUrl.pathname;
+  if ((path === "/admin" || path.startsWith("/admin/")) && path !== "/admin/entrar" && !user) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/admin/entrar"; url.search = "";
+    return NextResponse.redirect(url);
+  }
   const area = Object.keys(AREAS).find((p) => path === p || path.startsWith(p + "/"));
   if (area && !user) {
     const url = request.nextUrl.clone();

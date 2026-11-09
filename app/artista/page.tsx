@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getMe } from "@/lib/supabase/server";
+import { requireMember } from "@/lib/supabase/server";
 import { ordersForArtist, proposalsForArtist, worksByArtist } from "@/lib/data";
 import { PageHead, SecHead, Empty } from "@/components/ui";
 import { Ledger, ArtistProposalRow, WorkCard } from "@/components/area";
@@ -9,7 +9,7 @@ import { brl, pad, firstName, COMMISSION } from "@/lib/format";
 export const metadata = { title: "Ateliê" };
 
 export default async function Painel() {
-  const me = (await getMe())!;
+  const me = await requireMember("artist");
   const [ws, ps, os] = await Promise.all([worksByArtist(me.id), proposalsForArtist(me.id), ordersForArtist(me.id)]);
   const open = ps.filter((p) => p.status === "open");
   const net = (list: typeof os) => list.reduce((s, o) => s + o.amount * (1 - COMMISSION), 0);

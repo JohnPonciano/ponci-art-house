@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { AreaShell } from "@/components/Shells";
+import { PendingMember } from "@/components/PendingMember";
 import { getMe } from "@/lib/supabase/server";
 import { proposalsForArtist } from "@/lib/data";
 
@@ -9,6 +10,8 @@ export default async function ArtistaLayout({ children }: { children: React.Reac
   const me = await getMe();
   if (!me) redirect("/entrar?perfil=artista");
   if (me.role !== "artist") redirect("/colecionador");
+  if (me.status !== "active")
+    return <AreaShell me={me} nav={[]} tag={"Área do artista"}><PendingMember me={me} /></AreaShell>;
   const open = (await proposalsForArtist(me.id)).filter((p) => p.status === "open").length;
   const nav = [
     { href: "/artista", label: "Ateliê" }, { href: "/artista/obras", label: "Obras" }, { href: "/artista/obras/nova", label: "Nova obra" },

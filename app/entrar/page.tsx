@@ -4,13 +4,14 @@ import { PublicShell } from "@/components/Shells";
 import { PageHead, Slab } from "@/components/ui";
 import { LoginForm } from "@/components/forms/LoginForm";
 import { DEMO_ART } from "@/lib/demoArt";
-import { getMe } from "@/lib/supabase/server";
+import { getAdmin, getMe } from "@/lib/supabase/server";
 
 export const metadata: Metadata = { title: "Entrar" };
 
 export default async function Entrar({ searchParams }: { searchParams: Promise<{ perfil?: string; next?: string }> }) {
   const sp = await searchParams;
   const perfil = sp.perfil === "colecionador" ? "colecionador" : "artista";
+  if (await getAdmin()) redirect("/admin");
   const me = await getMe();
   if (me) redirect(me.role === "artist" ? "/artista" : "/colecionador");
   const A = perfil === "artista";

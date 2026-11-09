@@ -1,4 +1,4 @@
-import { getMe } from "@/lib/supabase/server";
+import { requireMember } from "@/lib/supabase/server";
 import { ordersForArtist } from "@/lib/data";
 import { PageHead, Empty } from "@/components/ui";
 import { OrderBlock } from "@/components/area";
@@ -7,7 +7,7 @@ import { brl, COMMISSION } from "@/lib/format";
 export const metadata = { title: "Vendas" };
 
 export default async function Vendas() {
-  const me = (await getMe())!;
+  const me = await requireMember("artist");
   const os = await ordersForArtist(me.id);
   const gross = os.reduce((s, o) => s + o.amount, 0);
   const net = (l: typeof os) => l.reduce((s, o) => s + o.amount * (1 - COMMISSION), 0);

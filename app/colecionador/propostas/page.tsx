@@ -1,4 +1,4 @@
-import { getMe } from "@/lib/supabase/server";
+import { requireMember } from "@/lib/supabase/server";
 import { proposalsForBuyer } from "@/lib/data";
 import { PageHead } from "@/components/ui";
 import { Ledger, BuyerProposalRow } from "@/components/area";
@@ -6,7 +6,7 @@ import { Ledger, BuyerProposalRow } from "@/components/area";
 export const metadata = { title: "Propostas" };
 
 export default async function Propostas() {
-  const me = (await getMe())!;
+  const me = await requireMember("buyer");
   const ps = await proposalsForBuyer(me.id);
   return (
     <div className="wrap">

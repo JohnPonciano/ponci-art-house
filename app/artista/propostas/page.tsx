@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getMe } from "@/lib/supabase/server";
+import { requireMember } from "@/lib/supabase/server";
 import { proposalsForArtist } from "@/lib/data";
 import { PageHead } from "@/components/ui";
 import { Ledger, ArtistProposalRow } from "@/components/area";
@@ -7,7 +7,7 @@ import { Ledger, ArtistProposalRow } from "@/components/area";
 export const metadata = { title: "Propostas" };
 
 export default async function Propostas({ searchParams }: { searchParams: Promise<{ f?: string }> }) {
-  const me = (await getMe())!;
+  const me = await requireMember("artist");
   const f = (await searchParams).f || "open";
   const ps = await proposalsForArtist(me.id);
   const inNeg = (s: string) => s === "open" || s === "countered";

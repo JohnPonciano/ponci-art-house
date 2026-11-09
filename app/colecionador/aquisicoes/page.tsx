@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getMe } from "@/lib/supabase/server";
+import { requireMember } from "@/lib/supabase/server";
 import { ordersForBuyer } from "@/lib/data";
 import { PageHead, Empty } from "@/components/ui";
 import { OrderBlock } from "@/components/area";
@@ -8,7 +8,7 @@ import { Icon } from "@/components/Icon";
 export const metadata = { title: "Aquisições" };
 
 export default async function Aquisicoes() {
-  const me = (await getMe())!;
+  const me = await requireMember("buyer");
   const os = await ordersForBuyer(me.id);
   return (
     <div className="wrap">

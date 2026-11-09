@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getMe } from "@/lib/supabase/server";
+import { requireMember } from "@/lib/supabase/server";
 import { artists, catalogue, favoriteIds } from "@/lib/data";
 import { PageHead, Empty } from "@/components/ui";
 import { WorkCard } from "@/components/area";
@@ -11,7 +11,7 @@ export const metadata = { title: "Acervo" };
 const PRICE: Record<string, [string, number, number]> = { all: ["Todas", 0, Infinity], a: ["Até R$ 20 mil", 0, 20000], b: ["R$ 20 mil a 60 mil", 20000, 60000], c: ["Acima de R$ 60 mil", 60000, Infinity] };
 
 export default async function Acervo({ searchParams }: { searchParams: Promise<Record<string, string>> }) {
-  const me = (await getMe())!;
+  const me = await requireMember("buyer");
   const sp = await searchParams;
   const f = { cat: sp.cat || "all", artist: sp.artist || "all", price: PRICE[sp.price] ? sp.price : "all", sort: sp.sort || "new" };
   const [all, arts, favs] = await Promise.all([catalogue(), artists(), favoriteIds(me.id)]);

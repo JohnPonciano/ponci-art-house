@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const admin = await getAdmin();
-  if (!admin) redirect("/admin/entrar");
+  if (!admin) redirect("/entrar/admin");
   const c = await counts();
   const nav = [
     { href: "/admin", label: "Painel" }, { href: "/admin/pedidos", label: "Pedidos", badge: c.reqs || undefined },

@@ -43,7 +43,7 @@ Manual: `CLOUDFLARE_API_TOKEN=... npm run deploy`.
 
 ## Painel de admin (`/admin`)
 
-Acesso só para e-mails da tabela `public.admins` (hoje: o do dono da rede), com login em `/admin/entrar`.
+Acesso só para e-mails da tabela `public.admins` (hoje: o do dono da rede), com login em `/entrar/admin`.
 
 - **Pedidos**: aprovar um pedido de convite gera um código de uso único (`PONCI-A-XXXXXX` / `PONCI-C-XXXXXX`),
   com botões para copiar a mensagem ou abrir o e-mail já escrito. Conta criada com esse código entra ativa.

@@ -40,7 +40,7 @@ export function LoginForm({ perfil, next }: { perfil: "artista" | "colecionador"
         <Field name="password" label="Senha" type="password" autoComplete="current-password" value={pass} onChange={(e: any) => setPass(e.target.value)} error={err.password} />
         <p className="form-status" role="alert">{status}</p>
         <div className="form-actions"><button className="btn" type="submit" disabled={busy}>{busy ? "Entrando…" : <>Entrar <Icon n="right" /></>}</button>
-          <span className="auth-links"><Link className="linkbtn" href={`/cadastro?perfil=${perfil}`}>Tenho um convite</Link><Link className="linkbtn" href="/#acesso">Não tenho convite</Link></span></div>
+          <span className="auth-links"><Link className="linkbtn" href="/senha">Esqueci a senha</Link><Link className="linkbtn" href={`/cadastro?perfil=${perfil}`}>Tenho um convite</Link><Link className="linkbtn" href="/#acesso">Não tenho convite</Link></span></div>
       </form>
       <div className="demo-box">
         <p className="lab" style={{ color: "var(--ink)" }}>Protótipo</p>

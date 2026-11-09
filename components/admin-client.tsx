@@ -86,7 +86,7 @@ export function AdminLoginForm() {
       <Field name="email" label="E-mail" type="email" autoComplete="email" value={email} onChange={(e: any) => setEmail(e.target.value)} />
       <Field name="password" label="Senha" type="password" autoComplete="current-password" value={pass} onChange={(e: any) => setPass(e.target.value)} />
       <p className="form-status" role="alert">{status}</p>
-      <div className="form-actions"><button className="btn" type="submit" disabled={busy}>{busy ? "Entrando…" : <>Entrar no painel <Icon n="right" /></>}</button></div>
+      <div className="form-actions"><button className="btn" type="submit" disabled={busy}>{busy ? "Entrando…" : <>Entrar no painel <Icon n="right" /></>}</button><a className="linkbtn" href="/senha">Esqueci a senha</a></div>
     </form>
   );
 }

@@ -1,0 +1,1240 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>PONCI Art House</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="PONCI is an independent contemporary art house from Brazil, est. 2026. Works, collections and private acquisitions. Website prototype with demonstration content.">
+<meta property="og:title" content="PONCI — Contemporary Art House">
+<meta property="og:description" content="An independent exploration of contemporary artistic expression. Brazil, est. 2026.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,100..900;1,62..125,100..900&family=Instrument+Serif:ital@0;1&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout concept: béton brut — Paulista brutalism. The 12-column grid is left exposed as 2px structural
+   rules; content is poured into ruled cells; concrete slabs (formwork board marks, tie holes) hold the art.
+   Heavy expanded grotesk for structure, an italic serif for the human voice, mono for catalogue data.
+   Single deliberate light theme on the brand palette. */
+:root{
+  color-scheme:light;
+  --paper:#F2F0EB;      /* warm off-white */
+  --field:#FBFAF7;      /* input fill on focus */
+  --slab:#C6C2BA;       /* concrete */
+  --slab-lt:#DAD6CF;    /* light concrete for cards */
+  --ink:#121211;        /* near-black */
+  --ink-line:#3A3936;   /* rules on black */
+  --ink-ghost:#2B2A28;  /* ghost type on black */
+  --muted:#5D5B56;      /* mineral gray, text-safe */
+  --hair:#CDC9C1;       /* hairline */
+  --ocre:#8B6A4F;       /* earthy accent */
+  --on-ink:#F2F0EB;
+  --on-ink-muted:#A9A69F;
+  --error:#A3341F;
+  --grot:"Archivo","Helvetica Neue",Helvetica,Arial,sans-serif;
+  --serif:"Instrument Serif","Times New Roman",Georgia,serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+  --b:2px solid var(--ink);
+  --gutter:clamp(16px,3vw,40px);
+  --tex:none;
+  --ease:cubic-bezier(.2,.7,.2,1);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{background:var(--paper);color:var(--ink);font:400 16px/1.55 var(--grot);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:60;background:var(--ink)}
+body.locked{overflow:hidden}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit}
+img{max-width:100%}
+p{margin:0}
+h1,h2,h3{margin:0;font-weight:800;text-wrap:balance}
+em{font-family:var(--serif);font-style:italic;font-weight:400;text-transform:none;letter-spacing:-.005em;font-stretch:100%}
+:focus-visible{outline:2px solid var(--ocre);outline-offset:3px}
+.wrap{max-width:1680px;margin-inline:auto;padding-left:max(var(--gutter),env(safe-area-inset-left,0px));padding-right:max(var(--gutter),env(safe-area-inset-right,0px))}
+.lab{font:500 11px/1.45 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.skip{position:absolute;left:12px;top:-60px;z-index:100;background:var(--ink);color:var(--paper);padding:10px 14px;border:0;font:500 12px var(--mono)}
+.skip:focus{top:calc(env(safe-area-inset-top,0px) + 8px)}
+.ico{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:square;stroke-linejoin:miter;flex:none}
+
+/* Prototype bar */
+.protobar{background:var(--ink);color:var(--on-ink)}
+.protobar .wrap{display:flex;justify-content:space-between;gap:16px;padding-block:7px;font:500 10.5px/1.4 var(--mono);letter-spacing:.08em;text-transform:uppercase}
+.protobar .dot{display:inline-block;width:7px;height:7px;background:var(--ocre);margin-right:10px}
+@media (max-width:600px){#pb-r{display:none}}
+
+/* Header */
+.head{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;background:var(--paper);border-bottom:var(--b)}
+.head .wrap{display:flex;align-items:stretch;justify-content:space-between;height:64px}
+#brand{display:flex}
+.wordmark{display:flex;align-items:center;gap:14px;padding-right:18px}
+.wordmark b{font:900 26px/1 var(--grot);font-stretch:125%;letter-spacing:-.035em}
+.wordmark small{font:500 10px/1.3 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);max-width:14ch;border-left:var(--b);padding-left:12px}
+.nav{display:flex;align-items:stretch}
+.nav ul{display:flex;list-style:none;margin:0;padding:0}
+.nav li{display:flex}
+.nav a{display:flex;align-items:center;gap:9px;padding:0 clamp(12px,1.4vw,22px);border-left:var(--b);font:700 12px/1 var(--grot);letter-spacing:.07em;text-transform:uppercase;transition:background .2s,color .2s}
+.nav a span{font:500 10px/1 var(--mono);color:var(--muted);letter-spacing:0}
+.nav a:hover{background:var(--slab-lt)}
+.nav a[aria-current="page"]{background:var(--ink);color:var(--on-ink)}
+.nav a[aria-current="page"] span{color:var(--on-ink-muted)}
+.nav > .lang{border-left:var(--b);padding-left:clamp(12px,1.4vw,20px)}
+.lang{display:flex;align-items:center}
+.lang > span{display:none}
+.lang button{background:none;border:var(--b);padding:6px 9px;font:500 11px/1 var(--mono);letter-spacing:.04em;cursor:pointer;color:var(--ink)}
+.lang button + span + button{border-left:0}
+.lang button[aria-pressed="true"]{background:var(--ink);color:var(--on-ink)}
+.menu-btn{display:none;background:none;border:0;border-left:var(--b);padding:0 0 0 16px;cursor:pointer;align-items:center;gap:10px;font:700 12px/1 var(--grot);letter-spacing:.07em;text-transform:uppercase}
+.menu-btn .ico{width:20px;height:20px}
+@media (max-width:1200px){.wordmark small{display:none}}
+@media (max-width:1000px){.nav{display:none}.menu-btn{display:inline-flex}}
+.menu[hidden]{display:none}
+.menu{position:fixed;inset:0;z-index:70;background:var(--paper);display:flex;flex-direction:column;overflow:auto;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+.menu .top{display:flex;align-items:stretch;justify-content:space-between;height:64px;border-bottom:var(--b)}
+.menu ul{list-style:none;margin:0;padding:0}
+.menu li{border-bottom:var(--b)}
+.menu ul a{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding-block:16px;font:800 clamp(2rem,9vw,3rem)/1 var(--grot);font-stretch:87.5%;text-transform:uppercase;letter-spacing:-.01em}
+.menu ul a span{font:500 12px var(--mono);color:var(--muted)}
+.menu ul a[aria-current="page"]{color:var(--ocre)}
+.menu .foot2{margin-top:auto;display:flex;justify-content:space-between;align-items:center;gap:12px;padding-block:18px;border-top:var(--b)}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;justify-content:space-between;gap:28px;padding:18px 20px;border:var(--b);background:var(--ink);color:var(--on-ink);font:700 12px/1 var(--grot);letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:background .2s,color .2s,border-color .2s}
+.btn:hover{background:var(--ocre);border-color:var(--ocre)}
+.btn.ghost{background:transparent;color:var(--ink)}
+.btn.ghost:hover{background:var(--ink);color:var(--on-ink);border-color:var(--ink)}
+.btn .ico,.arrow .ico{width:16px;height:16px;transition:transform .3s var(--ease)}
+.btn:hover .ico,.arrow:hover .ico{transform:translateX(4px)}
+.btn[disabled]{opacity:.6;cursor:progress}
+
+main{display:block;outline:none}
+main:focus,main:focus-visible{outline:none}
+.enter{animation:enter .55s var(--ease) both}
+@keyframes enter{from{opacity:.35;transform:translateY(8px)}to{opacity:1;transform:none}}
+img[data-art]{transition:opacity .8s var(--ease),transform 1.2s var(--ease)}
+img[data-art]:not(.ready){opacity:0}
+
+/* Fitted display type */
+.fit{display:block;white-space:nowrap;font:900 120px/.84 var(--grot);font-stretch:125%;letter-spacing:-.045em;text-transform:uppercase;padding-top:.05em}
+.fit > span{display:inline-block}
+.fit.acc{padding-top:.2em;padding-bottom:.14em}
+.fit.nofit{white-space:normal;font-size:clamp(2.6rem,12vw,4.6rem);font-stretch:87.5%;letter-spacing:-.02em;line-height:.9}
+
+/* Concrete slab */
+.slab{position:relative;background-color:var(--slab);background-image:var(--tex);background-size:640px 640px;height:var(--h,clamp(460px,78vh,880px));overflow:hidden}
+.slab .hang{position:absolute;inset:0 0 52px;display:flex;align-items:center;justify-content:center;padding:clamp(28px,6%,90px)}
+.slab.np .hang{bottom:0}
+.slab .hang img{height:100%;width:auto;max-width:100%;object-fit:contain;filter:drop-shadow(14px 18px 16px rgba(18,18,17,.28)) drop-shadow(1px 2px 2px rgba(18,18,17,.25))}
+.plaque{position:absolute;left:0;bottom:0;max-width:100%;background:var(--ink);color:var(--on-ink);padding:12px 16px;display:flex;flex-wrap:wrap;gap:4px 16px;align-items:baseline;font:500 10.5px/1.4 var(--mono);letter-spacing:.06em;text-transform:uppercase}
+.plaque b{font:700 13px/1.2 var(--grot);letter-spacing:.03em}
+.plaque span{color:var(--on-ink-muted)}
+
+/* Hero */
+.hero .mega{margin-left:-.03em}
+.strip{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));border-top:var(--b);border-bottom:var(--b);margin-top:clamp(8px,1.2vw,16px)}
+.strip > *{padding:12px 14px;border-left:var(--b);font:500 11px/1.4 var(--mono);letter-spacing:.06em;text-transform:uppercase;min-width:0}
+.strip > :first-child{border-left:0;padding-left:0}
+@media (max-width:800px){
+  .strip{grid-template-columns:1fr 1fr}
+  .strip > *{border-left:0;border-top:1px solid var(--hair);padding-left:0}
+  .strip > :nth-child(-n+2){border-top:0}
+  .strip > :nth-child(even){border-left:var(--b);padding-left:14px}
+}
+.hero-body{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));border-bottom:var(--b)}
+.hero-body > *{min-width:0}
+.hero-text{grid-column:1/5;display:flex;flex-direction:column;gap:24px;padding:clamp(24px,3vw,44px) clamp(16px,2.4vw,36px) clamp(20px,2.4vw,32px) 0;border-right:var(--b)}
+.hero-quote{font:italic 400 clamp(2.3rem,3.6vw,3.7rem)/1 var(--serif);letter-spacing:-.01em}
+.hero-sub{color:var(--muted);max-width:34ch}
+.hero-ctas{display:flex;flex-direction:column;gap:10px;margin-top:auto;padding-top:20px}
+.hero-ctas .btn{width:100%}
+.hero-art{grid-column:5/13}
+.hero-art .slab{--h:clamp(460px,70vh,800px)}
+@media (max-width:900px){
+  .hero-text,.hero-art{grid-column:1/-1}
+  .hero-text{border-right:0;border-bottom:var(--b);padding-right:0}
+  .hero-art .slab{--h:clamp(380px,62vh,580px)}
+}
+
+/* Section heads */
+.sec{padding-block:clamp(64px,9vw,140px)}
+.sec-head{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));border-top:var(--b);border-bottom:var(--b)}
+.sec-head > *{min-width:0}
+.sec-head .n{grid-column:1/3;padding:14px 12px 14px 0;font:500 11px/1.45 var(--mono);letter-spacing:.06em;text-transform:uppercase;border-right:var(--b)}
+.sec-head h2{grid-column:3/11;padding:12px clamp(14px,2vw,28px) 16px;font:800 clamp(2.1rem,5vw,5.2rem)/.9 var(--grot);font-stretch:75%;text-transform:uppercase;letter-spacing:-.005em}
+.sec-head h2:last-child{grid-column:3/-1}
+.sec-head .side{grid-column:11/13;border-left:var(--b);display:flex}
+.sec-head .side a{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;width:100%;padding:14px 0 14px 16px;font:700 12px/1.25 var(--grot);letter-spacing:.07em;text-transform:uppercase;transition:background .2s,color .2s,padding .2s}
+.sec-head .side a:hover{background:var(--ink);color:var(--on-ink);padding-right:12px}
+@media (max-width:800px){
+  .sec-head .n{grid-column:1/-1;border-right:0;border-bottom:1px solid var(--hair)}
+  .sec-head h2,.sec-head h2:last-child{grid-column:1/-1;padding-left:0}
+  .sec-head .side{grid-column:1/-1;border-left:0;border-top:var(--b)}
+}
+
+/* Board: ruled grid of cells (borders collapse via negative margins) */
+.board{display:grid;grid-template-columns:repeat(var(--cols,3),minmax(0,1fr));padding:0 2px 2px 0;margin-top:-2px}
+.board > *{border:var(--b);margin:0 -2px -2px 0;min-width:0}
+.board.sel{grid-template-columns:repeat(12,minmax(0,1fr))}
+.sel .s1,.sel .s4{grid-column:span 7}
+.sel .s2,.sel .s3{grid-column:span 5}
+.sel .card{--ih:clamp(300px,36vw,580px)}
+.board.cat{margin-bottom:clamp(72px,10vw,140px)}
+.board.rel{margin-bottom:0}
+@media (max-width:1000px){.board{--cols:2}}
+@media (max-width:760px){.sel .s1,.sel .s2,.sel .s3,.sel .s4{grid-column:1/-1}.sel .card{--ih:clamp(300px,90vw,460px)}}
+@media (max-width:600px){.board{--cols:1}}
+
+/* Cards */
+.card{background:var(--paper);display:flex}
+.card-link{display:flex;flex-direction:column;width:100%}
+.card-top{display:flex;justify-content:space-between;gap:12px;padding:10px 14px;border-bottom:var(--b);font:500 11px/1.4 var(--mono);letter-spacing:.06em;text-transform:uppercase}
+.card-img{height:var(--ih,clamp(280px,26vw,440px));display:flex;align-items:center;justify-content:center;padding:clamp(18px,2.6vw,40px);background-color:var(--slab-lt);background-image:var(--tex);background-size:640px 640px;overflow:hidden;border-bottom:var(--b)}
+.card-img img{max-height:100%;max-width:100%;width:auto;height:auto;filter:drop-shadow(8px 10px 10px rgba(18,18,17,.25))}
+.card-link:hover .card-img img.ready{transform:scale(1.03)}
+.card-cap{padding:14px 14px 18px;display:flex;flex-direction:column;gap:3px;flex:1}
+.card-title{font:800 clamp(1.25rem,1.6vw,1.6rem)/1.02 var(--grot);font-stretch:87.5%;text-transform:uppercase}
+.card-en{font:italic 400 1.15rem/1.2 var(--serif);color:var(--muted)}
+.card-meta{font:400 12.5px/1.45 var(--mono);color:var(--muted)}
+.card-meta.first{margin-top:8px}
+.card-foot{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 14px;border-top:var(--b);font:500 11px/1.3 var(--mono);letter-spacing:.06em;text-transform:uppercase;transition:background .2s,color .2s}
+.card-foot small{display:block;color:var(--muted);font-size:10px;margin-top:2px}
+.card-foot .go{display:inline-flex;align-items:center;gap:8px}
+.card-link:hover .card-foot,.card-link:focus-visible .card-foot{background:var(--ink);color:var(--on-ink)}
+.card-link:hover .card-foot small{color:var(--on-ink-muted)}
+
+/* Index rows (collections) */
+.idx{border-top:var(--b);margin-top:-2px}
+.idx-row{display:grid;grid-template-columns:72px minmax(0,1.2fr) minmax(0,1fr) 150px 120px 56px;grid-template-areas:"n name sub meta thumb go";align-items:center;border-bottom:var(--b);transition:background .2s,color .2s}
+.idx-row > *{padding:12px 14px;min-width:0}
+.idx-n{grid-area:n;align-self:stretch;display:flex;align-items:center;padding-left:0;border-right:var(--b);font:500 12px var(--mono)}
+.idx-name{grid-area:name;font:800 clamp(1.8rem,3.4vw,3.4rem)/.92 var(--grot);font-stretch:75%;text-transform:uppercase}
+.idx-sub{grid-area:sub;font:italic 400 1.3rem/1.2 var(--serif);color:var(--muted)}
+.idx-meta{grid-area:meta;font:500 11px/1.6 var(--mono);letter-spacing:.05em;text-transform:uppercase}
+.idx-thumb{grid-area:thumb;align-self:stretch;height:116px;padding:12px;border-left:var(--b);background-color:var(--slab-lt);background-image:var(--tex);background-size:640px 640px;display:flex;align-items:center;justify-content:center}
+.idx-thumb img{max-height:100%;max-width:100%;width:auto;height:auto}
+.idx-go{grid-area:go;display:flex;justify-content:center}
+.idx-row:hover{background:var(--ink);color:var(--on-ink)}
+.idx-row:hover .idx-sub,.idx-row:hover .idx-meta{color:var(--on-ink-muted)}
+.idx-row:hover .idx-go .ico{transform:translateX(4px)}
+.idx-go .ico{transition:transform .3s var(--ease)}
+.idx-row.big{grid-template-columns:72px minmax(0,1fr) minmax(0,1fr) 140px 220px 56px}
+.idx-row.big .idx-thumb{height:240px}
+.idx-row.big .idx-sub{font:400 15px/1.55 var(--grot)}
+.idx-row.big .idx-sub i{display:block;font:500 11px/1.5 var(--mono);font-style:normal;letter-spacing:.05em;text-transform:uppercase;margin-top:10px}
+@media (max-width:900px){
+  .idx-row,.idx-row.big{grid-template-columns:44px minmax(0,1fr) 104px;grid-template-areas:"n name thumb" "n sub thumb" "n meta thumb"}
+  .idx-row > *{padding:6px 12px}
+  .idx-name{padding-top:14px}
+  .idx-meta{padding-bottom:14px}
+  .idx-thumb,.idx-row.big .idx-thumb{height:auto;min-height:120px}
+  .idx-go{display:none}
+}
+
+/* Manifesto */
+.manifesto{background-color:var(--ink);background-image:var(--tex);background-size:640px 640px;color:var(--on-ink)}
+.manifesto .wrap{padding-block:clamp(72px,10vw,150px)}
+.man-head{display:flex;justify-content:space-between;gap:16px;border-top:2px solid var(--on-ink);padding-top:12px;font:500 11px/1.4 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--on-ink-muted)}
+.man-title{margin-top:clamp(28px,4vw,56px)}
+.man-grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));margin-top:clamp(36px,5vw,72px);border-top:2px solid var(--on-ink)}
+.man-grid > *{min-width:0}
+.man-terms{grid-column:1/7;display:grid;grid-template-columns:1fr 1fr;list-style:none;margin:0;padding:0;border-right:2px solid var(--on-ink)}
+.man-terms li{padding:18px 16px 24px 0;border-bottom:1px solid var(--ink-line);display:flex;flex-direction:column;gap:10px;font:800 clamp(1.6rem,2.6vw,2.6rem)/1 var(--grot);font-stretch:87.5%;text-transform:uppercase}
+.man-terms li:nth-child(even){padding-left:16px;border-left:1px solid var(--ink-line)}
+.man-terms span{font:500 11px var(--mono);color:var(--on-ink-muted);letter-spacing:.06em}
+.man-body{grid-column:7/13;padding:22px 0 0 clamp(16px,2.4vw,36px);display:flex;flex-direction:column;gap:20px;color:var(--on-ink-muted);font-size:17px}
+.man-body p:first-child{font:italic 400 clamp(1.8rem,2.7vw,2.6rem)/1.08 var(--serif);color:var(--on-ink)}
+@media (max-width:900px){.man-terms,.man-body{grid-column:1/-1}.man-terms{border-right:0}.man-body{padding-left:0}}
+
+/* Closing slab */
+.closing{background-color:var(--slab);background-image:var(--tex);background-size:640px 640px;border-top:var(--b)}
+.closing .wrap{padding-block:clamp(80px,12vw,180px);display:flex;flex-direction:column;gap:36px}
+.closing h2{font:900 clamp(3rem,8.6vw,9.2rem)/.86 var(--grot);font-stretch:112.5%;text-transform:uppercase;letter-spacing:-.03em;max-width:12ch}
+.closing h2 em{font-size:1.08em;letter-spacing:-.02em}
+.closing .act{display:flex;flex-wrap:wrap;gap:16px 32px;align-items:center;border-top:var(--b);padding-top:20px}
+.closing .act p{font:500 12px/1.5 var(--mono);text-transform:uppercase;letter-spacing:.04em;max-width:46ch}
+
+/* Footer */
+.foot{background:var(--ink);color:var(--on-ink)}
+.foot-grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));border-bottom:2px solid var(--on-ink)}
+.foot-grid > *{padding:28px 16px 32px;border-left:1px solid var(--ink-line);min-width:0}
+.foot-grid > :first-child{border-left:0;padding-left:0}
+.foot .c1{grid-column:1/5}.foot .c2{grid-column:5/8}.foot .c3{grid-column:8/10}.foot .c4{grid-column:10/13}
+.foot .lab{color:var(--on-ink-muted)}
+.foot .ftag{font:600 17px/1.35 var(--grot);margin-top:12px;max-width:26ch}
+.foot .domain{display:block;margin-top:14px;font:800 clamp(1.6rem,2.4vw,2.2rem)/1 var(--grot);font-stretch:112.5%;letter-spacing:-.02em;color:var(--ocre)}
+.foot ul{list-style:none;margin:12px 0 0;padding:0;display:flex;flex-direction:column;gap:6px}
+.foot nav a{font:700 15px/1.3 var(--grot);letter-spacing:.03em;text-transform:uppercase}
+.foot nav a:hover{color:var(--on-ink-muted)}
+.foot .c3 .lang{margin-top:12px}
+.foot .lang button{border-color:var(--on-ink);color:var(--on-ink)}
+.foot .lang button[aria-pressed="true"]{background:var(--on-ink);color:var(--ink)}
+.foot .note{font:400 12.5px/1.6 var(--mono);color:var(--on-ink-muted)}
+.foot-mega{color:var(--ink-ghost);padding-top:16px;margin-left:-.03em}
+.foot-base{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;padding-block:14px;border-top:1px solid var(--ink-line);font:500 10.5px/1.4 var(--mono);text-transform:uppercase;letter-spacing:.06em;color:var(--on-ink-muted)}
+@media (max-width:900px){
+  .foot .c1{grid-column:1/-1;border-bottom:1px solid var(--ink-line)}
+  .foot .c2{grid-column:1/7;border-left:0;padding-left:0}
+  .foot .c3{grid-column:7/-1}
+  .foot .c4{grid-column:1/-1;border-left:0;padding-left:0;border-top:1px solid var(--ink-line)}
+}
+
+/* Page heads */
+.page-head{padding-top:clamp(18px,3vw,40px)}
+.page-strip{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));border-top:var(--b);border-bottom:var(--b);margin-top:clamp(10px,1.4vw,20px)}
+.page-strip > *{min-width:0}
+.page-strip .lab{grid-column:1/3;padding:14px 12px 14px 0;border-right:var(--b);color:var(--ink)}
+.page-strip .intro{grid-column:3/10;padding:14px clamp(14px,2vw,28px) 16px;font-size:17px;max-width:64ch}
+.page-strip .intro em{font-size:1.2em}
+.page-strip .count{grid-column:10/13;padding:14px 0 14px 16px;border-left:var(--b);font:500 11px/1.45 var(--mono);text-transform:uppercase;letter-spacing:.06em;display:flex;align-items:flex-end;justify-content:flex-end;text-align:right}
+@media (max-width:800px){
+  .page-strip .lab,.page-strip .intro,.page-strip .count{grid-column:1/-1;border:0;padding-left:0;padding-right:0;justify-content:flex-start;text-align:left}
+  .page-strip .intro,.page-strip .count{border-top:1px solid var(--hair)}
+}
+.acq-title{font:900 clamp(2.8rem,7.6vw,8.2rem)/.86 var(--grot);font-stretch:75%;text-transform:uppercase;letter-spacing:-.01em;margin-top:14px;max-width:14ch}
+
+/* Filters */
+.filters{border-top:var(--b);border-bottom:var(--b);margin-top:clamp(36px,5vw,64px)}
+.frow{display:flex;flex-wrap:wrap;align-items:stretch;border-bottom:1px solid var(--hair)}
+.frow:last-child{border-bottom:0}
+.frow > .lab{width:150px;flex:none;padding:12px 0;color:var(--ink);display:flex;align-items:center}
+.chip{background:none;border:0;border-left:1px solid var(--hair);padding:12px 14px;font:700 12px/1.2 var(--grot);letter-spacing:.05em;text-transform:uppercase;color:var(--muted);cursor:pointer;transition:background .2s,color .2s}
+.chip:hover{color:var(--ink);background:var(--slab-lt)}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--on-ink)}
+.sortwrap{padding:8px 0;display:flex;align-items:center}
+.sortwrap select{appearance:none;-webkit-appearance:none;border:var(--b);border-radius:0;background:var(--paper) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23121211' stroke-width='2.5'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 11px center;padding:9px 36px 9px 12px;font:700 12px/1.2 var(--grot);letter-spacing:.05em;text-transform:uppercase;color:var(--ink);cursor:pointer}
+.results-meta{display:flex;justify-content:space-between;align-items:center;gap:16px;padding-block:16px 18px;font:500 11px/1.4 var(--mono);letter-spacing:.06em;text-transform:uppercase}
+.results-meta button{background:none;border:0;border-bottom:var(--b);padding:2px 0;cursor:pointer;font:inherit;letter-spacing:inherit;text-transform:inherit}
+.results-meta + .board{margin-top:0}
+@media (max-width:700px){.frow > .lab{width:100%;border-bottom:1px solid var(--hair)}.frow .chip:nth-child(2){border-left:0;padding-left:0}}
+.empty{border:var(--b);padding:clamp(32px,6vw,72px) clamp(18px,3vw,40px);display:flex;flex-direction:column;gap:18px;align-items:flex-start;margin-bottom:clamp(72px,10vw,140px)}
+.empty p:first-child{font:800 clamp(1.8rem,3.4vw,3rem)/.95 var(--grot);font-stretch:75%;text-transform:uppercase}
+
+/* Detail */
+.crumbs{display:flex;flex-wrap:wrap;gap:6px 10px;padding-block:14px;border-bottom:var(--b);font:500 11px/1.4 var(--mono);text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.crumbs a:hover{color:var(--ink);text-decoration:underline}
+.detail{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));border-bottom:var(--b)}
+.detail > *{min-width:0}
+.detail-media{grid-column:1/8;border-right:var(--b);position:sticky;top:calc(env(safe-area-inset-top,0px) + 66px);align-self:start}
+.detail-media .slab{--h:min(940px,calc(100vh - 66px - env(safe-area-inset-top,0px)))}
+.detail-info{grid-column:8/13;display:flex;flex-direction:column}
+.detail-info > *{padding:18px 0 18px clamp(16px,2.4vw,32px);border-bottom:var(--b)}
+.detail-info > :last-child{border-bottom:0}
+.d-no{display:flex;justify-content:space-between;gap:12px;font:500 11px/1.4 var(--mono);letter-spacing:.06em;text-transform:uppercase}
+.d-title{font:800 clamp(2.3rem,3.8vw,3.8rem)/.9 var(--grot);font-stretch:75%;text-transform:uppercase}
+.d-en{font:italic 400 1.6rem/1.15 var(--serif);color:var(--muted);margin-top:8px}
+.d-artist{display:flex;flex-direction:column;gap:4px}
+.d-artist strong{font:700 18px/1.3 var(--grot)}
+.d-artist span{font:500 10.5px/1.4 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ocre)}
+.detail-info > .spec{padding-block:2px}
+.spec{display:grid;grid-template-columns:minmax(110px,auto) minmax(0,1fr);margin:0}
+.spec dt,.spec dd{margin:0;padding:10px 0;border-bottom:1px solid var(--hair)}
+.spec > :nth-last-child(-n+2){border-bottom:0}
+.spec dt{font:500 11px/1.8 var(--mono);text-transform:uppercase;letter-spacing:.05em;color:var(--muted);padding-right:12px}
+.spec dd{font:500 15px/1.45 var(--grot);font-variant-numeric:tabular-nums}
+.spec dd small{display:block;font:400 12.5px/1.5 var(--mono);color:var(--muted)}
+.spec dd a{text-decoration:underline;text-underline-offset:3px}
+.spec dd a:hover{color:var(--ocre)}
+.d-desc{display:flex;flex-direction:column;gap:12px;color:var(--muted)}
+.d-desc p{max-width:52ch}
+.d-desc p:first-child{font:italic 400 1.65rem/1.15 var(--serif);color:var(--ink)}
+.d-buy{display:flex;flex-direction:column;gap:14px}
+.price{font:500 12px/1.3 var(--mono);letter-spacing:.05em;text-transform:uppercase}
+.price small{display:block;font-size:10px;color:var(--muted);margin-top:3px}
+.d-buy .price{font-size:14px}
+.d-buy .btn{width:100%}
+.notice{display:flex;gap:10px;align-items:flex-start;font:400 12px/1.55 var(--mono);color:var(--muted)}
+.notice .ico{margin-top:2px;color:var(--ocre)}
+.pager{display:grid;grid-template-columns:1fr 1fr;border-bottom:var(--b)}
+.pager a{display:flex;flex-direction:column;gap:10px;padding:20px 16px 22px;transition:background .2s,color .2s}
+.pager a:first-child{padding-left:0}
+.pager a:last-child{border-left:var(--b);text-align:right;align-items:flex-end;padding-right:0}
+.pager span{display:inline-flex;align-items:center;gap:8px;font:500 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.pager strong{font:800 clamp(1.3rem,2.4vw,2.2rem)/1 var(--grot);font-stretch:75%;text-transform:uppercase}
+.pager a:hover strong{color:var(--ocre)}
+@media (max-width:900px){
+  .detail-media,.detail-info{grid-column:1/-1}
+  .detail-media{position:static;border-right:0;border-bottom:var(--b)}
+  .detail-media .slab{--h:clamp(380px,64vh,600px)}
+  .detail-info > *{padding-left:0}
+}
+
+/* Plate */
+.plate{margin:clamp(28px,4vw,56px) 0 0;border-top:var(--b)}
+.plate figcaption{padding:12px 0}
+
+/* About */
+.about-lead{padding-block:clamp(32px,5vw,72px) clamp(48px,7vw,100px)}
+.about-lead .lab{margin-bottom:22px;color:var(--ink)}
+.about-lead h1{font:700 clamp(2.2rem,4.6vw,4.8rem)/1.02 var(--grot);font-stretch:87.5%;letter-spacing:-.02em;max-width:22ch}
+.about-lead h1 em{color:var(--ocre);font-size:1.08em}
+.about-sec{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));border-top:var(--b)}
+.about-sec > *{min-width:0}
+.about-sec .num{grid-column:1/4;border-right:var(--b);padding:16px 12px 22px 0;display:flex;flex-direction:column;justify-content:space-between;gap:24px}
+.about-sec .num b{font:900 clamp(4rem,9vw,9rem)/.8 var(--grot);font-stretch:125%;letter-spacing:-.05em}
+.about-sec .num .lab{color:var(--ink)}
+.about-sec .body{grid-column:4/13;padding:20px 0 clamp(40px,5vw,72px) clamp(16px,2.4vw,36px);display:flex;flex-direction:column;gap:22px}
+.about-sec h2{font:800 clamp(2rem,3.8vw,3.8rem)/.92 var(--grot);font-stretch:75%;text-transform:uppercase}
+.about-sec .cols{display:grid;grid-template-columns:1fr 1fr;gap:28px;color:var(--muted);font-size:16.5px;line-height:1.65;max-width:980px}
+@media (max-width:900px){
+  .about-sec .num{grid-column:1/-1;border-right:0;border-bottom:1px solid var(--hair);flex-direction:row;align-items:flex-end}
+  .about-sec .num b{font-size:4.2rem}
+  .about-sec .body{grid-column:1/-1;padding-left:0}
+  .about-sec .cols{grid-template-columns:1fr}
+}
+
+/* Acquisitions */
+.steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));list-style:none;margin:clamp(36px,5vw,64px) 0 0;padding:0;border-top:var(--b);border-bottom:var(--b)}
+.steps li{padding:16px 16px 28px;border-left:var(--b);display:flex;flex-direction:column;gap:12px;min-width:0}
+.steps li:first-child{border-left:0;padding-left:0}
+.steps .n{font:900 clamp(3rem,5vw,5rem)/.8 var(--grot);font-stretch:125%;letter-spacing:-.05em}
+.steps h3{font:800 1.3rem/1.05 var(--grot);font-stretch:87.5%;text-transform:uppercase}
+.steps p{color:var(--muted);font-size:15px}
+@media (max-width:1000px){
+  .steps{grid-template-columns:1fr 1fr}
+  .steps li:nth-child(3){border-left:0;padding-left:0}
+  .steps li:nth-child(n+3){border-top:var(--b)}
+}
+@media (max-width:560px){
+  .steps{grid-template-columns:1fr}
+  .steps li,.steps li:nth-child(3){border-left:0;padding-left:0}
+  .steps li + li{border-top:var(--b)}
+}
+.acq{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));border-top:var(--b);border-bottom:var(--b);margin:clamp(56px,8vw,110px) 0 clamp(72px,10vw,140px)}
+.acq > *{min-width:0}
+.acq-aside{grid-column:1/5;padding:20px clamp(16px,2.4vw,32px) 28px 0;border-right:var(--b);display:flex;flex-direction:column;gap:18px}
+.acq-aside h2{font:800 clamp(2rem,3.4vw,3.4rem)/.92 var(--grot);font-stretch:75%;text-transform:uppercase}
+.acq-aside p{color:var(--muted)}
+.acq-aside .slab{--h:300px;margin-top:auto}
+.acq-main{grid-column:5/13;padding:8px 0 32px clamp(16px,2.4vw,40px)}
+@media (max-width:900px){
+  .acq-aside,.acq-main{grid-column:1/-1}
+  .acq-aside{border-right:0;border-bottom:var(--b);padding-right:0}
+  .acq-aside .slab{display:none}
+  .acq-main{padding-left:0}
+}
+.form .two{display:grid;grid-template-columns:1fr 1fr;gap:0 20px}
+@media (max-width:640px){.form .two{grid-template-columns:1fr}}
+.field{display:flex;flex-direction:column;gap:8px;padding-block:12px}
+.field label{display:flex;justify-content:space-between;gap:12px;color:var(--ink)}
+.field input,.field select,.field textarea{width:100%;border:var(--b);border-radius:0;background:var(--paper);padding:13px 14px;font:500 16px/1.4 var(--grot);color:var(--ink);transition:background .2s,box-shadow .2s}
+.field select{appearance:none;-webkit-appearance:none;background:var(--paper) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23121211' stroke-width='2.5'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 14px center;padding-right:40px;cursor:pointer}
+.field textarea{resize:vertical;min-height:150px}
+.field input::placeholder,.field textarea::placeholder{color:#8F8C86}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;background-color:var(--field);box-shadow:inset 0 0 0 2px var(--ink)}
+.field.bad input,.field.bad select,.field.bad textarea{border-color:var(--error);box-shadow:inset 0 0 0 1px var(--error)}
+.err{font:500 12.5px/1.4 var(--mono);color:var(--error)}
+.err:empty{display:none}
+.count{font:500 10.5px/1.4 var(--mono);letter-spacing:.04em;color:var(--muted);font-variant-numeric:tabular-nums}
+.form-actions{display:flex;flex-wrap:wrap;align-items:center;gap:16px 24px;padding-top:16px}
+.form-actions p{font:400 12px/1.55 var(--mono);color:var(--muted);max-width:44ch}
+.form-status{font:500 13px/1.4 var(--mono);color:var(--error)}
+.form-status:empty{display:none}
+.success{display:flex;flex-direction:column;gap:20px;padding-top:16px}
+.success .mark{width:52px;height:52px;background:var(--ink);color:var(--on-ink);display:grid;place-items:center}
+.success h2{font:800 clamp(2.2rem,4vw,3.6rem)/.92 var(--grot);font-stretch:75%;text-transform:uppercase}
+.success p{color:var(--muted);max-width:52ch}
+.success .spec{border-top:var(--b);border-bottom:var(--b)}
+.success .btn{align-self:flex-start}
+.nf{padding-block:clamp(80px,14vw,200px);display:flex;flex-direction:column;gap:28px;align-items:flex-start}
+.nf h1{font:900 clamp(2.6rem,7vw,6.4rem)/.9 var(--grot);font-stretch:75%;text-transform:uppercase}
+
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation:none!important;transition:none!important}
+}
+</style>
+
+<button class="skip" id="skip" type="button">Skip to content</button>
+<div class="protobar" role="note"><div class="wrap"><span><span class="dot" aria-hidden="true"></span><span id="pb-l">Prototype · Demonstration content</span></span><span id="pb-r">Brasil — Est. 2026</span></div></div>
+<header class="head" id="head"><div class="wrap">
+  <span id="brand"></span>
+  <nav class="nav" aria-label="Primary" id="nav"></nav>
+  <button class="menu-btn" id="menu-btn" type="button" aria-expanded="false" aria-controls="menu"></button>
+</div></header>
+<div class="menu" id="menu" hidden role="dialog" aria-modal="true" aria-label="Menu"></div>
+<main id="main" tabindex="-1"></main>
+<footer class="foot" id="foot"></footer>
+<noscript><p style="padding:24px">This prototype needs JavaScript to display the catalogue.</p></noscript>
+
+<script>
+(function(){
+"use strict";
+
+/* ---------- Icons (Lucide paths) ---------- */
+const ICONS={
+  right:'<path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>',
+  left:'<path d="m12 19-7-7 7-7"/><path d="M19 12H5"/>',
+  menu:'<line x1="4" x2="20" y1="7" y2="7"/><line x1="4" x2="20" y1="17" y2="17"/>',
+  x:'<path d="M18 6 6 18"/><path d="m6 6 12 12"/>',
+  check:'<path d="M20 6 9 17l-5-5"/>',
+  info:'<circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/>'
+};
+const icon=n=>`<svg class="ico" viewBox="0 0 24 24" aria-hidden="true">${ICONS[n]}</svg>`;
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const $=(s,el=document)=>el.querySelector(s);
+const $$=(s,el=document)=>[...el.querySelectorAll(s)];
+
+/* ---------- Copy ---------- */
+const I18N={
+en:{
+  skip:"Skip to content",proto:"Prototype · Demonstration content",origin:"Brasil — Est. 2026",
+  works:"Works",collections:"Collections",about:"About",acq:"Acquisitions",home:"Home",menu:"Menu",close:"Close",language:"Language",
+  heroLabel:"Contemporary Art House",heroQuote:"“Art is an object of thought.”",heroSub:"An independent exploration of contemporary artistic expression.",
+  explore:"Explore Works",discover:"Discover PONCI",demoComp:"Demonstration composition",
+  selEyebrow:"Selected Works",selTitle:"Four works, four ways of looking.",viewAll:"View all works",
+  colEyebrow:"Collections",colTitle:"Bodies of work, held together by a question.",allCols:"All collections",viewCol:"View collection",
+  manEyebrow:"Manifesto",manTitle:"Beyond the visible.",
+  man1:"PONCI explores the relationship between form, matter, perception, and human expression.",
+  man2:"Each work represents an independent investigation into the possibilities of contemporary art.",
+  terms:["Form","Matter","Perception","Expression"],
+  closeTitle:"Art deserves <em>space.</em>",closeText:"Acquisitions are handled privately, one conversation at a time.",closeCta:"Inquire about acquisitions",
+  priceReq:"Price on request",indicative:"Indicative price · demo",
+  worksIntro:"The complete catalogue. Every entry is a demonstration work created for this prototype, documented the way a gallery would document it.",
+  category:"Category",collection:"Collection",sort:"Sort",newest:"Newest first",oldest:"Oldest first",all:"All",
+  count:n=>n===1?"1 work":`${n} works`,clear:"Clear filters",emptyT:"No works match these filters.",emptyB:"Try another category or collection.",
+  cat:{painting:"Painting",mixed:"Mixed media",paper:"Works on paper",edition:"Editions"},
+  catNo:"Catalogue no.",year:"Year",medium:"Medium",dims:"Dimensions",edition:"Edition",unique:"Unique work",
+  fictional:"Fictional attribution · prototype",inquireWork:"Inquire about this work",
+  demoNote:"Demonstration work generated for this prototype. It is not an existing artwork and is not offered for acquisition.",
+  related:"Related works",prev:"Previous",next:"Next",viewWork:"View",
+  colsIntro:"Each collection groups works around a shared investigation: a material, a structure, a kind of space, a gesture.",
+  worksN:"Works",inCatalogue:"View in catalogue",others:"Other collections",
+  aboutEyebrow:"About PONCI",
+  aboutLead:"PONCI is an independent contemporary art house, founded in Brazil in 2026. We present art as an object of <em>cultural expression, identity and contemplation.</em>",
+  aboutSecs:[
+    {label:"Philosophy",title:"Art is an object of thought.",a:"PONCI starts from a simple premise: an artwork asks for time. A painting, a sheet of paper or a constructed surface is something to live with and return to, not something to consume and replace.",b:"We treat each piece as a record of decisions about form and material. Our role is to give those decisions room: to document them precisely, present them without noise and place them with people who will keep looking."},
+    {label:"Artistic vision",title:"Contemporary, without hurry.",a:"We are drawn to work that investigates how we see. Monochrome fields that slow the eye down, geometric structures that measure space, quiet surreal landscapes, gestural and mixed-media surfaces that keep the trace of the hand.",b:"PONCI presents a small number of works at a time. Fewer works means more attention for each one, and more time for the conversation that leads to an acquisition."},
+    {label:"Art, culture and material",title:"Matter carries culture.",a:"Linen, plaster, earth pigment, cotton paper, thread. Materials arrive with histories of labour, landscape and use, and those histories stay inside the work.",b:"Founded in Brazil, PONCI is attentive to the materials, light and places it comes from, while speaking with contemporary practice internationally. Identity here is something the work investigates, not a label it carries."},
+    {label:"Independent practice",title:"Independent by design.",a:"PONCI is independent. Our choices follow the work itself rather than market cycles or trends.",b:"Every acquisition is handled personally, from the first inquiry to delivery and installation. That scale is deliberate: it keeps the relationship between the work, the house and the collector direct."}
+  ],
+  plateCap:"Plate",
+  acqEyebrow:"Acquisitions",acqTitle:"Acquire a piece of expression.",
+  acqIntro:"Acquisitions at PONCI are private and unhurried. Tell us what interests you and we will take it from there.",
+  steps:[
+    ["Discover an artwork","Browse the catalogue and collections. Each work is documented with medium, dimensions and edition."],
+    ["Submit an inquiry","Tell us which work interests you, and anything that helps us understand the context in which it will live."],
+    ["Receive information","We reply with availability, documentation and the conditions of acquisition for that work."],
+    ["Private consultation and delivery","Arrange a private viewing or video consultation, then delivery and installation guidance."]
+  ],
+  formEyebrow:"Inquiry",formTitle:"Start a conversation.",
+  formAside:"Use the form to ask about a specific work or about acquisitions in general. Every inquiry is read and answered personally.",
+  formProto:"Prototype: this form validates in your browser only. Nothing is sent or stored.",
+  name:"Name",email:"Email",art:"Artwork of interest",msg:"Message",choose:"Select an artwork",general:"General inquiry",
+  phName:"Your full name",phEmail:"name@domain.com",phMsg:"What draws you to this work? Any questions about dimensions, framing or delivery?",
+  submit:"Submit Inquiry",sending:"Submitting…",
+  eName:"Enter your name.",eEmail:"Enter a valid email address, such as name@domain.com.",eArt:"Choose an artwork, or select General inquiry.",eMsg:n=>`Write at least 20 characters (${n} so far).`,
+  fix:"Some fields need attention before the inquiry can be submitted.",
+  okTitle:"Inquiry received.",okBody:"Thank you. In a live version, PONCI would reply within a few days with availability and acquisition conditions.",
+  okProto:"Prototype: no message was sent. This is a simulated confirmation.",ref:"Reference",another:"Submit another inquiry",
+  footTag:"Contemporary Art House. Brasil, est. 2026.",footIndex:"Index",
+  footNote:"This website is a prototype. All artworks, artist names and prices are demonstration content created for presentation purposes.",
+  rights:"© 2026 PONCI",nfTitle:"This page does not exist.",nfBack:"Return home",
+  alt:t=>`Original generated composition standing in for artwork photography: ${t}`
+},
+pt:{
+  skip:"Pular para o conteúdo",proto:"Protótipo · Conteúdo de demonstração",origin:"Brasil — Fund. 2026",
+  works:"Obras",collections:"Coleções",about:"Sobre",acq:"Aquisições",home:"Início",menu:"Menu",close:"Fechar",language:"Idioma",
+  heroLabel:"Casa de Arte Contemporânea",heroQuote:"“A arte é um objeto de pensamento.”",heroSub:"Uma exploração independente da expressão artística contemporânea.",
+  explore:"Explorar obras",discover:"Conhecer a PONCI",demoComp:"Composição de demonstração",
+  selEyebrow:"Obras selecionadas",selTitle:"Quatro obras, quatro modos de olhar.",viewAll:"Ver todas as obras",
+  colEyebrow:"Coleções",colTitle:"Conjuntos de obras unidos por uma pergunta.",allCols:"Todas as coleções",viewCol:"Ver coleção",
+  manEyebrow:"Manifesto",manTitle:"Além do visível.",
+  man1:"A PONCI explora a relação entre forma, matéria, percepção e expressão humana.",
+  man2:"Cada obra representa uma investigação independente sobre as possibilidades da arte contemporânea.",
+  terms:["Forma","Matéria","Percepção","Expressão"],
+  closeTitle:"A arte merece <em>espaço.</em>",closeText:"As aquisições são conduzidas de forma privada, uma conversa por vez.",closeCta:"Consultar sobre aquisições",
+  priceReq:"Preço sob consulta",indicative:"Preço indicativo · demo",
+  worksIntro:"O catálogo completo. Cada obra é uma demonstração criada para este protótipo, documentada como uma galeria a documentaria.",
+  category:"Categoria",collection:"Coleção",sort:"Ordenar",newest:"Mais recentes",oldest:"Mais antigas",all:"Todas",
+  count:n=>n===1?"1 obra":`${n} obras`,clear:"Limpar filtros",emptyT:"Nenhuma obra corresponde a esses filtros.",emptyB:"Experimente outra categoria ou coleção.",
+  cat:{painting:"Pintura",mixed:"Técnica mista",paper:"Obras sobre papel",edition:"Edições"},
+  catNo:"Nº de catálogo",year:"Ano",medium:"Técnica",dims:"Dimensões",edition:"Edição",unique:"Obra única",
+  fictional:"Atribuição fictícia · protótipo",inquireWork:"Consultar sobre esta obra",
+  demoNote:"Obra de demonstração gerada para este protótipo. Não é uma obra existente e não está disponível para aquisição.",
+  related:"Obras relacionadas",prev:"Anterior",next:"Próxima",viewWork:"Ver",
+  colsIntro:"Cada coleção reúne obras em torno de uma investigação comum: um material, uma estrutura, um tipo de espaço, um gesto.",
+  worksN:"Obras",inCatalogue:"Ver no catálogo",others:"Outras coleções",
+  aboutEyebrow:"Sobre a PONCI",
+  aboutLead:"A PONCI é uma casa de arte contemporânea independente, fundada no Brasil em 2026. Apresentamos a arte como objeto de <em>expressão cultural, identidade e contemplação.</em>",
+  aboutSecs:[
+    {label:"Filosofia",title:"A arte é um objeto de pensamento.",a:"A PONCI parte de uma premissa simples: uma obra pede tempo. Uma pintura, uma folha de papel ou uma superfície construída é algo para conviver e revisitar, não para consumir e substituir.",b:"Tratamos cada peça como o registro de decisões sobre forma e matéria. Nosso papel é dar espaço a essas decisões: documentá-las com precisão, apresentá-las sem ruído e colocá-las junto de pessoas que continuarão olhando."},
+    {label:"Visão artística",title:"Contemporânea, sem pressa.",a:"Interessa-nos a obra que investiga o modo como vemos. Campos monocromáticos que desaceleram o olhar, estruturas geométricas que medem o espaço, paisagens surreais silenciosas, superfícies gestuais e de técnica mista que guardam o rastro da mão.",b:"A PONCI apresenta poucas obras por vez. Menos obras significa mais atenção para cada uma, e mais tempo para a conversa que leva a uma aquisição."},
+    {label:"Arte, cultura e matéria",title:"A matéria carrega cultura.",a:"Linho, gesso, pigmento de terra, papel de algodão, linha. Os materiais chegam com histórias de trabalho, paisagem e uso, e essas histórias permanecem dentro da obra.",b:"Fundada no Brasil, a PONCI está atenta aos materiais, à luz e aos lugares de onde vem, em diálogo com a prática contemporânea internacional. Aqui, identidade é algo que a obra investiga, não um rótulo que ela carrega."},
+    {label:"Prática independente",title:"Independente por princípio.",a:"A PONCI é independente. Nossas escolhas seguem a própria obra, e não os ciclos ou tendências do mercado.",b:"Cada aquisição é conduzida pessoalmente, da primeira consulta à entrega e instalação. Essa escala é deliberada: mantém direta a relação entre a obra, a casa e o colecionador."}
+  ],
+  plateCap:"Prancha",
+  acqEyebrow:"Aquisições",acqTitle:"Adquira uma peça de expressão.",
+  acqIntro:"As aquisições na PONCI são privadas e sem pressa. Conte-nos o que lhe interessa e cuidaremos do restante.",
+  steps:[
+    ["Descubra uma obra","Navegue pelo catálogo e pelas coleções. Cada obra é documentada com técnica, dimensões e edição."],
+    ["Envie uma consulta","Diga qual obra lhe interessa e o que nos ajuda a entender o contexto em que ela vai viver."],
+    ["Receba as informações","Respondemos com disponibilidade, documentação e as condições de aquisição daquela obra."],
+    ["Consulta privada e entrega","Agende uma visita privada ou consulta por vídeo e, em seguida, a entrega e orientação de instalação."]
+  ],
+  formEyebrow:"Consulta",formTitle:"Comece uma conversa.",
+  formAside:"Use o formulário para perguntar sobre uma obra específica ou sobre aquisições em geral. Cada consulta é lida e respondida pessoalmente.",
+  formProto:"Protótipo: este formulário valida apenas no seu navegador. Nada é enviado ou armazenado.",
+  name:"Nome",email:"E-mail",art:"Obra de interesse",msg:"Mensagem",choose:"Selecione uma obra",general:"Consulta geral",
+  phName:"Seu nome completo",phEmail:"nome@dominio.com",phMsg:"O que atrai você nesta obra? Alguma dúvida sobre dimensões, moldura ou entrega?",
+  submit:"Enviar consulta",sending:"Enviando…",
+  eName:"Informe seu nome.",eEmail:"Informe um e-mail válido, como nome@dominio.com.",eArt:"Escolha uma obra ou selecione Consulta geral.",eMsg:n=>`Escreva pelo menos 20 caracteres (${n} até agora).`,
+  fix:"Alguns campos precisam de atenção antes do envio da consulta.",
+  okTitle:"Consulta recebida.",okBody:"Obrigado. Em uma versão real, a PONCI responderia em poucos dias com disponibilidade e condições de aquisição.",
+  okProto:"Protótipo: nenhuma mensagem foi enviada. Esta é uma confirmação simulada.",ref:"Referência",another:"Enviar outra consulta",
+  footTag:"Casa de Arte Contemporânea. Brasil, fund. 2026.",footIndex:"Índice",
+  footNote:"Este site é um protótipo. Todas as obras, nomes de artistas e preços são conteúdo de demonstração criado para fins de apresentação.",
+  rights:"© 2026 PONCI",nfTitle:"Esta página não existe.",nfBack:"Voltar ao início",
+  alt:t=>`Composição original gerada no lugar de uma fotografia de obra: ${t}`
+}};
+
+/* ---------- Data ---------- */
+const COLS=[
+  {id:"materia-silenciosa",name:"Matéria Silenciosa",en:"Silent Matter",year:2026,cover:"ocre-profundo",media:{en:"Oil, acrylic, plaster",pt:"Óleo, acrílica, gesso"},
+   d:{en:"Monochrome and textured surfaces where colour is slowed down until it becomes material. Works to be seen over time, under changing light.",pt:"Superfícies monocromáticas e texturizadas em que a cor é desacelerada até se tornar matéria. Obras para serem vistas ao longo do tempo, sob luz variável."}},
+  {id:"geometria-do-tempo",name:"Geometria do Tempo",en:"Geometry of Time",year:2025,cover:"arquitetura-do-intervalo",media:{en:"Acrylic, gouache, screenprint",pt:"Acrílica, guache, serigrafia"},
+   d:{en:"Grids, modules and measured intervals. Geometry used as a way of thinking about order, rhythm and the spaces we build.",pt:"Grades, módulos e intervalos medidos. A geometria como forma de pensar a ordem, o ritmo e os espaços que construímos."}},
+  {id:"horizontes-interiores",name:"Horizontes Interiores",en:"Inner Horizons",year:2026,cover:"a-espera-do-meio-dia",media:{en:"Oil on linen and canvas",pt:"Óleo sobre linho e tela"},
+   d:{en:"Quiet surreal landscapes with impossible light and long shadows. Places that exist between memory and architecture.",pt:"Paisagens surreais silenciosas, com luz impossível e sombras longas. Lugares que existem entre a memória e a arquitetura."}},
+  {id:"gesto-e-ruina",name:"Gesto e Ruína",en:"Gesture and Ruin",year:2025,cover:"gesto-n3",media:{en:"Oil, charcoal, ink, collage",pt:"Óleo, carvão, nanquim, colagem"},
+   d:{en:"Gestural painting, works on paper and collage. Surfaces that keep the trace of the hand and the evidence of what was undone.",pt:"Pintura gestual, obras sobre papel e colagem. Superfícies que guardam o rastro da mão e a evidência do que foi desfeito."}}
+];
+
+const ART=[
+ {id:"campo-de-anil-i",title:"Campo de Anil I",en:"Field of Indigo I",artist:"Helena Vasques",date:"2026-03",h:180,w:150,cat:"painting",col:"materia-silenciosa",g:"mono",seed:11,
+  p:["#2F3C57","#45577A","#1D263B"],medium:{en:"Oil and indigo pigment on linen",pt:"Óleo e pigmento de anil sobre linho"},
+  d:{en:["A single field of indigo built from dozens of thin, translucent layers.","Up close the surface separates into warm and cool blues; from a distance it settles into one quiet plane, like a whitewashed wall's painted band seen at dusk."],pt:["Um único campo de anil construído com dezenas de camadas finas e translúcidas.","De perto, a superfície se separa em azuis quentes e frios; à distância, assenta-se em um plano silencioso, como o barrado de uma parede caiada visto ao entardecer."]}},
+ {id:"ocre-profundo",title:"Ocre Profundo",en:"Deep Ochre",artist:"Rafael Toledo",date:"2025-09",h:200,w:160,cat:"painting",col:"materia-silenciosa",g:"tex",seed:23,
+  p:["#9A7542","#B8925A","#7A5A2E","#C9A877","#5E4626"],medium:{en:"Acrylic and marble dust on canvas",pt:"Acrílica e pó de mármore sobre tela"},
+  d:{en:["Ochre pigment bound with marble dust and pulled across the canvas with a wide blade.","The ridges catch the light and the surface changes with the time of day."],pt:["Pigmento ocre ligado a pó de mármore e arrastado sobre a tela com uma lâmina larga.","As cristas capturam a luz e a superfície muda ao longo do dia."]}},
+ {id:"estudo-para-um-silencio",title:"Estudo para um Silêncio",en:"Study for a Silence",artist:"Helena Vasques",date:"2026-06",h:120,w:100,cat:"painting",col:"materia-silenciosa",g:"mono",seed:37,
+  p:["#5A2A25","#7B3C33","#381916"],medium:{en:"Oil on canvas",pt:"Óleo sobre tela"},
+  d:{en:["Two bands of oxblood red separated by a slightly darker register.","The painting is about the edge between them, and how long the eye takes to find it."],pt:["Duas faixas de vermelho sangue-de-boi separadas por um registro um pouco mais escuro.","A pintura trata da borda entre elas, e do tempo que o olhar leva para encontrá-la."]}},
+ {id:"sedimento",title:"Sedimento",en:"Sediment",artist:"Rafael Toledo",date:"2024-11",h:90,w:90,cat:"mixed",col:"materia-silenciosa",g:"tex",seed:41,
+  p:["#D7D0C3","#BDB4A4","#E8E3D8","#8E8678","#A79D8C"],medium:{en:"Plaster and mineral pigment on wood panel",pt:"Gesso e pigmento mineral sobre painel de madeira"},
+  d:{en:["Plaster and mineral pigment laid down in strata, sanded back and laid down again.","The panel records its own making the way a riverbank records floods."],pt:["Gesso e pigmento mineral aplicados em estratos, lixados e reaplicados.","O painel registra o próprio processo como uma margem de rio registra as cheias."]}},
+ {id:"arquitetura-do-intervalo",title:"Arquitetura do Intervalo",en:"Architecture of the Interval",artist:"Iara Monteiro",date:"2026-02",h:150,w:150,cat:"painting",col:"geometria-do-tempo",g:"geo",seed:58,
+  p:["#E6E0D4","#1C1B19","#8B4A32","#B89A63","#4A5560"],medium:{en:"Acrylic on canvas",pt:"Acrílica sobre tela"},
+  d:{en:["A square divided by an irregular grid, where the coloured planes act as rooms and the lines as walls.","The circle is the only element that refuses the structure."],pt:["Um quadrado dividido por uma grade irregular, onde os planos de cor funcionam como cômodos e as linhas como paredes.","O círculo é o único elemento que recusa a estrutura."]}},
+ {id:"modulo-7",title:"Módulo 7",en:"Module 7",artist:"Iara Monteiro",date:"2025-05",h:70,w:50,cat:"edition",col:"geometria-do-tempo",g:"geo",seed:64,ed:{en:"Edition of 12 + 2 AP",pt:"Edição de 12 + 2 PA"},price:"R$ 9.500",
+  p:["#ECE7DD","#22211F","#2F3B52","#A7A196","#7A3A2C"],medium:{en:"Screenprint on cotton paper",pt:"Serigrafia sobre papel de algodão"},
+  d:{en:["Seventh in a series of screenprints built on the same modular grid.","Each print in the edition is pulled by hand in four colours on cotton paper."],pt:["Sétima de uma série de serigrafias construídas sobre a mesma grade modular.","Cada exemplar da edição é impresso à mão em quatro cores sobre papel de algodão."]}},
+ {id:"linha-de-prumo",title:"Linha de Prumo",en:"Plumb Line",artist:"Iara Monteiro",date:"2024-08",h:56,w:42,cat:"paper",col:"geometria-do-tempo",g:"geo",seed:77,price:"R$ 14.000",
+  p:["#EFEBE3","#2A2926","#C7B48C","#8C8F86","#5C3A2E"],medium:{en:"Gouache on paper",pt:"Guache sobre papel"},
+  d:{en:["A study in vertical balance, in gouache.","The composition hangs from a single line, like a plumb line on a construction site."],pt:["Um estudo de equilíbrio vertical, em guache.","A composição pende de uma única linha, como um fio de prumo em um canteiro de obras."]}},
+ {id:"a-espera-do-meio-dia",title:"A Espera do Meio-Dia",en:"Waiting for Noon",artist:"Caio Bernardes",date:"2026-04",h:140,w:110,cat:"painting",col:"horizontes-interiores",g:"sur",v:"sphere",seed:83,
+  p:["#A9A397","#E2D8C4","#C4A57C","#8A6A47","#A85A3C","#2B2420"],medium:{en:"Oil on linen",pt:"Óleo sobre linho"},
+  d:{en:["A sphere suspended above an empty plain at the hour when shadows should be shortest.","Here the shadow is long, as if the light came from another time."],pt:["Uma esfera suspensa sobre uma planície vazia na hora em que as sombras deveriam ser mais curtas.","Aqui a sombra é longa, como se a luz viesse de outro tempo."]}},
+ {id:"porta-para-o-mar-seco",title:"Porta para o Mar Seco",en:"Door to the Dry Sea",artist:"Caio Bernardes",date:"2025-07",h:100,w:130,cat:"painting",col:"horizontes-interiores",g:"sur",v:"door",seed:91,
+  p:["#8C949B","#D9D3C5","#C9B08A","#957652","#E2DCD0","#2E3A49"],medium:{en:"Oil on canvas",pt:"Óleo sobre tela"},
+  d:{en:["A freestanding wall in a dry landscape opens onto a sea that is not there.","The painting treats the horizon as a memory rather than a place."],pt:["Uma parede solta em uma paisagem seca se abre para um mar que não está lá.","A pintura trata o horizonte como memória, e não como lugar."]}},
+ {id:"gesto-n3",title:"Gesto Nº 3",en:"Gesture No. 3",artist:"Lúcia Amaral",date:"2026-05",h:210,w:170,cat:"painting",col:"gesto-e-ruina",g:"gest",seed:7,
+  p:["#E7E1D4","#1E1D1B","#6E2F2A","#B08A4E","#3E4A57","#1E1D1B","#8B7562"],medium:{en:"Oil and charcoal on canvas",pt:"Óleo e carvão sobre tela"},
+  d:{en:["Large strokes of oil and charcoal, each made in a single movement of the arm.","Every correction stays visible, so the image is also a record of decisions."],pt:["Grandes pinceladas de óleo e carvão, cada uma feita em um único movimento do braço.","Cada correção permanece visível, e assim a imagem é também um registro de decisões."]}},
+ {id:"ruina-domestica",title:"Ruína Doméstica",en:"Domestic Ruin",artist:"Rafael Toledo",date:"2025-02",h:80,w:60,cat:"mixed",col:"gesto-e-ruina",g:"mix",seed:105,
+  p:["#B19878","#EDE7DA","#D5CEC0","#C9BFAE","#2A2926","#7A3329"],medium:{en:"Paper, thread and graphite on board",pt:"Papel, linha e grafite sobre placa"},
+  d:{en:["Fragments of paper, sewing thread and graphite notes arranged on board.","The collage reconstructs a house from what is usually thrown away."],pt:["Fragmentos de papel, linha de costura e anotações em grafite dispostos sobre placa.","A colagem reconstrói uma casa a partir do que costuma ser descartado."]}},
+ {id:"rumor",title:"Rumor",en:"Rumour",artist:"Lúcia Amaral",date:"2024-10",h:76,w:56,cat:"paper",col:"gesto-e-ruina",g:"gest",seed:129,
+  p:["#EDE8DE","#2A2926","#8B7562","#A35A3C","#2A2926"],medium:{en:"Ink and earth pigment on cotton paper",pt:"Nanquim e pigmento de terra sobre papel de algodão"},
+  d:{en:["Ink and earth pigment on cotton paper, worked quickly while the sheet was still wet.","The marks spread past their edges, like something said and repeated."],pt:["Nanquim e pigmento de terra sobre papel de algodão, trabalhados rapidamente com a folha ainda úmida.","As marcas ultrapassam as próprias bordas, como algo dito e repetido."]}}
+];
+ART.forEach((a,i)=>{
+  a.no="PNC "+String(i+1).padStart(3,"0");
+  a.year=+a.date.slice(0,4);
+  const L=1000;
+  a.W=a.w>=a.h?L:Math.round(L*a.w/a.h);
+  a.H=a.h>=a.w?L:Math.round(L*a.h/a.w);
+});
+const byId=id=>ART.find(a=>a.id===id);
+const colById=id=>COLS.find(c=>c.id===id);
+const worksIn=cid=>ART.filter(a=>a.col===cid);
+
+/* ---------- State ---------- */
+const state={lang:"pt",cat:"all",col:"all",sort:"new",form:{name:"",email:"",art:"",msg:""},touched:{},done:null};
+try{const s=localStorage.getItem("ponci-lang-v2");if(s==="pt"||s==="en")state.lang=s;}catch(e){}
+const T=k=>I18N[state.lang][k]??I18N.en[k];
+const L=o=>o&&typeof o==="object"&&!Array.isArray(o)?(o[state.lang]||o.en):o;
+const fmt=(n,d=1)=>n.toLocaleString(state.lang==="pt"?"pt-BR":"en-US",{minimumFractionDigits:d,maximumFractionDigits:d});
+const dims=a=>`${a.h} × ${a.w} cm`;
+const dimsIn=a=>`${fmt(a.h/2.54)} × ${fmt(a.w/2.54)} in`;
+
+/* ---------- Generative artwork (stand-ins for photography) ---------- */
+function rng(seed){let s=seed>>>0;return()=>{s=(s+0x6D2B79F5)>>>0;let t=s;t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);return((t^(t>>>14))>>>0)/4294967296;};}
+const pick=(r,arr)=>arr[Math.floor(r()*arr.length)];
+
+function grain(c,W,H,amt,weave){
+  const d=c.getImageData(0,0,W,H),px=d.data;
+  for(let y=0;y<H;y++){for(let x=0;x<W;x++){const i=(y*W+x)*4;let n=(Math.random()-.5)*amt;
+    if(weave){if((x&3)===0)n-=weave;if((y&3)===0)n-=weave*.7;}
+    px[i]+=n;px[i+1]+=n;px[i+2]+=n;}}
+  c.putImageData(d,0,0);
+}
+function torn(c,x,y,w,h,r){
+  const st=9;c.beginPath();c.moveTo(x,y);
+  for(let s=0;s<=w;s+=st)c.lineTo(x+s,y+(r()-.5)*4);
+  for(let s=0;s<=h;s+=st)c.lineTo(x+w+(r()-.5)*5,y+s);
+  for(let s=w;s>=0;s-=st)c.lineTo(x+s,y+h+(r()-.5)*7);
+  for(let s=h;s>=0;s-=st)c.lineTo(x+(r()-.5)*4,y+s);
+  c.closePath();
+}
+const GEN={
+  mono(c,W,H,r,p){
+    c.fillStyle=p[0];c.fillRect(0,0,W,H);
+    const m=Math.min(W,H)*.085,j=()=>(r()-.5)*m*.9;
+    const split=H*(.56+r()*.06);
+    for(let k=0;k<70;k++){c.globalAlpha=.03;c.fillStyle=p[1];c.fillRect(m+j(),m*1.1+j(),W-2*m+j(),split-m*1.6+j());}
+    for(let k=0;k<70;k++){c.globalAlpha=.03;c.fillStyle=p[2];c.fillRect(m+j(),split+m*.4+j(),W-2*m+j(),H-split-m*1.5+j());}
+    for(let i=0;i<2400;i++){c.globalAlpha=.012+r()*.03;c.fillStyle=r()<.5?p[1]:p[2];const x=r()*W,w=1+r()*7;c.fillRect(x,r()*H*.3,w,H*(.3+r()*.7));}
+    for(let i=0;i<900;i++){c.globalAlpha=.02+r()*.02;c.fillStyle=r()<.5?p[1]:p[2];c.fillRect(r()*W,r()*H,W*(.05+r()*.3),1+r()*3);}
+    c.globalAlpha=1;grain(c,W,H,16,7);
+  },
+  tex(c,W,H,r,p){
+    c.fillStyle=p[0];c.fillRect(0,0,W,H);
+    for(let i=0;i<380;i++){
+      const y=r()*H,h=3+r()*36,x=-60+r()*W*.85,len=W*(.2+r()*.95),col=p[1+Math.floor(r()*(p.length-1))];
+      c.globalAlpha=.14+r()*.5;c.fillStyle=col;c.beginPath();c.moveTo(x,y);
+      for(let s=0;s<=len;s+=12)c.lineTo(x+s,y+(r()-.5)*4);
+      for(let s=len;s>=0;s-=12)c.lineTo(x+s,y+h+(r()-.5)*7);
+      c.closePath();c.fill();
+      c.globalAlpha=.22;c.fillStyle="#FFF8EA";c.fillRect(x,y-1,len,1.4);
+      c.globalAlpha=.16;c.fillStyle="#120E08";c.fillRect(x,y+h,len,1.8);
+    }
+    for(let i=0;i<3200;i++){c.globalAlpha=.06+r()*.14;c.fillStyle=r()<.5?"#120E08":"#FFF8EA";c.fillRect(r()*W,r()*H,1+r()*2.5,1+r()*2);}
+    c.globalAlpha=1;grain(c,W,H,22,4);
+  },
+  geo(c,W,H,r,p){
+    c.fillStyle=p[0];c.fillRect(0,0,W,H);
+    const cols=W>H*1.05?5:(W<H*.85?3:4),rows=Math.max(3,Math.round(cols*H/W));
+    const mx=W*.1,my=H*.1,cw=(W-2*mx)/cols,ch=(H-2*my)/rows;
+    const n=4+Math.floor(r()*3);
+    for(let i=0;i<n;i++){
+      const cx=Math.floor(r()*cols),cy=Math.floor(r()*rows),sw=1+Math.floor(r()*2),sh=1+Math.floor(r()*2);
+      c.fillStyle=p[2+Math.floor(r()*3)];c.globalAlpha=.9+r()*.1;
+      c.fillRect(mx+cx*cw,my+cy*ch,Math.min(sw,cols-cx)*cw,Math.min(sh,rows-cy)*ch);
+    }
+    c.globalAlpha=1;
+    c.save();c.beginPath();c.rect(mx,my,W-2*mx,H-2*my);c.clip();
+    const ox=mx+(1+Math.floor(r()*(cols-1)))*cw,oy=my+(1+Math.floor(r()*(rows-1)))*ch,R=Math.min(cw,ch)*(1+r()*.8);
+    c.fillStyle=p[1];c.beginPath();c.arc(ox,oy,R,0,Math.PI*2);c.fill();
+    c.globalCompositeOperation="source-atop";c.fillStyle=p[2];c.fillRect(ox,oy-R,R,R);c.globalCompositeOperation="source-over";
+    c.restore();
+    c.strokeStyle=p[1];c.lineWidth=1.4;c.globalAlpha=.85;
+    for(let i=0;i<=cols;i++){c.beginPath();c.moveTo(mx+i*cw,my);c.lineTo(mx+i*cw,H-my);c.stroke();}
+    for(let i=0;i<=rows;i++){if(r()<.55||i===0||i===rows){c.beginPath();c.moveTo(mx,my+i*ch);c.lineTo(W-mx,my+i*ch);c.stroke();}}
+    c.globalAlpha=1;c.fillStyle=p[1];
+    const bx=mx+Math.floor(r()*cols)*cw+cw*.5;c.fillRect(bx-W*.006,my*.55,W*.012,H-my*1.1);
+    c.fillStyle=p[4];const sq=Math.min(cw,ch)*.28;c.fillRect(mx+Math.floor(r()*cols)*cw+cw*.12,my+Math.floor(r()*rows)*ch+ch*.12,sq,sq);
+    grain(c,W,H,14,0);
+  },
+  sur(c,W,H,r,p,a){
+    const hz=H*(a.v==="door"?.6:.67);
+    let g=c.createLinearGradient(0,0,0,hz);g.addColorStop(0,p[0]);g.addColorStop(1,p[1]);c.fillStyle=g;c.fillRect(0,0,W,hz);
+    g=c.createLinearGradient(0,hz,0,H);g.addColorStop(0,p[2]);g.addColorStop(1,p[3]);c.fillStyle=g;c.fillRect(0,hz,W,H-hz);
+    g=c.createLinearGradient(0,hz-H*.09,0,hz);g.addColorStop(0,"rgba(255,250,240,0)");g.addColorStop(1,"rgba(255,250,240,.28)");c.fillStyle=g;c.fillRect(0,hz-H*.09,W,H*.09);
+    for(let i=0;i<46;i++){const t=i/46,y=hz+(H-hz)*t*t;c.globalAlpha=.07;c.fillStyle=p[3];c.fillRect(0,y,W,1+t*2.5);}
+    c.globalAlpha=1;
+    if(a.v==="sphere"){
+      const cx=W*.4,cy=hz*.6,R=Math.min(W,H)*.14;
+      c.globalAlpha=.42;c.fillStyle=p[5];c.beginPath();c.ellipse(cx+W*.26,hz+(H-hz)*.45,R*2.1,R*.2,0,0,Math.PI*2);c.fill();c.globalAlpha=1;
+      const rg=c.createRadialGradient(cx-R*.42,cy-R*.45,R*.08,cx,cy,R*1.02);rg.addColorStop(0,"#EFD2B2");rg.addColorStop(.45,p[4]);rg.addColorStop(1,p[5]);
+      c.fillStyle=rg;c.beginPath();c.arc(cx,cy,R,0,Math.PI*2);c.fill();
+      const x=W*.8,w=W*.022,top=hz-H*.2,sd=(H-hz)*.2;
+      c.globalAlpha=.38;c.fillStyle=p[5];c.beginPath();c.moveTo(x,hz);c.lineTo(x+w,hz);c.lineTo(x+w+W*.36,hz+sd);c.lineTo(x+W*.36,hz+sd);c.closePath();c.fill();c.globalAlpha=1;
+      c.fillStyle=p[5];c.fillRect(x,top,w,hz-top);c.fillStyle="#6B5644";c.fillRect(x,top,w*.35,hz-top);
+      const fx=W*.18,fh=H*.035;c.fillStyle=p[5];c.fillRect(fx,hz+(H-hz)*.12-fh,W*.006,fh);
+      c.globalAlpha=.35;c.fillRect(fx,hz+(H-hz)*.12,W*.07,2);c.globalAlpha=1;
+    } else {
+      const x0=W*.32,w=W*.24,top=hz-H*.4,bottom=hz+(H-hz)*.18,th=W*.03;
+      c.globalAlpha=.36;c.fillStyle=p[5];c.beginPath();c.moveTo(x0,bottom);c.lineTo(x0+w,bottom);c.lineTo(x0+w-W*.34,bottom+(H-bottom)*.55);c.lineTo(x0-W*.34,bottom+(H-bottom)*.55);c.closePath();c.fill();c.globalAlpha=1;
+      c.fillStyle="#B8AE9C";c.beginPath();c.moveTo(x0+w,top);c.lineTo(x0+w+th,top+th*.5);c.lineTo(x0+w+th,bottom-th*.2);c.lineTo(x0+w,bottom);c.closePath();c.fill();
+      c.fillStyle=p[4];c.fillRect(x0,top,w,bottom-top);
+      const ow=w*.5,ox=x0+(w-ow)/2,oy=top+(bottom-top)*.22,oh=bottom-oy;
+      c.save();c.beginPath();c.moveTo(ox,oy+oh);c.lineTo(ox,oy+ow/2);c.arc(ox+ow/2,oy+ow/2,ow/2,Math.PI,0);c.lineTo(ox+ow,oy+oh);c.closePath();c.clip();
+      const sh=oy+oh*.5;g=c.createLinearGradient(0,oy,0,sh);g.addColorStop(0,"#7F8B97");g.addColorStop(1,"#C9CDCB");c.fillStyle=g;c.fillRect(ox,oy,ow,sh-oy);
+      g=c.createLinearGradient(0,sh,0,oy+oh);g.addColorStop(0,"#45576A");g.addColorStop(1,p[5]);c.fillStyle=g;c.fillRect(ox,sh,ow,oy+oh-sh);
+      c.globalAlpha=.5;c.fillStyle="#E8ECEA";for(let i=0;i<14;i++){c.fillRect(ox,sh+i*(oh*.5/14)+r()*4,ow*(.2+r()*.8),1);}c.globalAlpha=1;
+      c.restore();
+      c.fillStyle="rgba(0,0,0,.08)";c.fillRect(x0,top,w*.04,bottom-top);
+      const sx=W*.8,sw=W*.05,stop=hz-H*.08;c.fillStyle="#C9C0AF";c.fillRect(sx,stop,sw,hz-stop+2);
+      c.globalAlpha=.3;c.fillStyle=p[5];c.beginPath();c.moveTo(sx,hz+2);c.lineTo(sx+sw,hz+2);c.lineTo(sx+sw-W*.1,hz+(H-hz)*.06);c.lineTo(sx-W*.1,hz+(H-hz)*.06);c.closePath();c.fill();c.globalAlpha=1;
+    }
+    grain(c,W,H,18,5);
+  },
+  gest(c,W,H,r,p){
+    c.fillStyle=p[0];c.fillRect(0,0,W,H);
+    c.lineCap="round";c.lineJoin="round";
+    const cols=p.slice(1);
+    for(let i=0;i<42;i++){
+      const col=pick(r,cols),big=i<13,lw=big?34+r()*120:5+r()*42;
+      const x0=r()*W,y0=r()*H,ang=r()*Math.PI*2,len=(.25+r()*.6)*Math.max(W,H);
+      const x3=x0+Math.cos(ang)*len,y3=y0+Math.sin(ang)*len;
+      const x1=x0+(r()-.5)*len,y1=y0+(r()-.5)*len,x2=x3+(r()-.5)*len,y2=y3+(r()-.5)*len;
+      const passes=big?10:5,jj=()=>(r()-.5)*lw*.5;
+      for(let k=0;k<passes;k++){c.globalAlpha=(big?.07:.12)+r()*.13;c.strokeStyle=col;c.lineWidth=lw*(.3+r()*.7);
+        c.beginPath();c.moveTo(x0+jj(),y0+jj());c.bezierCurveTo(x1+jj(),y1+jj(),x2+jj(),y2+jj(),x3+jj(),y3+jj());c.stroke();}
+      if(r()<.5){for(let b=0;b<16;b++){const o=(r()-.5)*lw;c.globalAlpha=.15+r()*.3;c.lineWidth=.8+r()*2.2;
+        c.beginPath();c.moveTo(x0+o,y0+o*.6);c.bezierCurveTo(x1+o,y1+o,x2+o,y2+o,x3+o*.8,y3+o);c.stroke();}}
+    }
+    c.strokeStyle=p[1];
+    for(let l=0;l<5;l++){let x=r()*W,y=r()*H;c.globalAlpha=.55+r()*.3;c.lineWidth=1+r()*2;c.beginPath();c.moveTo(x,y);
+      for(let s=0;s<36;s++){const nx=x+(r()-.5)*90,ny=y+(r()-.5)*90;c.quadraticCurveTo(x+(r()-.5)*50,y+(r()-.5)*50,nx,ny);x=Math.max(0,Math.min(W,nx));y=Math.max(0,Math.min(H,ny));}
+      c.stroke();}
+    for(let i=0;i<180;i++){c.globalAlpha=.5+r()*.4;c.fillStyle=pick(r,cols);c.beginPath();c.arc(r()*W,r()*H,.6+Math.pow(r(),3)*7,0,Math.PI*2);c.fill();}
+    c.globalAlpha=1;grain(c,W,H,16,5);
+  },
+  mix(c,W,H,r,p){
+    c.fillStyle=p[0];c.fillRect(0,0,W,H);
+    for(let i=0;i<1400;i++){c.globalAlpha=.05;c.fillStyle=r()<.5?"#5A4630":"#E9DCC4";c.fillRect(r()*W,r()*H,r()*30,1);}
+    c.globalAlpha=1;
+    for(let i=0;i<10;i++){
+      const w=W*(.22+r()*.42),h=H*(.12+r()*.32),x=r()*(W-w*.6)-w*.15,y=r()*(H-h*.6)-h*.15,rot=(r()-.5)*.16,fill=pick(r,[p[1],p[2],p[3],p[1],p[5]]);
+      c.save();c.translate(x+w/2,y+h/2);c.rotate(rot);
+      c.shadowColor="rgba(30,20,10,.22)";c.shadowBlur=12;c.shadowOffsetY=4;c.fillStyle=fill;torn(c,-w/2,-h/2,w,h,r);c.fill();c.shadowColor="transparent";
+      if(fill!==p[5]&&r()<.65){c.strokeStyle=p[4];c.globalAlpha=.5;c.lineWidth=1;const lines=Math.floor(h/15)-1;
+        for(let l=0;l<lines;l++){const yy=-h/2+18+l*15;let xx=-w/2+18;c.beginPath();c.moveTo(xx,yy);
+          while(xx<w/2-18-r()*40){xx+=3;if(r()<.06){xx+=8;c.moveTo(xx,yy);}else c.lineTo(xx,yy+Math.sin(xx*.7)*1.6+(r()-.5)*1.4);}
+          c.stroke();}
+        c.globalAlpha=1;}
+      if(r()<.5){c.fillStyle="rgba(238,226,196,.55)";c.save();c.translate(-w/2+10,-h/2);c.rotate(-.5);c.fillRect(-28,-9,56,18);c.restore();}
+      c.restore();
+    }
+    c.strokeStyle=p[5];c.lineWidth=1.6;c.globalAlpha=.9;
+    for(let i=0;i<3;i++){const x0=r()*W,y0=r()*H*.2,x3=r()*W,y3=H*(.8+r()*.2);c.beginPath();c.moveTo(x0,y0);c.bezierCurveTo(r()*W,r()*H,r()*W,r()*H,x3,y3);c.stroke();
+      c.fillStyle=p[4];c.beginPath();c.arc(x0,y0,2.5,0,7);c.arc(x3,y3,2.5,0,7);c.fill();}
+    c.globalAlpha=.55;c.lineWidth=3;c.strokeStyle=p[5];c.beginPath();c.arc(W*(.2+r()*.6),H*(.2+r()*.6),Math.min(W,H)*.06,0,Math.PI*2);c.stroke();
+    c.globalAlpha=1;grain(c,W,H,20,0);
+  }
+};
+const artCache={};
+function getArt(id){
+  if(artCache[id])return artCache[id];
+  const a=byId(id);const cv=document.createElement("canvas");cv.width=a.W;cv.height=a.H;
+  const c=cv.getContext("2d",{willReadFrequently:true});
+  GEN[a.g](c,a.W,a.H,rng(a.seed),a.p,a);
+  return artCache[id]=cv.toDataURL("image/jpeg",.86);
+}
+const BLANK="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
+function artImg(a){return `<img src="${BLANK}" data-art="${a.id}" width="${a.W}" height="${a.H}" style="aspect-ratio:${a.W}/${a.H}" alt="${esc(T("alt")(a.title+", "+a.year))}" decoding="async">`;}
+let hydrateToken=0;
+function hydrate(root){
+  const imgs=$$("img[data-art]",root).filter(i=>!i.classList.contains("ready"));let i=0;const tok=++hydrateToken;
+  const step=()=>{if(tok!==hydrateToken)return;const t0=performance.now();
+    while(i<imgs.length&&performance.now()-t0<28){const im=imgs[i++];im.src=getArt(im.dataset.art);im.classList.add("ready");}
+    if(i<imgs.length)setTimeout(step,16);};
+  step();
+}
+
+/* ---------- Copy for the brutalist edition ---------- */
+Object.assign(I18N.en,{tag:"Contemporary art house",etiq:"Demonstration composition",brasil:"Brazil",est:"Est. 2026",
+  colsN:n=>n===1?"1 collection":`${n} collections`,index:"Catalogue",
+  selTitle:"Four works, <em>four ways of looking</em>",colTitle:"Bodies of work, <em>one question each</em>",
+  manTitle:"Beyond the visible.",closeTitle:"Art deserves <em>space.</em>"});
+Object.assign(I18N.pt,{tag:"Casa de arte contemporânea",etiq:"Composição de demonstração",brasil:"Brasil",est:"Fund. 2026",
+  colsN:n=>n===1?"1 coleção":`${n} coleções`,index:"Catálogo",
+  selTitle:"Quatro obras, <em>quatro modos de olhar</em>",colTitle:"Corpos de obra, <em>uma pergunta cada</em>",
+  manTitle:"Além do visível.",closeTitle:"A arte merece <em>espaço.</em>"});
+const ROMAN=["I","II","III","IV","V","VI"];
+const pad=n=>String(n).padStart(2,"0");
+
+/* ---------- Concrete: formwork board marks, tie holes, pores (tileable) ---------- */
+(function concrete(){
+  try{
+    const S=640,cv=document.createElement("canvas");cv.width=cv.height=S;const c=cv.getContext("2d");
+    const r=rng(1957),rows=8,bh=S/rows;
+    const blot=(x,y,rad,col)=>{for(const dx of [-S,0,S])for(const dy of [-S,0,S]){const X=x+dx,Y=y+dy;if(X+rad<0||X-rad>S||Y+rad<0||Y-rad>S)continue;
+      const g=c.createRadialGradient(X,Y,0,X,Y,rad);g.addColorStop(0,col);g.addColorStop(1,"rgba(0,0,0,0)");c.fillStyle=g;c.beginPath();c.arc(X,Y,rad,0,Math.PI*2);c.fill();}};
+    for(let i=0;i<rows;i++){
+      c.fillStyle=r()<.5?`rgba(0,0,0,${.02+r()*.035})`:`rgba(255,255,255,${.02+r()*.04})`;c.fillRect(0,i*bh,S,bh);
+      c.save();c.beginPath();c.rect(0,i*bh,S,bh);c.clip();
+      for(let l=0;l<16;l++){
+        const y0=i*bh+r()*bh,amp=1+r()*3.5,k=1+Math.floor(r()*3),ph=r()*6.28;
+        c.strokeStyle=r()<.7?`rgba(0,0,0,${.03+r()*.05})`:`rgba(255,255,255,${.04+r()*.05})`;c.lineWidth=.6+r()*1.3;c.beginPath();
+        for(let x=0;x<=S;x+=8){const y=y0+amp*Math.sin(2*Math.PI*x/S*k+ph);x?c.lineTo(x,y):c.moveTo(x,y);}
+        c.stroke();
+      }
+      c.restore();
+      c.fillStyle="rgba(0,0,0,.13)";c.fillRect(0,i*bh,S,1.5);
+      c.fillStyle="rgba(255,255,255,.08)";c.fillRect(0,i*bh+1.5,S,1);
+    }
+    for(let i=0;i<50;i++)blot(r()*S,r()*S,30+r()*90,r()<.6?`rgba(0,0,0,${.012+r()*.025})`:`rgba(255,255,255,${.015+r()*.03})`);
+    for(const [x,y] of [[160,bh*1.5],[480,bh*1.5],[160,bh*5.5],[480,bh*5.5]]){
+      const g=c.createRadialGradient(x,y,0,x,y,10);g.addColorStop(0,"rgba(0,0,0,.45)");g.addColorStop(.55,"rgba(0,0,0,.22)");g.addColorStop(1,"rgba(0,0,0,0)");
+      c.fillStyle=g;c.beginPath();c.arc(x,y,10,0,Math.PI*2);c.fill();
+      c.fillStyle="rgba(255,255,255,.1)";c.beginPath();c.arc(x+1.5,y+2.5,5,0,Math.PI*2);c.fill();
+    }
+    for(let i=0;i<2600;i++){const s=.6+Math.pow(r(),3)*2.6;c.fillStyle=`rgba(0,0,0,${.05+r()*.2})`;c.fillRect(r()*S,r()*S,s,s);}
+    for(let i=0;i<1400;i++){const s=.6+r()*1.6;c.fillStyle=`rgba(255,255,255,${.05+r()*.12})`;c.fillRect(r()*S,r()*S,s,s);}
+    document.documentElement.style.setProperty("--tex",`url(${cv.toDataURL("image/png")})`);
+  }catch(e){}
+})();
+
+/* ---------- Fitted type ---------- */
+function fit(root=document){
+  $$(".fit",root).forEach(el=>{
+    const s=el.firstElementChild;if(!s)return;
+    el.classList.remove("nofit");el.classList.toggle("acc",/[À-ÖØ-öø-ÿ]/.test(s.textContent));el.style.fontSize="100px";
+    const avail=el.clientWidth;
+    if(s.textContent.trim().length>12&&avail<700){el.classList.add("nofit");el.style.fontSize="";return;}
+    const w=s.getBoundingClientRect().width;
+    if(w>0&&avail>0)el.style.fontSize=Math.floor(100*avail/w*0.995*100)/100+"px";
+  });
+}
+let fitT;window.addEventListener("resize",()=>{clearTimeout(fitT);fitT=setTimeout(()=>fit(),120);});
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>fit());
+
+/* ---------- Components ---------- */
+function priceHTML(a){return a.price?`<span class="price">${a.price}<small>${T("indicative")}</small></span>`:`<span class="price">${T("priceReq")}</span>`;}
+function card(a,cls=""){
+  return `<article class="card ${cls}"><a class="card-link" href="#work-${a.id}">
+    <div class="card-top"><span>${a.no}</span><span>${a.year}</span></div>
+    <div class="card-img">${artImg(a)}</div>
+    <div class="card-cap">
+      <h3 class="card-title">${esc(a.title)}</h3>
+      ${state.lang==="en"?`<p class="card-en">${esc(a.en)}</p>`:""}
+      <p class="card-meta first">${esc(L(a.medium))}</p>
+      <p class="card-meta">${dims(a)}${a.ed?" · "+esc(L(a.ed)):""}</p>
+    </div>
+    <div class="card-foot">${priceHTML(a)}<span class="go">${T("viewWork")} ${icon("right")}</span></div>
+  </a></article>`;
+}
+function slab(a,h,plaque=true){
+  return `<div class="slab${plaque?"":" np"}"${h?` style="--h:${h}"`:""}><div class="hang">${artImg(a)}</div>${plaque?`<p class="plaque"><b>${esc(a.title)}</b><span>${a.year}</span><span>${T("etiq")}</span></p>`:""}</div>`;
+}
+function secHead(n,eyebrow,title,id,href,linkText,extra=""){
+  return `<div class="sec-head"><p class="n">${n} — ${eyebrow}</p><h2 id="${id}">${title}</h2>${href?`<div class="side"><a href="${href}"${extra}>${linkText} ${icon("right")}</a></div>`:""}</div>`;
+}
+function idxRow(c,i,big){
+  const cov=byId(c.cover),n=worksIn(c.id).length;
+  const sub=big?`${esc(L(c.d))}<i>${esc(L(c.media))}</i>`:(state.lang==="en"?esc(c.en):esc(L(c.media)));
+  return `<a class="idx-row${big?" big":""}" href="#collection-${c.id}">
+    <span class="idx-n">${ROMAN[i]}</span>
+    <span class="idx-name">${esc(c.name)}</span>
+    <span class="idx-sub">${sub}</span>
+    <span class="idx-meta">${c.year}<br>${T("count")(n)}</span>
+    <span class="idx-thumb" aria-hidden="true">${artImg(cov)}</span>
+    <span class="idx-go" aria-hidden="true">${icon("right")}</span>
+  </a>`;
+}
+const wordmark=()=>`<a href="#home" class="wordmark" aria-label="PONCI"><b>PONCI</b><small>${T("tag")}</small></a>`;
+
+/* ---------- Chrome ---------- */
+const NAV=[["works","works"],["collections","collections"],["about","about"],["acquisitions","acq"]];
+function langToggle(){return `<div class="lang" role="group" aria-label="${T("language")}"><button type="button" data-lang="pt" aria-pressed="${state.lang==="pt"}" lang="pt">PT</button><span aria-hidden="true">/</span><button type="button" data-lang="en" aria-pressed="${state.lang==="en"}" lang="en">EN</button></div>`;}
+function section(){const h=location.hash.slice(1)||"home";if(h.startsWith("work-"))return"works";if(h.startsWith("collection-"))return"collections";return h;}
+function renderChrome(){
+  document.documentElement.lang=state.lang==="pt"?"pt-BR":"en";
+  $("#skip").textContent=T("skip");$("#pb-l").textContent=T("proto");$("#pb-r").textContent="ponci.art — "+T("origin");
+  const cur=section();
+  $("#brand").innerHTML=wordmark();
+  $("#nav").innerHTML=`<ul>${NAV.map(([h,k],i)=>`<li><a href="#${h}"${cur===h?' aria-current="page"':""}><span>${pad(i+1)}</span>${T(k)}</a></li>`).join("")}</ul>${langToggle()}`;
+  $("#menu-btn").innerHTML=`${T("menu")} ${icon("menu")}`;
+  $("#menu").innerHTML=`<div class="wrap" style="display:flex;flex-direction:column;flex:1">
+    <div class="top">${wordmark()}<button class="menu-btn" type="button" id="menu-close" style="display:inline-flex">${T("close")} ${icon("x")}</button></div>
+    <ul>${[["home","home"],...NAV].map(([h,k],i)=>`<li><a href="#${h}"${cur===h?' aria-current="page"':""}>${T(k)}<span>${pad(i)}</span></a></li>`).join("")}</ul>
+    <div class="foot2"><span class="lab">ponci.art</span>${langToggle()}</div></div>`;
+  $("#foot").innerHTML=`<div class="wrap">
+    <div class="foot-grid">
+      <div class="c1"><p class="lab">PONCI</p><p class="ftag">${T("footTag")}</p><span class="domain">ponci.art</span></div>
+      <nav class="c2" aria-label="${T("footIndex")}"><p class="lab">${T("footIndex")}</p><ul>${NAV.map(([h,k])=>`<li><a href="#${h}">${T(k)}</a></li>`).join("")}</ul></nav>
+      <div class="c3"><p class="lab">${T("language")}</p>${langToggle()}</div>
+      <p class="c4 note">${T("footNote")}</p>
+    </div>
+    <div class="fit foot-mega" aria-hidden="true"><span>PONCI</span></div>
+    <div class="foot-base"><span>${T("rights")}</span><span>ponci.art</span><span>${T("origin")}</span></div>
+  </div>`;
+}
+function openMenu(){const m=$("#menu");m.hidden=false;document.body.classList.add("locked");$("#menu-btn").setAttribute("aria-expanded","true");$("#menu-close")?.focus();}
+function closeMenu(focusBtn){const m=$("#menu");if(m.hidden)return;m.hidden=true;document.body.classList.remove("locked");$("#menu-btn").setAttribute("aria-expanded","false");if(focusBtn)$("#menu-btn").focus();}
+
+/* ---------- Views ---------- */
+function closingHTML(primary){
+  return `<section class="closing" aria-labelledby="close-t"><div class="wrap">
+    <h2 id="close-t">${T("closeTitle")}</h2>
+    <div class="act">${primary}<p>${T("closeText")}</p></div>
+  </div></section>`;
+}
+function vHome(){
+  const hero=byId("gesto-n3");
+  const sel=["campo-de-anil-i","modulo-7","a-espera-do-meio-dia","ruina-domestica"].map(byId);
+  return {title:"PONCI — "+T("heroLabel"),html:`
+  <section class="hero wrap" aria-labelledby="hero-t">
+    <h1 class="fit mega" id="hero-t"><span>PONCI</span></h1>
+    <div class="strip"><span>${T("heroLabel")}</span><span>${T("brasil")}</span><span>${T("est")}</span><span>${T("count")(ART.length)}</span><span>${T("colsN")(COLS.length)}</span></div>
+    <div class="hero-body">
+      <div class="hero-text">
+        <p class="hero-quote">${T("heroQuote")}</p>
+        <p class="hero-sub">${T("heroSub")}</p>
+        <div class="hero-ctas"><a class="btn" href="#works">${T("explore")} ${icon("right")}</a><a class="btn ghost" href="#about">${T("discover")} ${icon("right")}</a></div>
+      </div>
+      <div class="hero-art"><a href="#work-${hero.id}" aria-label="${esc(hero.title)}, ${hero.year}">${slab(hero)}</a></div>
+    </div>
+  </section>
+
+  <section class="sec wrap" aria-labelledby="sel-t">
+    ${secHead("01",T("selEyebrow"),T("selTitle"),"sel-t","#works",T("viewAll"))}
+    <div class="board sel">${sel.map((a,i)=>card(a,"s"+(i+1))).join("")}</div>
+  </section>
+
+  <section class="sec wrap" aria-labelledby="col-t" style="padding-top:0">
+    ${secHead("02",T("colEyebrow"),T("colTitle"),"col-t","#collections",T("allCols"))}
+    <div class="idx">${COLS.map((c,i)=>idxRow(c,i)).join("")}</div>
+  </section>
+
+  <section class="manifesto" aria-labelledby="man-t"><div class="wrap">
+    <div class="man-head"><span>03 — ${T("manEyebrow")}</span><span>PONCI</span></div>
+    <h2 class="fit man-title" id="man-t"><span>${T("manTitle")}</span></h2>
+    <div class="man-grid">
+      <ul class="man-terms">${T("terms").map((w,i)=>`<li><span>${pad(i+1)}</span>${w}</li>`).join("")}</ul>
+      <div class="man-body"><p>${T("man1")}</p><p>${T("man2")}</p></div>
+    </div>
+  </div></section>
+
+  ${closingHTML(`<a class="btn" href="#acquisitions">${T("closeCta")} ${icon("right")}</a>`)}`};
+}
+
+function filtered(){
+  let list=ART.filter(a=>(state.cat==="all"||a.cat===state.cat)&&(state.col==="all"||a.col===state.col));
+  list.sort((x,y)=>state.sort==="new"?y.date.localeCompare(x.date):x.date.localeCompare(y.date));
+  return list;
+}
+function resultsHTML(){
+  const list=filtered();
+  const meta=`<div class="results-meta" aria-live="polite"><span>${T("count")(list.length)}</span>${(state.cat!=="all"||state.col!=="all")?`<button type="button" data-clear>${T("clear")}</button>`:""}</div>`;
+  if(!list.length)return meta+`<div class="empty"><p>${T("emptyT")}</p><p style="color:var(--muted)">${T("emptyB")}</p><button class="btn ghost" type="button" data-clear>${T("clear")} ${icon("x")}</button></div>`;
+  return meta+`<div class="board cat">${list.map(a=>card(a)).join("")}</div>`;
+}
+function vWorks(){
+  const cats=["all","painting","mixed","paper","edition"];
+  const chip=(key,val,label)=>`<button type="button" class="chip" data-f="${key}" data-v="${val}" aria-pressed="${state[key]===val}">${label}</button>`;
+  return {title:"PONCI — "+T("works"),html:`
+  <div class="wrap">
+    <header class="page-head"><h1 class="fit"><span>${T("works")}</span></h1>
+      <div class="page-strip"><p class="lab">${T("index")}</p><p class="intro">${T("worksIntro")}</p><p class="count">${T("count")(ART.length)}</p></div>
+    </header>
+    <div class="filters" role="region" aria-label="${T("category")} / ${T("collection")}">
+      <div class="frow" role="group" aria-label="${T("category")}"><span class="lab">${T("category")}</span>${cats.map(c=>chip("cat",c,c==="all"?T("all"):T("cat")[c])).join("")}</div>
+      <div class="frow" role="group" aria-label="${T("collection")}"><span class="lab">${T("collection")}</span>${chip("col","all",T("all"))}${COLS.map(c=>chip("col",c.id,esc(c.name))).join("")}</div>
+      <div class="frow"><label class="lab" for="sort">${T("sort")}</label><div class="sortwrap"><select id="sort"><option value="new"${state.sort==="new"?" selected":""}>${T("newest")}</option><option value="old"${state.sort==="old"?" selected":""}>${T("oldest")}</option></select></div></div>
+    </div>
+    <div id="results">${resultsHTML()}</div>
+  </div>`,after(){$("#sort").addEventListener("change",e=>{state.sort=e.target.value;refreshResults();});}};
+}
+function refreshResults(){
+  const box=$("#results");if(!box)return;box.innerHTML=resultsHTML();
+  $$(".chip").forEach(b=>b.setAttribute("aria-pressed",String(state[b.dataset.f]===b.dataset.v)));
+  hydrate(box);
+}
+
+function vDetail(id){
+  const a=byId(id);if(!a)return vNotFound();
+  const i=ART.indexOf(a),prev=ART[(i-1+ART.length)%ART.length],next=ART[(i+1)%ART.length],c=colById(a.col);
+  let rel=ART.filter(x=>x!==a&&x.col===a.col);
+  ART.filter(x=>x!==a&&!rel.includes(x)&&x.cat===a.cat).forEach(x=>rel.push(x));
+  ART.filter(x=>x!==a&&!rel.includes(x)).forEach(x=>rel.push(x));
+  rel=rel.slice(0,3);
+  return {title:`${a.title}, ${a.year} — PONCI`,html:`
+  <div class="wrap">
+    <nav class="crumbs" aria-label="Breadcrumb"><a href="#works">${T("works")}</a><span aria-hidden="true">/</span><a href="#collection-${c.id}">${esc(c.name)}</a><span aria-hidden="true">/</span><span aria-current="page">${esc(a.title)}</span></nav>
+    <article class="detail">
+      <div class="detail-media">${slab(a)}</div>
+      <div class="detail-info">
+        <div class="d-no"><span>${T("catNo")}</span><span>${a.no} / ${String(ART.length).padStart(3,"0")}</span></div>
+        <div><h1 class="d-title">${esc(a.title)}</h1>${state.lang==="en"?`<p class="d-en">${esc(a.en)}</p>`:""}</div>
+        <div class="d-artist"><strong>${esc(a.artist)}</strong><span>${T("fictional")}</span></div>
+        <dl class="spec">
+          <dt>${T("year")}</dt><dd>${a.year}</dd>
+          <dt>${T("medium")}</dt><dd>${esc(L(a.medium))}</dd>
+          <dt>${T("dims")}</dt><dd>${dims(a)}<small>${dimsIn(a)}</small></dd>
+          <dt>${T("edition")}</dt><dd>${a.ed?esc(L(a.ed)):T("unique")}</dd>
+          <dt>${T("collection")}</dt><dd><a href="#collection-${c.id}">${esc(c.name)}</a></dd>
+          <dt>${T("category")}</dt><dd>${T("cat")[a.cat]}</dd>
+        </dl>
+        <div class="d-desc">${L(a.d).map(p=>`<p>${esc(p)}</p>`).join("")}</div>
+        <div class="d-buy">${priceHTML(a)}<a class="btn" href="#acquisitions" data-inquire="${a.id}">${T("inquireWork")} ${icon("right")}</a></div>
+        <p class="notice">${icon("info")}<span>${T("demoNote")}</span></p>
+      </div>
+    </article>
+    <nav class="pager" aria-label="${T("works")}">
+      <a href="#work-${prev.id}"><span>${icon("left")} ${T("prev")}</span><strong>${esc(prev.title)}</strong></a>
+      <a href="#work-${next.id}"><span>${T("next")} ${icon("right")}</span><strong>${esc(next.title)}</strong></a>
+    </nav>
+    <section class="sec" aria-labelledby="rel-t">
+      ${secHead("—",T("related"),esc(c.name),"rel-t","#works",T("viewAll"))}
+      <div class="board rel">${rel.map(x=>card(x)).join("")}</div>
+    </section>
+  </div>`};
+}
+
+function vCollections(){
+  return {title:"PONCI — "+T("collections"),html:`
+  <div class="wrap">
+    <header class="page-head"><h1 class="fit"><span>${T("collections")}</span></h1>
+      <div class="page-strip"><p class="lab">${T("index")}</p><p class="intro">${T("colsIntro")}</p><p class="count">${T("colsN")(COLS.length)}</p></div>
+    </header>
+    <div class="idx" style="margin:clamp(36px,5vw,64px) 0 clamp(72px,10vw,140px)">${COLS.map((c,i)=>idxRow(c,i,true)).join("")}</div>
+  </div>`};
+}
+
+function vCollection(id){
+  const c=colById(id);if(!c)return vNotFound();
+  const ci=COLS.indexOf(c),list=worksIn(c.id),cov=byId(c.cover),others=COLS.filter(x=>x!==c);
+  return {title:`${c.name} — PONCI`,html:`
+  <div class="wrap">
+    <nav class="crumbs" aria-label="Breadcrumb"><a href="#collections">${T("collections")}</a><span aria-hidden="true">/</span><span aria-current="page">${esc(c.name)}</span></nav>
+    <header class="page-head"><h1 class="fit"><span>${esc(c.name)}</span></h1>
+      <div class="page-strip"><p class="lab">${T("collection")} ${ROMAN[ci]}</p><p class="intro">${state.lang==="en"?`<em>${esc(c.en)}.</em> `:""}${esc(L(c.d))}</p><p class="count">${c.year}<br>${T("count")(list.length)}<br>${esc(L(c.media))}</p></div>
+    </header>
+    <div class="plate">${slab(cov,"clamp(440px,76vh,860px)")}</div>
+    <section class="sec" aria-labelledby="cw-t" style="padding-bottom:0">
+      ${secHead("—",T("worksN"),T("count")(list.length),"cw-t","#works",T("inCatalogue"),` data-setcol="${c.id}"`)}
+      <div class="board rel">${list.map(a=>card(a)).join("")}</div>
+    </section>
+    <section class="sec" aria-labelledby="oc-t">
+      ${secHead("—",T("collections"),T("others"),"oc-t","#collections",T("allCols"))}
+      <div class="idx">${others.map(o=>idxRow(o,COLS.indexOf(o))).join("")}</div>
+    </section>
+  </div>`};
+}
+
+function vAbout(){
+  const S=T("aboutSecs"),plate=byId("sedimento");
+  const sec=(s,i)=>`<section class="about-sec" aria-labelledby="ab-${i}">
+      <div class="num"><b>${pad(i+1)}</b><p class="lab">${s.label}</p></div>
+      <div class="body"><h2 id="ab-${i}">${s.title}</h2><div class="cols"><p>${s.a}</p><p>${s.b}</p></div></div>
+    </section>`;
+  return {title:"PONCI — "+T("about"),html:`
+  <div class="wrap">
+    <header class="about-lead"><p class="lab">${T("aboutEyebrow")}</p><h1>${T("aboutLead")}</h1></header>
+    ${sec(S[0],0)}${sec(S[1],1)}
+    <figure class="plate">${slab(plate,"clamp(440px,80vh,880px)")}<figcaption class="lab">${T("plateCap")} — ${esc(plate.title)}, ${plate.year}. ${esc(L(plate.medium))}</figcaption></figure>
+    ${sec(S[2],2)}${sec(S[3],3)}
+  </div>
+  ${closingHTML(`<a class="btn" href="#works">${T("explore")} ${icon("right")}</a><a class="btn ghost" href="#acquisitions">${T("closeCta")} ${icon("right")}</a>`)}`};
+}
+
+const errs={
+  name:v=>v.trim().length<2?T("eName"):"",
+  email:v=>/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim())?"":T("eEmail"),
+  art:v=>v?"":T("eArt"),
+  msg:v=>v.trim().length<20?T("eMsg")(v.trim().length):""
+};
+function field(name,attrs){
+  return `<div class="field" id="f-${name}"><label for="i-${name}" class="lab">${T(name)}</label><input id="i-${name}" name="${name}" ${attrs} aria-describedby="e-${name}" required><p class="err" id="e-${name}"></p></div>`;
+}
+function vAcq(){
+  const f=state.form,done=state.done,side=byId(f.art)||byId("porta-para-o-mar-seco");
+  const opt=(v,l)=>`<option value="${v}"${f.art===v?" selected":""}>${l}</option>`;
+  const formHTML=done?`<div class="success" role="status" tabindex="-1" id="success">
+      <span class="mark">${icon("check")}</span>
+      <h2>${T("okTitle")}</h2>
+      <p>${T("okBody")}</p>
+      <dl class="spec"><dt>${T("ref")}</dt><dd>${done.ref}</dd><dt>${T("name")}</dt><dd>${esc(done.name)}</dd><dt>${T("email")}</dt><dd>${esc(done.email)}</dd><dt>${T("art")}</dt><dd>${done.art==="general"?T("general"):esc(byId(done.art)?.title||"")}</dd></dl>
+      <p class="notice">${icon("info")}<span>${T("okProto")}</span></p>
+      <button type="button" class="btn ghost" id="again">${T("another")} ${icon("right")}</button>
+    </div>`:`<form class="form" id="inq" novalidate aria-describedby="form-proto">
+      <div class="two">
+        ${field("name",`type="text" autocomplete="name" placeholder="${T("phName")}" value="${esc(f.name)}"`)}
+        ${field("email",`type="email" autocomplete="email" inputmode="email" placeholder="${T("phEmail")}" value="${esc(f.email)}"`)}
+      </div>
+      <div class="field" id="f-art"><label for="i-art" class="lab">${T("art")}</label>
+        <select id="i-art" name="art" aria-describedby="e-art" required>${opt("",T("choose"))}${opt("general",T("general"))}
+          ${COLS.map(c=>`<optgroup label="${esc(c.name)}">${worksIn(c.id).map(a=>opt(a.id,`${esc(a.title)}, ${a.year}`)).join("")}</optgroup>`).join("")}
+        </select><p class="err" id="e-art"></p></div>
+      <div class="field" id="f-msg"><label for="i-msg" class="lab"><span>${T("msg")}</span><span class="count" id="msg-count">${f.msg.trim().length} / 20+</span></label>
+        <textarea id="i-msg" name="msg" rows="5" placeholder="${T("phMsg")}" aria-describedby="e-msg" required>${esc(f.msg)}</textarea><p class="err" id="e-msg"></p></div>
+      <p class="form-status" id="form-status" role="alert"></p>
+      <div class="form-actions"><button class="btn" type="submit" id="submit">${T("submit")} ${icon("right")}</button><p id="form-proto">${T("formProto")}</p></div>
+    </form>`;
+  return {title:"PONCI — "+T("acq"),html:`
+  <div class="wrap">
+    <header class="page-head">
+      <p class="lab" style="color:var(--ink)">${T("acqEyebrow")}</p>
+      <h1 class="acq-title">${T("acqTitle")}</h1>
+      <div class="page-strip" style="margin-top:clamp(24px,3vw,40px)"><p class="lab">PONCI</p><p class="intro">${T("acqIntro")}</p><p class="count">ponci.art</p></div>
+    </header>
+    <ol class="steps">${T("steps").map((s,i)=>`<li><span class="n">${i+1}</span><h3>${s[0]}</h3><p>${s[1]}</p></li>`).join("")}</ol>
+    <section class="acq" aria-labelledby="form-t">
+      <div class="acq-aside"><p class="lab">${T("formEyebrow")}</p><h2 id="form-t">${T("formTitle")}</h2><p>${T("formAside")}</p><div aria-hidden="true">${slab(side,null,false)}</div></div>
+      <div class="acq-main" id="acq-main">${formHTML}</div>
+    </section>
+  </div>`,after:done?bindSuccess:bindForm};
+}
+function setErr(name){
+  const el=$("#i-"+name);if(!el)return "";
+  const m=errs[name](el.value);
+  $("#f-"+name).classList.toggle("bad",!!m);
+  el.setAttribute("aria-invalid",m?"true":"false");
+  $("#e-"+name).textContent=m;
+  return m;
+}
+function bindForm(){
+  const f=$("#inq");if(!f)return;
+  Object.keys(state.touched).forEach(n=>state.touched[n]&&setErr(n));
+  f.addEventListener("input",e=>{const el=e.target;if(!el.name)return;state.form[el.name]=el.value;
+    if(el.name==="msg")$("#msg-count").textContent=`${el.value.trim().length} / 20+`;
+    if(state.touched[el.name])setErr(el.name);
+    if(el.name==="art"){state.touched.art=true;setErr("art");}});
+  f.addEventListener("focusout",e=>{const n=e.target.name;if(n&&e.target.value!==""){state.touched[n]=true;setErr(n);}});
+  f.addEventListener("submit",e=>{
+    e.preventDefault();
+    const names=["name","email","art","msg"];names.forEach(n=>state.touched[n]=true);
+    const bad=names.filter(n=>setErr(n));
+    $("#form-status").textContent=bad.length?T("fix"):"";
+    if(bad.length){$("#i-"+bad[0]).focus();return;}
+    const b=$("#submit");b.disabled=true;b.innerHTML=T("sending");
+    setTimeout(()=>{
+      state.done={...state.form,ref:"PNC-INQ-"+(1000+Math.floor(Math.random()*9000))};
+      state.form={name:"",email:"",art:"",msg:""};state.touched={};
+      render(false);
+      const s=$("#success");if(s){s.scrollIntoView({block:"center"});s.focus({preventScroll:true});}
+    },900);
+  });
+}
+function bindSuccess(){$("#again")?.addEventListener("click",()=>{state.done=null;render(false);$("#i-name")?.focus();});}
+function vNotFound(){return {title:"PONCI",html:`<div class="wrap nf"><p class="lab">404</p><h1>${T("nfTitle")}</h1><a class="btn" href="#home">${T("nfBack")} ${icon("right")}</a></div>`};}
+
+/* ---------- Router ---------- */
+function view(){
+  const h=decodeURIComponent(location.hash.slice(1));
+  if(!h||h==="home")return vHome();
+  if(h==="works")return vWorks();
+  if(h.startsWith("work-"))return vDetail(h.slice(5));
+  if(h==="collections")return vCollections();
+  if(h.startsWith("collection-"))return vCollection(h.slice(11));
+  if(h==="about")return vAbout();
+  if(h==="acquisitions")return vAcq();
+  return vNotFound();
+}
+function render(fresh){
+  const y=window.scrollY;
+  renderChrome();
+  const v=view(),main=$("#main");
+  main.innerHTML=v.html;document.title=v.title;
+  if(fresh){main.classList.remove("enter");void main.offsetWidth;main.classList.add("enter");}
+  v.after&&v.after();
+  hydrate(main);fit();
+  if(fresh){window.scrollTo({top:0,behavior:"instant"});main.focus({preventScroll:true});}
+  else window.scrollTo({top:y,behavior:"instant"});
+}
+
+/* ---------- Events ---------- */
+document.addEventListener("click",e=>{
+  const t=e.target.closest("[data-lang],[data-f],[data-clear],[data-inquire],[data-setcol],#menu-btn,#menu-close,#menu a");
+  if(!t)return;
+  if(t.dataset.lang){state.lang=t.dataset.lang;try{localStorage.setItem("ponci-lang-v2",state.lang);}catch(err){}
+    const inMenu=!$("#menu").hidden;render(false);if(inMenu){$("#menu").hidden=false;$(`#menu [data-lang="${state.lang}"]`)?.focus();}else $(`#nav [data-lang="${state.lang}"]`)?.focus();return;}
+  if(t.dataset.f){state[t.dataset.f]=t.dataset.v;refreshResults();return;}
+  if(t.hasAttribute("data-clear")){state.cat="all";state.col="all";refreshResults();$('.chip[data-f="cat"]')?.focus();return;}
+  if(t.dataset.inquire){state.form.art=t.dataset.inquire;state.done=null;state.touched={};return;}
+  if(t.dataset.setcol){state.col=t.dataset.setcol;state.cat="all";return;}
+  if(t.id==="menu-btn"){openMenu();return;}
+  if(t.id==="menu-close"){closeMenu(true);return;}
+  if(t.matches("#menu a"))closeMenu(false);
+});
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeMenu(true);});
+$("#skip").addEventListener("click",()=>$("#main").focus());
+window.addEventListener("hashchange",()=>{closeMenu(false);render(true);});
+window.addEventListener("scroll",()=>$("#head").classList.toggle("scrolled",window.scrollY>8),{passive:true});
+window.addEventListener("resize",()=>{if(window.innerWidth>900)closeMenu(false);});
+
+render(true);
+})();
+</script>
+
+</body></html>

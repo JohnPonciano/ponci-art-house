@@ -131,12 +131,12 @@ create table public.kyc(
   doc_number text not null unique,
   birth_date date,
   phone text not null,
-  cep text not null, street text not null, number text not null, complement text not null default '',
-  district text not null, city text not null, uf text not null,
+  cep text, street text, number text, complement text not null default '',
+  district text, city text, uf text,
   occupation text not null default '',
   pep boolean not null default false,
   payout_info text not null default '',
-  completed_at timestamptz not null default now(),
+  completed_at timestamptz,                 -- preenchido quando o cadastro completo (endereço etc.) é salvo
   updated_at timestamptz not null default now()
 );
 alter table public.kyc enable row level security;
@@ -144,7 +144,7 @@ create policy "kyc: dono e admin" on public.kyc for select to authenticated
   using (user_id = (select auth.uid()) or (select public.is_admin()));
 
 create or replace function public.kyc_ok(p_uid uuid) returns boolean language sql stable security definer set search_path='' as
-$$ select exists(select 1 from public.kyc where user_id = p_uid) $$;
+$$ select exists(select 1 from public.kyc where user_id = p_uid and completed_at is not null) $$;
 
 create or replace function public.save_kyc(p jsonb) returns void language plpgsql security definer set search_path='' as $$
 declare
@@ -175,14 +175,14 @@ begin
     raise exception 'Endereço incompleto.' using errcode='P0001'; end if;
   if exists(select 1 from public.kyc where doc_number = v_doc and user_id <> auth.uid()) then
     raise exception 'Este documento já está cadastrado em outra conta.' using errcode='P0001'; end if;
-  insert into public.kyc(user_id, person_type, legal_name, doc_number, birth_date, phone, cep, street, number, complement, district, city, uf, occupation, pep, payout_info)
+  insert into public.kyc(user_id, person_type, legal_name, doc_number, birth_date, phone, cep, street, number, complement, district, city, uf, occupation, pep, payout_info, completed_at)
   values (auth.uid(), v_type, v_name, v_doc, case when v_type='pf' then v_birth end, v_phone, v_cep, trim(p->>'street'), trim(p->>'number'),
           trim(coalesce(p->>'complement','')), trim(p->>'district'), trim(p->>'city'), v_uf, left(trim(coalesce(p->>'occupation','')),120),
-          coalesce((p->>'pep')::boolean, false), left(trim(coalesce(p->>'payout_info','')),200))
+          coalesce((p->>'pep')::boolean, false), left(trim(coalesce(p->>'payout_info','')),200), now())
   on conflict (user_id) do update set person_type=excluded.person_type, legal_name=excluded.legal_name, doc_number=excluded.doc_number,
     birth_date=excluded.birth_date, phone=excluded.phone, cep=excluded.cep, street=excluded.street, number=excluded.number,
     complement=excluded.complement, district=excluded.district, city=excluded.city, uf=excluded.uf, occupation=excluded.occupation,
-    pep=excluded.pep, payout_info=excluded.payout_info, updated_at=now();
+    pep=excluded.pep, payout_info=excluded.payout_info, completed_at=now(), updated_at=now();
 end $$;
 
 create or replace function public._require_ready() returns void language plpgsql stable security definer set search_path='' as $$
@@ -205,12 +205,17 @@ create policy "obras: artista cadastra para curadoria" on public.works for inser
 create or replace function public.handle_new_user() returns trigger language plpgsql security definer set search_path='' as $$
 declare inv public.invites; v_code text := upper(trim(coalesce(new.raw_user_meta_data->>'invite_code','')));
   v_name text := trim(coalesce(new.raw_user_meta_data->>'full_name',''));
+  v_cpf text := regexp_replace(coalesce(new.raw_user_meta_data->>'cpf',''), '[^0-9]', '', 'g');
+  v_phone text := regexp_replace(coalesce(new.raw_user_meta_data->>'phone',''), '[^0-9]', '', 'g');
   v_docs uuid[];
 begin
   if exists(select 1 from public.admins where email = lower(coalesce(new.email,''))) then return new; end if;
   select * into inv from public.invites where code = v_code and uses_left > 0 for update;
   if inv.code is null then raise exception 'Convite inválido ou esgotado.' using errcode='P0001'; end if;
-  if length(v_name) < 2 then raise exception 'Informe seu nome.' using errcode='P0001'; end if;
+  if length(v_name) < 3 then raise exception 'Informe seu nome completo.' using errcode='P0001'; end if;
+  if not public._cpf_valid(v_cpf) then raise exception 'CPF inválido.' using errcode='P0001'; end if;
+  if v_phone !~ '^55[0-9]{10,11}$' then raise exception 'Telefone inválido.' using errcode='P0001'; end if;
+  if exists(select 1 from public.kyc where doc_number = v_cpf) then raise exception 'CPF já cadastrado.' using errcode='P0001'; end if;
   update public.invites set uses_left = uses_left - 1 where code = inv.code;
   insert into public.profiles(id, role, member_code, display_name, city, practice, status)
   values (new.id, inv.role,
@@ -219,6 +224,9 @@ begin
           coalesce(new.raw_user_meta_data->>'city',''), coalesce(new.raw_user_meta_data->>'practice',''),
           case when inv.auto_approve then 'active'::public.member_status else 'pending'::public.member_status end);
   insert into public.profile_private(id, full_name, email) values (new.id, v_name, coalesce(new.email,''));
+  insert into public.kyc(user_id, person_type, legal_name, doc_number, phone) values (new.id, 'pf', v_name, v_cpf, '+' || v_phone);
+  -- CPF e telefone ficam só na tabela privada, não nos metadados da conta (que viajam no token de sessão)
+  update auth.users set raw_user_meta_data = raw_user_meta_data - 'cpf' - 'phone' where id = new.id;
   begin
     select array_agg(x::uuid) into v_docs from jsonb_array_elements_text(coalesce(new.raw_user_meta_data->'accepted_documents','[]'::jsonb)) x;
   exception when others then v_docs := null; end;
@@ -604,6 +612,9 @@ begin
   end loop;
 end $$;
 
+create or replace function public.admin_email() returns boolean language sql stable security definer set search_path='' as
+$$ select exists(select 1 from public.admins where email = lower(coalesce((select auth.jwt())->>'email',''))) $$;
+
 -- ============ permissões ============
 revoke execute on function public._accept(uuid,text,uuid[],text,text,text), public._require_ready(), public._contract_text(uuid),
   public._create_contract(uuid,text,uuid,text,text,text), public._reserve(uuid,uuid,int,text,uuid,text,uuid,text,text), public._audit(),
@@ -613,3 +624,4 @@ revoke execute on function public.accept_documents(uuid[],text,text), public.sav
   public.admin_update_request(uuid,text,text), public.admin_publish_document(text,text,text,text), public.admin_compliance(int),
   public.pending_documents(), public.docs_ok(uuid), public.kyc_ok(uuid), public.can_see_order(uuid) from public, anon;
 grant execute on function public.current_documents() to anon, authenticated;
+revoke execute on function public.admin_email() from public, anon;

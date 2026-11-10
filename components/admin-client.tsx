@@ -63,7 +63,7 @@ export function PasswordForm() {
   return (
     <form className="form" noValidate onSubmit={(e) => { e.preventDefault();
       if (p1.length < 10) return setErr("Use pelo menos 10 caracteres."); if (p1 !== p2) return setErr("As senhas não conferem."); setErr("");
-      start(async () => { const { error } = await createClient().auth.updateUser({ password: p1 }); toast(error ? error.message : "Senha alterada."); if (!error) { setP1(""); setP2(""); } }); }}>
+      start(async () => { const { error } = await createClient().auth.updateUser({ password: p1 }); toast(error ? ((error as any).code === "same_password" ? "A nova senha precisa ser diferente da anterior." : error.message) : "Senha alterada."); if (!error) { setP1(""); setP2(""); } }); }}>
       <Field name="p1" label="Nova senha" type="password" autoComplete="new-password" value={p1} onChange={(e: any) => setP1(e.target.value)} aside="10+ caracteres" />
       <Field name="p2" label="Repita a nova senha" type="password" autoComplete="new-password" value={p2} onChange={(e: any) => setP2(e.target.value)} error={err} />
       <div className="form-actions"><button className="btn" type="submit" disabled={pending}>{pending ? "Salvando…" : <>Trocar senha <Icon n="check" /></>}</button></div>

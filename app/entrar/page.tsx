@@ -8,7 +8,7 @@ import { getAdmin, getMe } from "@/lib/supabase/server";
 
 export const metadata: Metadata = { title: "Entrar" };
 
-export default async function Entrar({ searchParams }: { searchParams: Promise<{ perfil?: string; next?: string }> }) {
+export default async function Entrar({ searchParams }: { searchParams: Promise<{ perfil?: string; next?: string; erro?: string }> }) {
   const sp = await searchParams;
   const perfil = sp.perfil === "colecionador" ? "colecionador" : "artista";
   if (await getAdmin()) redirect("/admin");
@@ -28,6 +28,7 @@ export default async function Entrar({ searchParams }: { searchParams: Promise<{
             <p className="lab">Entrar</p>
             <h2 id="gate-t">{A ? <>Ateliê <em>privado.</em></> : <>Acervo <em>fechado.</em></>}</h2>
             <p>{A ? "Entre com o e-mail e a senha da sua conta de artista membro." : "Entre com o e-mail e a senha da sua conta de colecionador."}</p>
+            {sp.erro === "link" && <p className="err-box" role="alert">O link do e-mail expirou ou foi aberto em outro navegador. Entre com sua senha ou peça um novo link em “Esqueci a senha”.</p>}
             <LoginForm perfil={perfil} next={sp.next} />
           </div>
         </section>

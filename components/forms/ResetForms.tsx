@@ -33,7 +33,15 @@ export function NewPasswordForm() {
       if (p1.length < 8) return setErr("Use pelo menos 8 caracteres."); if (p1 !== p2) return setErr("As senhas não conferem.");
       setErr(""); setBusy(true);
       const { error } = await createClient().auth.updateUser({ password: p1 });
-      if (error) { setBusy(false); setErr(error.message); return; }
+      if (error) {
+        setBusy(false);
+        const code = (error as any).code;
+        setErr(code === "same_password" || /different from the old/i.test(error.message) ? "A nova senha precisa ser diferente da anterior."
+          : code === "weak_password" ? "Senha fraca. Use mais caracteres, misturando letras e números."
+          : /session/i.test(error.message) ? "Sua sessão de redefinição expirou. Peça um novo link."
+          : error.message);
+        return;
+      }
       router.replace("/entrar/redirecionar"); router.refresh();
     }}>
       <Field name="p1" label="Nova senha" type="password" autoComplete="new-password" aside="8+ caracteres" value={p1} onChange={(e: any) => setP1(e.target.value)} />

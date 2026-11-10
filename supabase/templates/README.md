@@ -15,7 +15,11 @@ e o conteúdo do arquivo (aba "Source").
 | Reauthentication | `reauthentication.html` | Código de verificação · PONCI |
 | Invite user | `invite.html` | Você foi convidado · PONCI |
 
-Variáveis usadas: `{{ .ConfirmationURL }}`, `{{ .Token }}`, `{{ .SiteURL }}`, `{{ .Email }}`,
+Os links apontam para `{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=…`: o próprio site valida o
+token no servidor, então o link funciona em qualquer navegador ou aparelho (inclusive no app Mail do iPhone),
+e uma tela de "Continuar" impede que filtros de e-mail consumam o token ao pré-abrir o link.
+
+Variáveis usadas: `{{ .TokenHash }}`, `{{ .Token }}`, `{{ .SiteURL }}`, `{{ .Email }}`,
 `{{ .NewEmail }}` e `{{ .Data.full_name }}` (nome informado no cadastro).
 
 Requisitos em **Authentication → URL Configuration**:

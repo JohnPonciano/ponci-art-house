@@ -93,6 +93,7 @@ function layout({ title, preheader, n, eyebrow, ref, heading, intro, body, cta, 
 }
 
 const fallback = (url) => `<p style="margin:18px 0 0;font-family:${MONO};font-size:11px;line-height:1.6;color:${C.muted};">Se o bot&atilde;o n&atilde;o abrir, copie este endere&ccedil;o no navegador:<br><a href="${url}" style="color:${C.ink};word-break:break-all;">${url}</a></p>`;
+const link = (type, next = "") => `{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&amp;type=${type}${next ? `&amp;next=${next}` : ""}`;
 const hello = `{{ if .Data.full_name }}Ol&aacute;, {{ .Data.full_name }}.{{ else }}Ol&aacute;.{{ end }}`;
 
 const T = {
@@ -104,7 +105,7 @@ const T = {
       heading: `Confirme seu ${em("e-mail.")}`,
       intro: `${hello} Seu convite foi aceito.`,
       body: "Para ativar sua conta de membro da PONCI, confirme que este endere&ccedil;o &eacute; seu. Depois disso voc&ecirc; entra direto na sua &aacute;rea da rede.",
-      cta: button("{{ .ConfirmationURL }}", "Confirmar e-mail"), after: fallback("{{ .ConfirmationURL }}"),
+      cta: button(link("email"), "Confirmar e-mail"), after: fallback(link("email")),
       note: "O link vale por 24 horas. Se voc&ecirc; n&atilde;o pediu acesso &agrave; PONCI, ignore esta mensagem: nenhuma conta ser&aacute; ativada.",
     }),
   },
@@ -116,7 +117,7 @@ const T = {
       heading: `Nova ${em("senha.")}`,
       intro: "Recebemos um pedido para redefinir a sua senha.",
       body: "Use o bot&atilde;o abaixo para escolher uma nova senha. Por seguran&ccedil;a, o link funciona uma &uacute;nica vez.",
-      cta: button("{{ .ConfirmationURL }}", "Criar nova senha"), after: fallback("{{ .ConfirmationURL }}"),
+      cta: button(link("recovery", "/senha/nova"), "Criar nova senha"), after: fallback(link("recovery", "/senha/nova")),
       note: "Se n&atilde;o foi voc&ecirc;, ignore este e-mail. Sua senha atual continua valendo e ningu&eacute;m acessa sua conta sem ela.",
     }),
   },
@@ -128,7 +129,7 @@ const T = {
       heading: `Entrar ${em("na rede.")}`,
       intro: `${hello}`,
       body: "Aqui est&aacute; o seu link de acesso &agrave; PONCI. Ele entra direto na sua conta, sem senha.",
-      cta: button("{{ .ConfirmationURL }}", "Entrar na PONCI"), after: fallback("{{ .ConfirmationURL }}"),
+      cta: button(link("magiclink"), "Entrar na PONCI"), after: fallback(link("magiclink")),
       note: "O link funciona uma vez e expira em pouco tempo. Se voc&ecirc; n&atilde;o pediu, ignore.",
     }),
   },
@@ -140,7 +141,7 @@ const T = {
       heading: `Novo ${em("endere&ccedil;o.")}`,
       intro: "Voc&ecirc; pediu para trocar o e-mail da sua conta.",
       body: `De <b style="color:${C.ink};">{{ .Email }}</b> para <b style="color:${C.ink};">{{ .NewEmail }}</b>. Confirme para concluir a troca.`,
-      cta: button("{{ .ConfirmationURL }}", "Confirmar troca"), after: fallback("{{ .ConfirmationURL }}"),
+      cta: button(link("email_change"), "Confirmar troca"), after: fallback(link("email_change")),
       note: "Se voc&ecirc; n&atilde;o pediu esta troca, ignore e fale com a curadoria da PONCI.",
     }),
   },
@@ -164,7 +165,7 @@ const T = {
       heading: `Voc&ecirc; foi ${em("convidado.")}`,
       intro: "A PONCI &eacute; uma rede fechada de artistas e colecionadores.",
       body: "Voc&ecirc; recebeu um convite para fazer parte dela. Aceite para criar sua senha e entrar na rede.",
-      cta: button("{{ .ConfirmationURL }}", "Aceitar convite"), after: fallback("{{ .ConfirmationURL }}"),
+      cta: button(link("invite", "/senha/nova"), "Aceitar convite"), after: fallback(link("invite", "/senha/nova")),
       note: "O convite &eacute; pessoal. Se voc&ecirc; n&atilde;o esperava esta mensagem, ignore.",
     }),
   },

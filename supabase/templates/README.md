@@ -13,6 +13,7 @@ e o conteúdo do arquivo (aba "Source").
 | Magic link | `magic_link.html` | Seu link de acesso · PONCI |
 | Change email address | `email_change.html` | Confirme o novo e-mail · PONCI |
 | Reauthentication | `reauthentication.html` | Código de verificação · PONCI |
+| Invite user | `invite.html` | Você foi convidado · PONCI |
 
 Variáveis usadas: `{{ .ConfirmationURL }}`, `{{ .Token }}`, `{{ .SiteURL }}`, `{{ .Email }}`,
 `{{ .NewEmail }}` e `{{ .Data.full_name }}` (nome informado no cadastro).
@@ -20,3 +21,10 @@ Variáveis usadas: `{{ .ConfirmationURL }}`, `{{ .Token }}`, `{{ .SiteURL }}`, `
 Requisitos em **Authentication → URL Configuration**:
 - Site URL: `https://ponci.art`
 - Redirect URLs: `https://ponci.art/**` (cobre `/auth/callback` e `/auth/callback?next=/senha/nova`)
+
+## Convite da PONCI (fora do Supabase Auth)
+
+`convite-ponci.html` é o e-mail do código de convite gerado quando o admin aprova um pedido.
+Usa os placeholders `{{nome}}`, `{{codigo}}`, `{{perfil}}` e `{{link}}`, no formato dos templates
+dinâmicos do SendGrid (Email API → Dynamic Templates). O "Invite user" do Supabase existe só para
+manter o painel consistente: a rede não usa o convite nativo, porque o cadastro exige código.

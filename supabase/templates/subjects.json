@@ -3,5 +3,6 @@
   "recovery": "Redefinir senha · PONCI",
   "magic_link": "Seu link de acesso · PONCI",
   "email_change": "Confirme o novo e-mail · PONCI",
-  "reauthentication": "Código de verificação · PONCI"
+  "reauthentication": "Código de verificação · PONCI",
+  "invite": "Você foi convidado · PONCI"
 }

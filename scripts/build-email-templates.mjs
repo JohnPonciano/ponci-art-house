@@ -19,9 +19,9 @@ function button(href, label) {
   </td></tr></table>`;
 }
 
-function code(token) {
+function code(token, { size = 30, spacing = 10 } = {}) {
   return `<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:26px 0 8px;">
-  <tr><td bgcolor="${C.ink}" style="background:${C.ink};padding:16px 22px;font-family:${MONO};font-size:30px;font-weight:700;letter-spacing:10px;color:${C.paper};">${token}</td></tr></table>`;
+  <tr><td bgcolor="${C.ink}" style="background:${C.ink};padding:16px 22px;font-family:${MONO};font-size:${size}px;font-weight:700;letter-spacing:${spacing}px;white-space:nowrap;color:${C.paper};">${token}</td></tr></table>`;
 }
 
 function layout({ title, preheader, n, eyebrow, ref, heading, intro, body, cta, after, note }) {
@@ -156,9 +156,35 @@ const T = {
       note: "O c&oacute;digo expira em poucos minutos. Nunca o compartilhe: a PONCI n&atilde;o pede este c&oacute;digo por telefone ou mensagem.",
     }),
   },
+  invite: {
+    subject: "Você foi convidado · PONCI",
+    html: layout({
+      title: "Convite PONCI", preheader: "Você recebeu um convite para a rede privada PONCI.",
+      n: "00", eyebrow: "Convite", ref: "Rede privada",
+      heading: `Voc&ecirc; foi ${em("convidado.")}`,
+      intro: "A PONCI &eacute; uma rede fechada de artistas e colecionadores.",
+      body: "Voc&ecirc; recebeu um convite para fazer parte dela. Aceite para criar sua senha e entrar na rede.",
+      cta: button("{{ .ConfirmationURL }}", "Aceitar convite"), after: fallback("{{ .ConfirmationURL }}"),
+      note: "O convite &eacute; pessoal. Se voc&ecirc; n&atilde;o esperava esta mensagem, ignore.",
+    }),
+  },
 };
 
+// Convite da PONCI (código gerado na aprovação de um pedido). Não é template do Supabase Auth:
+// placeholders {{nome}}, {{codigo}}, {{perfil}} e {{link}}, compatíveis com templates dinâmicos do SendGrid.
+const convite = layout({
+  title: "Seu convite PONCI", preheader: "Seu acesso à PONCI foi aprovado. Use o código para criar sua conta.",
+  n: "00", eyebrow: "Convite aprovado", ref: "{{perfil}}",
+  heading: `Seu convite ${em("chegou.")}`,
+  intro: "Ol&aacute;, {{nome}}. A curadoria aprovou o seu acesso.",
+  body: "A PONCI &eacute; uma rede fechada de artistas e colecionadores. Este &eacute; o seu c&oacute;digo pessoal de convite. Use-o para criar sua conta de membro.",
+  cta: code("{{codigo}}", { size: 20, spacing: 2 }) + button("{{link}}", "Criar minha conta"),
+  after: fallback("{{link}}"),
+  note: "O c&oacute;digo &eacute; pessoal e vale para um &uacute;nico cadastro. N&atilde;o o compartilhe.",
+}).replace('href="{{ .SiteURL }}"', 'href="https://ponci.art"');
+
 mkdirSync("supabase/templates", { recursive: true });
+writeFileSync("supabase/templates/convite-ponci.html", convite);
 const subjects = {};
 for (const [k, v] of Object.entries(T)) { writeFileSync(`supabase/templates/${k}.html`, v.html); subjects[k] = v.subject; }
 writeFileSync("supabase/templates/subjects.json", JSON.stringify(subjects, null, 2) + "\n");

@@ -3,7 +3,7 @@ import { PublicShell } from "@/components/Shells";
 import { PageHead, Slab, Notice } from "@/components/ui";
 import { SignupForm } from "@/components/forms/SignupForm";
 import { DEMO_ART } from "@/lib/demoArt";
-import { currentDocs } from "@/lib/supabase/server";
+import { currentDocs, createClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = { title: "Aceitar convite" };
 
@@ -11,6 +11,7 @@ export const dynamic = "force-dynamic";
 
 export default async function Cadastro({ searchParams }: { searchParams: Promise<{ perfil?: string; codigo?: string }> }) {
   const sp = await searchParams;
+  const prefill = sp.codigo ? ((await (await createClient()).rpc("invite_prefill", { p_code: sp.codigo })).data as any) : null;
   const perfil = sp.perfil === "colecionador" ? "colecionador" : "artista";
   return (
     <PublicShell>
@@ -20,10 +21,10 @@ export default async function Cadastro({ searchParams }: { searchParams: Promise
           <div className="gate-art" aria-hidden="true"><Slab a={DEMO_ART.convite} label="Na rede" /></div>
           <div className="gate-main">
             <p className="lab">Cadastro</p>
-            <h2 id="cad-t">Aceite o seu <em>convite.</em></h2>
-            <p>Cada código tem um número limitado de usos e é ligado a um perfil.</p>
-            <SignupForm perfil={perfil} code={sp.codigo} docIds={(await currentDocs()).map((d) => d.id)} />
-            <Notice>Para testar: <b>PONCI-ARTISTA-2026</b> (artista) ou <b>PONCI-COLECAO-2026</b> (colecionador). Contas criadas com esses códigos ficam aguardando a aprovação da curadoria.</Notice>
+            <h2 id="cad-t">{prefill?.name ? <>Olá, {String(prefill.name).split(" ")[0]}. <em>Falta pouco.</em></> : <>Aceite o seu <em>convite.</em></>}</h2>
+            <p>{prefill?.name ? "Seu pedido foi aprovado. Já temos seus dados; só precisamos do CPF, do celular e de uma senha." : "Cada código tem um número limitado de usos e é ligado a um perfil."}</p>
+            <SignupForm perfil={prefill?.role === "buyer" ? "colecionador" : prefill?.role === "artist" ? "artista" : perfil} code={prefill ? sp.codigo : ""} prefill={prefill} docIds={(await currentDocs()).map((d) => d.id)} />
+            {!prefill?.name && <Notice>Para testar: <b>PONCI-ARTISTA-2026</b> (artista) ou <b>PONCI-COLECAO-2026</b> (colecionador). Contas criadas com esses códigos ficam aguardando a aprovação da curadoria.</Notice>}
           </div>
         </section>
       </div>

@@ -2,7 +2,7 @@ name: Deploy (Cloudflare Workers)
 
 on:
   push:
-    branches: [main, claude/great-franklin-797oje]
+    branches: [main]
   workflow_dispatch:
 
 concurrency:

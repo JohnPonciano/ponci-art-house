@@ -19,7 +19,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     { href: "/admin/curadoria", label: "Curadoria", badge: c.review || undefined }, { href: "/admin/solicitacoes", label: "Solicitações", badge: c.sol || undefined },
     { href: "/admin/compliance", label: "Compliance" },
   ];
-  const sub = [["/admin", "Painel"], ["/admin/documentos", "Documentos"], ["/admin/auditoria", "Auditoria"], ["/admin/convites", "Convites"], ["/seguranca", "Segurança"], ["/admin/conta", "Senha"]];
+  const sub = [["/admin", "Painel"], ["/admin/diario", "Diário"], ["/admin/documentos", "Documentos"], ["/admin/auditoria", "Auditoria"], ["/admin/convites", "Convites"], ["/seguranca", "Segurança"], ["/admin/conta", "Senha"]];
   return (
     <>
       <Header nav={nav} home="/admin" tag="Painel admin" user={{ name: "Admin", role: admin.email }} band={["Painel administrativo · PONCI", admin.email]} />

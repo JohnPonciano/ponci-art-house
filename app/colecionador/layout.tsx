@@ -17,7 +17,7 @@ export default async function ColecionadorLayout({ children }: { children: React
   const [ps, favs] = await Promise.all([proposalsForBuyer(me.id), favoriteIds(me.id)]);
   const c = ps.filter((p) => p.status === "countered").length;
   const nav = [
-    { href: "/colecionador", label: "Acervo" }, { href: "/colecionador/favoritos", label: "Favoritos", badge: favs.length || undefined },
+    { href: "/colecionador", label: "Acervo" }, { href: "/colecionador/diario", label: "Diário" }, { href: "/colecionador/favoritos", label: "Favoritos", badge: favs.length || undefined },
     { href: "/colecionador/propostas", label: "Propostas", badge: c || undefined }, { href: "/colecionador/aquisicoes", label: "Aquisições" },
   ];
   return <AreaShell me={me} nav={[...nav, { href: "/conta", label: "Conta" }]} tag="Área do colecionador">{!(await myKyc())?.completed_at && <KycBanner />}{children}</AreaShell>;

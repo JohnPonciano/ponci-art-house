@@ -25,7 +25,7 @@ export default async function ObraColecionador({ params }: { params: Promise<{ s
   const rel = [...cat.filter((x) => x.artist_id === a.artist_id && x.id !== a.id), ...cat.filter((x) => x.artist_id !== a.artist_id && x.cat === a.cat && x.id !== a.id)].slice(0, 3);
   return (
     <div className="wrap">
-      <nav className="crumbs" aria-label="Trilha"><Link href="/colecionador">Acervo</Link><span aria-hidden="true">/</span><Link href={`/colecionador?artist=${a.artist_id}`}>{ar.display_name}</Link><span aria-hidden="true">/</span><span aria-current="page">{a.title}</span></nav>
+      <nav className="crumbs" aria-label="Trilha"><Link href="/colecionador">Acervo</Link><span aria-hidden="true">/</span><Link href={`/colecionador/artistas/${ar.member_code}`}>{ar.display_name}</Link><span aria-hidden="true">/</span><span aria-current="page">{a.title}</span></nav>
       <article className="detail">
         <div className="detail-media"><Slab a={a} label={a.status === "published" ? "Disponível na rede" : STATUS[a.status][0]} /></div>
         <div className="detail-info">
@@ -47,7 +47,7 @@ export default async function ObraColecionador({ params }: { params: Promise<{ s
                 <ActButton action="reserveWork" args={[a.id]} ok="Obra reservada para você." go="/colecionador/aquisicoes"
                   confirm={<>Reservar <b>{a.title}</b> por {brl(a.price)}? A obra sai da vitrine e você tem 48 h para concluir o pagamento em custódia.</>}>Reservar pelo preço <Icon n="right" /></ActButton>
               </div>
-              <div className="offer">
+              <div className="offer" id="oferta">
                 <p className="lab" style={{ color: "var(--ink)" }}>{mine ? `Negociação ${mine.ref} · ${PSTATUS[mine.status][0]}` : "Ou faça uma proposta"}</p>
                 {mine && <ul className="thread">{mine.events.map((h) => <li key={h.id}><span>{h.actor === "artist" ? firstName(ar.display_name) : h.actor === "system" ? "Sistema" : "Você"}<br />{dateBR(h.created_at)}</span>
                   <div>{h.amount != null && <><b>{brl(h.amount)}</b> · </>}<span className="lab">{EVENT_LABEL[h.kind]}</span>{h.msg && <p>{h.msg}</p>}</div></li>)}</ul>}

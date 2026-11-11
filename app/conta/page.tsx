@@ -40,6 +40,9 @@ export default async function Conta() {
           </div>
         </section>
 
+        {A && <section className="sub-sec" aria-labelledby="pp-t">
+          <SecHead n="—" eyebrow="Perfil público" title={<>Como os colecionadores <em>veem você</em></>} id="pp-t" href="/artista/perfil" linkText="Editar perfil" />
+        </section>}
         <section className="sub-sec" aria-labelledby="sg-t">
           <SecHead n="02" eyebrow="Segurança" title={mfaOn ? <>Verificação em <em>duas etapas</em></> : <>Proteja sua <em>conta</em></>} id="sg-t" href="/seguranca" linkText={mfaOn ? "Gerenciar" : "Ativar agora"} />
           <div style={{ paddingTop: 16 }}><Notice icon={mfaOn ? "check" : "info"}>{mfaOn

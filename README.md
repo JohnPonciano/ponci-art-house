@@ -68,3 +68,13 @@ Acesso só para e-mails da tabela `public.admins` (hoje: o do dono da rede), com
 - **Auditoria**: trilha imutável de alterações (dados sensíveis omitidos).
 - **MFA (TOTP)**: opcional para membros (`/seguranca`), obrigatório para admin (o banco só aceita ações de
   admin em sessão `aal2`).
+
+## Diário de ateliê
+
+- Artistas publicam texto e até 6 fotos (`/artista/diario`), opcionalmente ligados a uma obra. Obras aprovadas
+  na curadoria entram sozinhas como "Obra nova".
+- Colecionadores seguem artistas e leem um feed cronológico, sem algoritmo e com fim ("Você está em dia"):
+  `/colecionador/diario` (Seguindo · Toda a rede · Salvos) e o perfil de cada artista em `/colecionador/artistas/[código]`.
+- "Tenho interesse" avisa a artista (pelo código do membro) e, se houver obra ligada, leva para reservar ou propor.
+- Sem curtidas nem contagens públicas: seguidores, salvamentos e interesses são números privados da artista.
+- Denúncias e remoção com motivo em `/admin/diario`.

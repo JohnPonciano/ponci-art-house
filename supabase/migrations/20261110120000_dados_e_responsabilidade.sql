@@ -196,10 +196,8 @@ begin
 end $$;
 
 -- artista só envia obra com cadastro e termos em dia
-drop policy "obras: artista cadastra para curadoria" on public.works;
-create policy "obras: artista cadastra para curadoria" on public.works for insert to authenticated
-  with check (artist_id = (select auth.uid()) and status = 'review' and (select public.my_role()) = 'artist'
-    and (select public.is_member()) and (select public.kyc_ok((select auth.uid()))) and (select public.docs_ok((select auth.uid()))));
+create policy "obras: só com cadastro e termos em dia" on public.works as restrictive for insert to authenticated
+  with check ((select public.is_member()) and (select public.kyc_ok((select auth.uid()))) and (select public.docs_ok((select auth.uid()))));
 
 -- ============ cadastro: aceite obrigatório ============
 create or replace function public.handle_new_user() returns trigger language plpgsql security definer set search_path='' as $$
@@ -352,9 +350,10 @@ begin
 end $$;
 
 -- reserva: agora gera o contrato e registra a assinatura de quem fechou
-drop function public.reserve_work(uuid);
-drop function public.respond_proposal(uuid, text, int, text);
-drop function public._reserve(uuid, uuid, int, text, uuid);
+-- versão antiga de _reserve (5 argumentos) não é mais usada
+create or replace function public._reserve(p_work uuid, p_buyer uuid, p_amount int, p_via text, p_proposal uuid)
+returns text language plpgsql security definer set search_path='' as
+$$ begin raise exception 'Função obsoleta.' using errcode='P0001'; end $$;
 
 create or replace function public._reserve(p_work uuid, p_buyer uuid, p_amount int, p_via text, p_proposal uuid, p_party text, p_signer uuid, p_ip text, p_ua text)
 returns text language plpgsql security definer set search_path='' as $$
@@ -372,7 +371,7 @@ begin
   return v_ref;
 end $$;
 
-create or replace function public.reserve_work(p_work uuid, p_ip text default null, p_ua text default null) returns text
+create or replace function public.reserve_work(p_work uuid, p_ip text, p_ua text) returns text
 language plpgsql security definer set search_path='' as $$
 declare v_price int;
 begin
@@ -402,7 +401,7 @@ begin
   return p.ref;
 end $$;
 
-create or replace function public.respond_proposal(p_proposal uuid, p_kind text, p_amount int default null, p_msg text default '', p_ip text default null, p_ua text default null)
+create or replace function public.respond_proposal(p_proposal uuid, p_kind text, p_amount int, p_msg text, p_ip text, p_ua text)
 returns text language plpgsql security definer set search_path='' as $$
 declare p public.proposals; w public.works; me uuid := auth.uid(); v_actor text; v_cur int; v_ref text;
 begin
@@ -442,6 +441,13 @@ begin
     return p.ref;
   end if;
 end $$;
+
+-- versões antigas (sem IP/navegador) passam a chamar as novas
+create or replace function public.reserve_work(p_work uuid) returns text language sql security definer set search_path='' as
+$$ select public.reserve_work(p_work, null::text, null::text) $$;
+create or replace function public.respond_proposal(p_proposal uuid, p_kind text, p_amount int default null, p_msg text default '') returns text
+language sql security definer set search_path='' as
+$$ select public.respond_proposal(p_proposal, p_kind, p_amount, p_msg, null::text, null::text) $$;
 
 create or replace function public.sign_contract(p_contract uuid, p_ip text default null, p_ua text default null) returns void
 language plpgsql security definer set search_path='' as $$
@@ -617,7 +623,8 @@ $$ select exists(select 1 from public.admins where email = lower(coalesce((selec
 
 -- ============ permissões ============
 revoke execute on function public._accept(uuid,text,uuid[],text,text,text), public._require_ready(), public._contract_text(uuid),
-  public._create_contract(uuid,text,uuid,text,text,text), public._reserve(uuid,uuid,int,text,uuid,text,uuid,text,text), public._audit(),
+  public._create_contract(uuid,text,uuid,text,text,text), public._reserve(uuid,uuid,int,text,uuid,text,uuid,text,text),
+  public._reserve(uuid,uuid,int,text,uuid), public._audit(),
   public._hash_body(), public._immutable() from public, anon, authenticated;
 revoke execute on function public.accept_documents(uuid[],text,text), public.save_kyc(jsonb), public.reserve_work(uuid,text,text),
   public.respond_proposal(uuid,text,int,text,text,text), public.sign_contract(uuid,text,text), public.create_request(text,text,uuid),

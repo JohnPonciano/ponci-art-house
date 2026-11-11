@@ -16,8 +16,11 @@ export type Proposal = {
   id: string; ref: string; status: string; created_at: string; work: Work;
   buyer?: { member_code: string; city: string }; events: PEvent[]; current: number; last: PEvent;
 };
+export type Signature = { party: string; name: string; signed_at: string; method: string };
+export type OrderContract = { id: string; ref: string; sha256: string; signatures: Signature[] };
 export type Order = {
-  id: string; ref: string; amount: number; via: string; stage: number; created_at: string; work: Work;
+  id: string; ref: string; amount: number; via: string; stage: number; created_at: string; delivered_at: string | null; work: Work;
+  contract?: OrderContract | null;
   buyer?: { member_code: string; city: string; full_name?: string };
 };
 
@@ -66,11 +69,11 @@ export async function proposalsForBuyer(buyerId: string): Promise<Proposal[]> {
 }
 
 const O_SEL = (extraWork = "") =>
-  `id,ref,amount,via,stage,created_at,work:works!inner(${WORK_COLS}${extraWork}),buyer:profiles!orders_buyer_id_fkey(member_code,city,private:profile_private(full_name))`;
+  `id,ref,amount,via,stage,created_at,delivered_at,work:works!inner(${WORK_COLS}${extraWork}),buyer:profiles!orders_buyer_id_fkey(member_code,city,private:profile_private(full_name)),contract:contracts(id,ref,sha256,signatures:contract_signatures(party,name,signed_at,method))`;
 function normOrder(o: any): Order {
   const work = one(o.work); if (work) work.artist = one(work.artist);
   const b = one(o.buyer);
-  return { ...o, work, buyer: b ? { member_code: b.member_code, city: b.city, full_name: one(b.private)?.full_name } : undefined };
+  return { ...o, work, contract: one(o.contract) || null, buyer: b ? { member_code: b.member_code, city: b.city, full_name: one(b.private)?.full_name } : undefined };
 }
 export async function ordersForArtist(artistId: string): Promise<Order[]> {
   const sb = await createClient();

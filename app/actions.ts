@@ -2,6 +2,7 @@
 import { revalidatePath } from "next/cache";
 import { createClient, getMe } from "@/lib/supabase/server";
 import { slugify } from "@/lib/format";
+import { reqMeta } from "@/lib/reqmeta";
 
 export type Result<T = unknown> = { ok: boolean; data?: T; error?: string };
 const fail = (e: any): Result => ({ ok: false, error: e?.message || "Algo deu errado. Tente de novo." });
@@ -30,7 +31,10 @@ export async function requestAccess(v: Record<string, string>): Promise<Result<{
 /* ---------- Colecionador ---------- */
 export const makeProposal = async (workId: string, amount: number, msg: string) =>
   rpc("make_proposal", { p_work: workId, p_amount: Math.round(amount), p_msg: msg || "" });
-export const reserveWork = async (workId: string) => rpc("reserve_work", { p_work: workId });
+export async function reserveWork(workId: string) {
+  const m = await reqMeta();
+  return rpc("reserve_work", { p_work: workId, p_ip: m.ip, p_ua: m.ua });
+}
 export const advanceOrder = async (orderId: string) => rpc("advance_order", { p_order: orderId });
 export async function toggleFavorite(workId: string, on: boolean): Promise<Result> {
   const me = await getMe(); if (!me) return { ok: false, error: "Entre novamente." };
@@ -42,8 +46,10 @@ export async function toggleFavorite(workId: string, on: boolean): Promise<Resul
 }
 
 /* ---------- Propostas (ambos os lados) ---------- */
-export const respondProposal = async (id: string, kind: string, amount?: number, msg?: string) =>
-  rpc("respond_proposal", { p_proposal: id, p_kind: kind, p_amount: amount ?? null, p_msg: msg || "" });
+export async function respondProposal(id: string, kind: string, amount?: number, msg?: string) {
+  const m = await reqMeta();
+  return rpc("respond_proposal", { p_proposal: id, p_kind: kind, p_amount: amount ?? null, p_msg: msg || "", p_ip: m.ip, p_ua: m.ua });
+}
 
 /* ---------- Artista ---------- */
 export const updatePrice = async (workId: string, price: number) => rpc("update_work_price", { p_work: workId, p_price: Math.round(price) });
@@ -81,4 +87,20 @@ export async function updateProfile(v: { display_name?: string; city: string; pr
   if (a.error) return fail(a.error);
   const b = await sb.from("profile_private").update({ full_name: v.full_name.trim() }).eq("id", me.id);
   return b.error ? fail(b.error) : done();
+}
+
+/* ---------- Responsabilidade: aceites, cadastro, contratos, solicitações ---------- */
+export async function acceptDocuments(ids: string[]): Promise<Result<number>> {
+  const m = await reqMeta();
+  return rpc("accept_documents", { p_docs: ids, p_ip: m.ip, p_ua: m.ua });
+}
+export async function saveKyc(v: Record<string, unknown>): Promise<Result> {
+  return rpc("save_kyc", { p: v });
+}
+export async function signContract(contractId: string): Promise<Result> {
+  const m = await reqMeta();
+  return rpc("sign_contract", { p_contract: contractId, p_ip: m.ip, p_ua: m.ua });
+}
+export async function createRequest(kind: string, details: string, orderId?: string): Promise<Result<string>> {
+  return rpc("create_request", { p_kind: kind, p_details: details, p_order: orderId ?? null });
 }

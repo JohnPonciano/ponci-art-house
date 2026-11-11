@@ -5,7 +5,8 @@ import { Icon } from "./Icon";
 import { Slab, Tag, Empty } from "./ui";
 import { brl, catNo, dateBR, dims, pad, STAGES, COMMISSION } from "@/lib/format";
 import type { Order, Proposal, Work } from "@/lib/data";
-import { ActButton, ArtistProposalActions, BuyerProposalActions, FavButton } from "./area-client";
+import { ActButton, ArtistProposalActions, BuyerProposalActions, FavButton, SignButton } from "./area-client";
+import { RequestForm } from "./forms/RequestForm";
 
 export function WorkCard({ a, href, foot, sub, fav }: { a: Work; href: string; foot: ReactNode; sub?: string; fav?: boolean | null }) {
   return (
@@ -78,11 +79,35 @@ export function OrderBlock({ o, side }: { o: Order; side: "artist" | "buyer" }) 
         </div>
         <ol className="track">{STAGES.map((s, i) => (
           <li key={s[0]} className={`${i < o.stage || o.stage === 3 ? "done" : ""} ${i === o.stage && o.stage < 3 ? "now" : ""}`}><i>{pad(i + 1)}</i><b>{s[0]}</b><span className="hint" style={{ color: "inherit", opacity: 0.8 }}>{s[1]}</span></li>))}</ol>
+        <ContractStrip o={o} side={side} />
         {side === "buyer" && <div className="acts">{o.stage < 3 ? <>
+          {o.stage === 0 && !bothSigned(o) ? <span className="hint">O pagamento libera depois que as duas partes assinarem o contrato.</span> : <>
           <ActButton action="advanceOrder" args={[o.id]} ok="Etapa atualizada." className="btn sm">{["Pagar em custódia", "Confirmar envio", "Confirmar recebimento"][o.stage]} <Icon n="right" /></ActButton>
-          <span className="hint">Simulação do protótipo: avança uma etapa.</span></>
+          <span className="hint">Simulação do protótipo: avança uma etapa.</span></>}</>
           : <><span className="tag t-accepted">Certificado PNC-CA-{o.ref.slice(4)}</span><span className="hint">Procedência registrada na rede.</span></>}</div>}
+        {side === "buyer" && o.stage === 3 && o.delivered_at && withinWithdrawal(o.delivered_at) && <details className="acts" style={{ display: "block" }}>
+          <summary className="linkbtn" style={{ display: "inline-block", cursor: "pointer" }}>Desistir da compra (até {dateBR(new Date(o.delivered_at).getTime() + 7 * 864e5)})</summary>
+          <div style={{ marginTop: 12 }}><RequestForm orderId={o.id} kinds={["arrependimento", "problema"]} compact /></div></details>}
+        {side === "artist" && o.stage === 3 && o.delivered_at && <div className="acts"><span className="hint">{withinWithdrawal(o.delivered_at)
+          ? `Prazo de arrependimento do comprador até ${dateBR(new Date(o.delivered_at).getTime() + 7 * 864e5)}. O repasse é liberado depois.`
+          : "Prazo de arrependimento encerrado. Repasse liberado em até 7 dias."}</span></div>}
       </div>
     </article>
+  );
+}
+
+const bothSigned = (o: Order) => ["comprador", "artista"].every((p) => o.contract?.signatures?.some((s) => s.party === p));
+const withinWithdrawal = (d: string) => Date.now() <= new Date(d).getTime() + 7 * 864e5;
+
+function ContractStrip({ o, side }: { o: Order; side: "artist" | "buyer" }) {
+  const c = o.contract; if (!c) return null;
+  const mine = side === "buyer" ? "comprador" : "artista", other = side === "buyer" ? "artista" : "comprador";
+  const signed = (p: string) => c.signatures?.find((s) => s.party === p);
+  return (
+    <div className="acts" style={{ justifyContent: "space-between" }}>
+      <span className="hint">Contrato <Link href={`/contrato/${c.ref}`} style={{ textDecoration: "underline" }}>{c.ref}</Link> ·
+        {" "}{signed(mine) ? "você assinou" : "aguardando sua assinatura"} · {signed(other) ? `${other === "artista" ? "artista" : "colecionador"} assinou` : `aguardando ${other === "artista" ? "artista" : "colecionador"}`}</span>
+      {!signed(mine) && <SignButton contractId={c.id} />}
+    </div>
   );
 }

@@ -33,12 +33,13 @@ export function RequestRow({ r }: { r: Req }) {
   );
 }
 
-export function MemberRow({ m }: { m: Member }) {
+export function MemberRow({ m, kyc }: { m: Member; kyc?: { done: boolean; pep: boolean } }) {
   return (
     <div className="arow">
       <span>{m.member_code}<small>desde {dateBR(m.created_at)}</small><T m={MSTATUS} k={m.status} /></span>
       <span className="who-b"><b>{m.full_name || m.display_name}</b><span>{ROLE[m.role]}{m.role === "artist" && m.display_name !== m.full_name ? ` · nome artístico: ${m.display_name}` : ""}</span><span>{m.email}</span></span>
-      <span className="det"><span>{m.city || "—"}{m.practice ? " · " + m.practice : ""}</span></span>
+      <span className="det"><span>{m.city || "—"}{m.practice ? " · " + m.practice : ""}</span>
+        <span>{kyc?.done ? "Cadastro de identificação completo" : "Cadastro de identificação pendente"}{kyc?.pep ? " · pessoa politicamente exposta" : ""}</span></span>
       <span className="act">
         {m.status === "pending" && <AdminButton action="setMemberStatus" args={[m.id, "active"]} ok="Membro aprovado.">Aprovar membro <Icon n="check" /></AdminButton>}
         {m.status === "active" && <AdminButton action="setMemberStatus" args={[m.id, "suspended"]} ok="Membro suspenso." className="btn sm ghost" confirm={`Suspender ${m.full_name || m.display_name}? Ele perde acesso à rede.`}>Suspender</AdminButton>}

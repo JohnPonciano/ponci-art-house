@@ -2,12 +2,12 @@ import { redirect } from "next/navigation";
 import { PublicShell } from "@/components/Shells";
 import { PageHead } from "@/components/ui";
 import { AdminLoginForm } from "@/components/admin-client";
-import { getAdmin } from "@/lib/supabase/server";
+import { adminByEmail } from "@/lib/supabase/server";
 
 export const metadata = { title: "Admin", robots: { index: false } };
 
 export default async function AdminEntrar() {
-  if (await getAdmin()) redirect("/admin");
+  if (await adminByEmail()) redirect("/admin");
   return (
     <PublicShell>
       <div className="wrap">

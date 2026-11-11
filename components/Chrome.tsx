@@ -63,7 +63,7 @@ export function Footer() {
       <div className="foot-grid">
         <div className="c1"><p className="lab">PONCI</p><p className="ftag">Rede privada de artistas e colecionadores. Brasil, fund. 2026.</p><span className="domain">ponci.art</span></div>
         <nav className="c2" aria-label="Índice"><p className="lab">Índice</p><ul><li><Link href="/">A rede</Link></li><li><Link href="/artista">Área do artista</Link></li><li><Link href="/colecionador">Área do colecionador</Link></li><li><Link href="/#acesso">Solicitar acesso</Link></li></ul></nav>
-        <div className="c3"><p className="lab">Acesso</p><ul className="note" style={{ gap: 4 }}><li>Somente por convite</li><li>Membros verificados</li><li>Transação em custódia</li></ul></div>
+        <nav className="c3" aria-label="Documentos"><p className="lab">Documentos</p><ul><li><Link href="/termos">Termos de Uso</Link></li><li><Link href="/privacidade">Privacidade</Link></li><li><Link href="/contratos/artista">Contrato · Artista</Link></li><li><Link href="/contratos/colecionador">Condições de compra</Link></li></ul></nav>
         <p className="c4 note">Este site é um protótipo. Obras, nomes de artistas e colecionadores, preços e transações são conteúdo de demonstração.</p>
       </div>
       <FootMega />

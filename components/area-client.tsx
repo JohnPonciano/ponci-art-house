@@ -118,3 +118,13 @@ export function OfferForm({ workId, price, label }: { workId: string; price: num
     </form>
   );
 }
+
+/* Assinatura eletrônica do contrato da venda */
+export function SignButton({ contractId, label = "Assinar contrato" }: { contractId: string; label?: string }) {
+  const { run, pending } = useAct(); const [ask, setAsk] = useState(false);
+  if (ask) return (<span style={{ display: "inline-flex", flexWrap: "wrap", gap: 8, alignItems: "center" }}>
+    <span className="hint">Ao confirmar, você assina eletronicamente o contrato (registramos data, hora, IP e a impressão digital do texto).</span>
+    <button className="btn sm ocre" type="button" disabled={pending} onClick={() => run(() => A.signContract(contractId), "Contrato assinado.")}>Confirmar assinatura <Icon n="check" /></button>
+    <button className="linkbtn" type="button" onClick={() => setAsk(false)}>Cancelar</button></span>);
+  return <button className="btn sm" type="button" onClick={() => setAsk(true)}>{label} <Icon n="check" /></button>;
+}

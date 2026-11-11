@@ -79,14 +79,46 @@ export function AdminLoginForm() {
       const sb = createClient();
       const { error } = await sb.auth.signInWithPassword({ email: email.trim(), password: pass });
       if (error) { setBusy(false); setStatus(error.message === "Invalid login credentials" ? "E-mail ou senha incorretos." : error.message); return; }
-      const { data } = await sb.rpc("is_admin");
+      const { data } = await sb.rpc("admin_email");
       if (data !== true) { await sb.auth.signOut(); setBusy(false); setStatus("Esta conta não tem acesso ao painel."); return; }
-      router.replace("/admin"); router.refresh();
+      const { data: aal } = await sb.auth.mfa.getAuthenticatorAssuranceLevel();
+      router.replace(aal?.nextLevel === "aal2" ? "/entrar/verificacao?next=/admin" : "/seguranca"); router.refresh();
     }}>
       <Field name="email" label="E-mail" type="email" autoComplete="email" value={email} onChange={(e: any) => setEmail(e.target.value)} />
       <Field name="password" label="Senha" type="password" autoComplete="current-password" value={pass} onChange={(e: any) => setPass(e.target.value)} />
       <p className="form-status" role="alert">{status}</p>
       <div className="form-actions"><button className="btn" type="submit" disabled={busy}>{busy ? "Entrando…" : <>Entrar no painel <Icon n="right" /></>}</button><a className="linkbtn" href="/senha">Esqueci a senha</a></div>
+    </form>
+  );
+}
+
+export function RequestReply({ id, status, response }: { id: string; status: string; response: string }) {
+  const toast = useToast(); const router = useRouter(); const [pending, start] = useTransition();
+  const [s, setS] = useState(status); const [r, setR] = useState(response);
+  return (
+    <form className="inline-form" onSubmit={(e) => { e.preventDefault(); start(async () => { const x = await A.updateRequest(id, s, r); toast(x.ok ? "Solicitação atualizada." : x.error!); router.refresh(); }); }}>
+      <select value={s} onChange={(e) => setS(e.target.value)} aria-label="Situação" style={{ border: "var(--b)", padding: "8px", font: "500 13px var(--mono)", background: "var(--paper)" }}>
+        <option value="aberta">Aberta</option><option value="em_andamento">Em andamento</option><option value="concluida">Concluída</option><option value="negada">Negada</option></select>
+      <textarea value={r} onChange={(e) => setR(e.target.value)} rows={3} placeholder="Resposta ao membro" aria-label="Resposta" style={{ border: "var(--b)", padding: 8, font: "400 14px var(--grot)", background: "var(--paper)" }} />
+      <button className="btn sm" type="submit" disabled={pending}>{pending ? "Salvando…" : "Salvar"}</button>
+    </form>
+  );
+}
+
+export function PublishDocForm({ slug, title, summary, body }: { slug: string; title: string; summary: string; body: string }) {
+  const toast = useToast(); const router = useRouter(); const [pending, start] = useTransition();
+  const [v, setV] = useState({ title, summary, body }); const [ask, setAsk] = useState(false);
+  const changed = v.body !== body || v.title !== title;
+  return (
+    <form className="form" onSubmit={(e) => { e.preventDefault(); if (!ask) { setAsk(true); return; }
+      start(async () => { const r = await A.publishDocument(slug, v.title, v.summary, v.body); toast(r.ok ? `Versão ${r.data} publicada. Os membros vão precisar aceitar de novo.` : r.error!); setAsk(false); router.refresh(); }); }}>
+      <Field name={`t-${slug}`} label="Título" value={v.title} onChange={(e: any) => setV({ ...v, title: e.target.value })} />
+      <Field name={`s-${slug}`} label="Resumo" value={v.summary} onChange={(e: any) => setV({ ...v, summary: e.target.value })} />
+      <Field as="textarea" name={`b-${slug}`} rows={18} label="Texto (Markdown: ## título, - lista, **negrito**, > nota)" value={v.body} onChange={(e: any) => setV({ ...v, body: e.target.value })}
+        style={{ fontFamily: "var(--mono)", fontSize: 13, lineHeight: 1.55 }} />
+      {ask && <p className="err-box">Publicar como nova versão? Todos os membros afetados vão precisar aceitar de novo antes de continuar usando a rede.</p>}
+      <div className="form-actions"><button className={"btn" + (ask ? " ocre" : "")} type="submit" disabled={pending || !changed}>{pending ? "Publicando…" : ask ? "Confirmar publicação" : "Publicar nova versão"}</button>
+        {ask && <button type="button" className="linkbtn" onClick={() => setAsk(false)}>Cancelar</button>}{!changed && <p>Altere o texto para publicar uma nova versão.</p>}</div>
     </form>
   );
 }

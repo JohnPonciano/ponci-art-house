@@ -52,3 +52,19 @@ Acesso só para e-mails da tabela `public.admins` (hoje: o do dono da rede), com
 - **Curadoria**: aprovar (publica) ou recusar (apaga) obras enviadas.
 - **Convites**: gerar códigos avulsos (usos, nota, ativação direta ou não) e revogar.
 - **Conta**: troca de senha.
+
+## Dados e responsabilidade
+
+- **Documentos versionados** (`legal/*.md`, minutas para revisão jurídica): Termos, Privacidade, Contrato do
+  artista e Condições de compra. Cada versão é imutável e tem SHA-256. Publicar: painel → Documentos, ou
+  `node scripts/publish-legal.mjs` (com sessão de admin verificada por MFA: `ADMIN_TOTP=123456`).
+- **Aceites com evidência** (data, IP, navegador, hash) no cadastro e em `/aceite` quando sai versão nova.
+- **Cadastro de identificação (KYC)**: CPF e telefone no cadastro; endereço, nascimento e declaração de PEP em
+  `/conta`. Sem cadastro completo e termos em dia, o banco recusa propostas, reservas, obras e assinaturas.
+- **Contrato por venda** gerado na reserva (`/contrato/[ref]`), com hash e assinatura eletrônica das partes;
+  o pagamento só avança com as duas assinaturas. Arrependimento de 7 dias após a entrega.
+- **LGPD**: `/conta` exporta os dados (JSON) e abre solicitações; admin responde em Solicitações.
+- **Compliance** (Lei 9.613/98 · IPHAN): operações ≥ R$ 10 mil com identificação das partes e CSV.
+- **Auditoria**: trilha imutável de alterações (dados sensíveis omitidos).
+- **MFA (TOTP)**: opcional para membros (`/seguranca`), obrigatório para admin (o banco só aceita ações de
+  admin em sessão `aal2`).

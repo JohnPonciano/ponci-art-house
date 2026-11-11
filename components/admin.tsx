@@ -26,7 +26,9 @@ export function RequestRow({ r }: { r: Req }) {
         {r.status === "pending" && <>
           <AdminButton action="approveRequest" args={[r.id]} ok="Pedido aprovado. Copie ou envie o convite." go={`/admin/pedidos?f=approved#${r.ref}`}>Aprovar e gerar convite <Icon n="check" /></AdminButton>
           <AdminButton action="rejectRequest" args={[r.id]} ok="Pedido recusado." className="linkbtn" confirm={`Recusar o pedido de ${r.name}?`}>Recusar</AdminButton></>}
-        {r.status === "approved" && r.invite_code && <InviteShare name={r.name} email={r.email} code={r.invite_code} role={r.role} />}
+        {r.status === "approved" && r.invite_code && <>
+          <InviteShare name={r.name} email={r.email} code={r.invite_code} role={r.role} />
+          <AdminButton action="resendInvite" args={[r.id]} ok="Convite reenviado por e-mail." className="linkbtn">Reenviar convite por e-mail</AdminButton></>}
         {r.status === "rejected" && <span className="hint">Recusado em {dateBR(r.reviewed_at!)}</span>}
       </span>
     </div>

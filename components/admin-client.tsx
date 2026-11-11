@@ -11,7 +11,12 @@ export function AdminButton({ action, args, ok, className = "btn sm", confirm, c
   action: keyof typeof A; args: any[]; ok: string; className?: string; confirm?: ReactNode; children: ReactNode; go?: string;
 }) {
   const toast = useToast(); const router = useRouter(); const [pending, start] = useTransition(); const [ask, setAsk] = useState(false);
-  const fire = () => start(async () => { const r = await (A[action] as any)(...args); toast(r.ok ? ok : r.error); setAsk(false); if (r.ok && go) router.push(go); else router.refresh(); });
+  const fire = () => start(async () => {
+    const r = await (A[action] as any)(...args);
+    const msg = !r.ok ? r.error : r.data && typeof r.data === "object" && "emailed" in r.data
+      ? (r.data.emailed ? "Aprovado. Convite enviado por e-mail." : `Aprovado, mas o e-mail não saiu: ${r.data.emailError} Use “Copiar convite”.`) : ok;
+    toast(msg); setAsk(false); if (r.ok && go) router.push(go); else router.refresh();
+  });
   if (confirm && ask) return (<>
     <span className="hint">{confirm}</span>
     <button type="button" className="btn sm ocre" disabled={pending} onClick={fire}>{pending ? "Aguarde…" : <>Confirmar <Icon n="check" /></>}</button>
@@ -30,7 +35,7 @@ export function InviteShare({ name, email, code, role }: { name: string; email?:
   return (<>
     <code className="code-tag">{code}</code>
     <button type="button" className="btn sm ghost" onClick={async () => { try { await navigator.clipboard.writeText(msg); toast("Mensagem de convite copiada."); } catch { toast("Não foi possível copiar."); } }}>Copiar convite</button>
-    {email && <a className="linkbtn" href={`mailto:${email}?subject=${encodeURIComponent("Seu convite para a PONCI")}&body=${encodeURIComponent(msg)}`}>Enviar por e-mail</a>}
+    {email && <a className="linkbtn" href={`mailto:${email}?subject=${encodeURIComponent("Seu convite para a PONCI")}&body=${encodeURIComponent(msg)}`}>Abrir no meu e-mail</a>}
   </>);
 }
 

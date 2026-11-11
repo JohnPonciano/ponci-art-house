@@ -186,6 +186,8 @@ const convite = layout({
 
 mkdirSync("supabase/templates", { recursive: true });
 writeFileSync("supabase/templates/convite-ponci.html", convite);
+// também como módulo, para o site enviar o convite pelo SendGrid
+writeFileSync("lib/email-templates.ts", `// Gerado por scripts/build-email-templates.mjs — não edite à mão.\nexport const CONVITE_HTML = ${JSON.stringify(convite)};\n`);
 const subjects = {};
 for (const [k, v] of Object.entries(T)) { writeFileSync(`supabase/templates/${k}.html`, v.html); subjects[k] = v.subject; }
 writeFileSync("supabase/templates/subjects.json", JSON.stringify(subjects, null, 2) + "\n");

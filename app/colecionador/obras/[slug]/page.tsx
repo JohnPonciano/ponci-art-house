@@ -48,13 +48,14 @@ export default async function ObraColecionador({ params }: { params: Promise<{ s
                 <ActButton action="reserveWork" args={[a.id]} ok="Obra reservada para você." go="/colecionador/aquisicoes"
                   confirm={<>Reservar <b>{a.title}</b> por {brl(a.price)}? A obra sai da vitrine e você tem 48 h para concluir o pagamento em custódia.</>}>Reservar pelo preço <Icon n="right" /></ActButton>
               </div>
-              <div className="offer" id="oferta">
+              {ar.accepts_offers || mine ? <div className="offer" id="oferta">
                 <p className="lab" style={{ color: "var(--ink)" }}>{mine ? `Negociação ${mine.ref} · ${PSTATUS[mine.status][0]}` : "Ou faça uma proposta"}</p>
                 {mine && <ul className="thread">{mine.events.map((h) => <li key={h.id}><span>{h.actor === "artist" ? firstName(ar.display_name) : h.actor === "system" ? "Sistema" : "Você"}<br />{dateBR(h.created_at)}</span>
                   <div>{h.amount != null && <><b>{brl(h.amount)}</b> · </>}<span className="lab">{EVENT_LABEL[h.kind]}</span>{h.msg && <p>{h.msg}</p>}</div></li>)}</ul>}
-                <OfferForm workId={a.id} price={a.price} label={mine ? "Nova proposta" : "Sua proposta"} />
-                <p className="hint">A artista vê seu código de membro ({me.member_code}) e sua cidade. Seu nome só é revelado se a venda for fechada.</p>
-              </div>
+                {ar.accepts_offers ? <><OfferForm workId={a.id} price={a.price} label={mine ? "Nova proposta" : "Sua proposta"} />
+                <p className="hint">A artista vê seu código de membro ({me.member_code}) e sua cidade. Seu nome só é revelado se a venda for fechada.</p></>
+                  : <p className="hint">A artista passou a trabalhar com preço fixo. Novas propostas não são aceitas.</p>}
+              </div> : <p className="hint fixed-price">Preço fixo definido pela artista.</p>}
             </>}
         </div>
       </article>

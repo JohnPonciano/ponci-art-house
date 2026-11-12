@@ -89,6 +89,12 @@ export async function updateProfile(v: { display_name?: string; city: string; pr
   return b.error ? fail(b.error) : done();
 }
 
+export async function setAcceptsOffers(on: boolean): Promise<Result> {
+  const me = await getMe(); if (!me || me.role !== "artist") return { ok: false, error: "Somente artistas." };
+  const { error } = await (await createClient()).from("profiles").update({ accepts_offers: on }).eq("id", me.id);
+  return error ? fail(error) : done();
+}
+
 /* ---------- Responsabilidade: aceites, cadastro, contratos, solicitações ---------- */
 export async function acceptDocuments(ids: string[]): Promise<Result<number>> {
   const m = await reqMeta();

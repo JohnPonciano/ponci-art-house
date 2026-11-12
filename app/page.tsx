@@ -55,7 +55,7 @@ export default async function Home() {
             <div className="door-body">
               <h3>Para <em>colecionadores</em></h3>
               <p>Acesse obras que não estão em nenhuma outra vitrine, com preço visível, documentação completa e contato direto com quem fez.</p>
-              <Ticks items={[["Acervo fechado", "Somente membros veem preços e disponibilidade."], ["Compra direta ou proposta", "Reserve pelo preço ou envie uma proposta à artista."], ["Lista de interesse", "Guarde obras e acompanhe mudanças de status."], ["Procedência", "Certificado de autenticidade emitido pela rede."]]} />
+              <Ticks items={[["Acervo fechado", "Somente membros veem preços e disponibilidade."], ["Compra direta ou proposta", "Reserve pelo preço ou, se a artista aceitar negociar, envie uma proposta."], ["Lista de interesse", "Guarde obras e acompanhe mudanças de status."], ["Procedência", "Certificado de autenticidade emitido pela rede."]]} />
               <Link className="btn inv" href="/colecionador">Entrar na área do colecionador <Icon n="right" /></Link>
             </div>
           </article>

@@ -24,7 +24,7 @@ export default async function Acervo({ searchParams }: { searchParams: Promise<R
   const any = f.cat !== "all" || f.artist !== "all" || f.price !== "all";
   return (
     <div className="wrap">
-      <PageHead title="Acervo" label="Somente membros" intro={`Olá, ${firstName(me.full_name)}. Estas obras só estão disponíveis dentro da rede. Reserve pelo preço ou envie uma proposta diretamente à artista.`}
+      <PageHead title="Acervo" label="Somente membros" intro={`Olá, ${firstName(me.full_name)}. Estas obras só estão disponíveis dentro da rede. Reserve pelo preço ou, quando a artista aceita negociar, envie uma proposta direto a ela.`}
         count={<>{all.filter((a) => a.status === "published").length} disponíveis<br />{arts.length} artistas</>} />
       <div className="filters" role="region" aria-label="Filtros">
         <div className="frow" role="group" aria-label="Categoria"><span className="lab">Categoria</span>{chip("cat", "all", "Todas")}{Object.keys(CAT).map((k) => chip("cat", k, CAT[k]))}</div>

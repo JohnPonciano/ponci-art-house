@@ -4,6 +4,7 @@ import { ordersForArtist, proposalsForArtist, worksByArtist } from "@/lib/data";
 import { PageHead, SecHead, Empty } from "@/components/ui";
 import { Ledger, ArtistProposalRow, WorkCard } from "@/components/area";
 import { Icon } from "@/components/Icon";
+import { OffersToggle } from "@/components/OffersToggle";
 import { brl, pad, firstName, COMMISSION } from "@/lib/format";
 
 export const metadata = { title: "Ateliê" };
@@ -26,6 +27,7 @@ export default async function Painel() {
         <Link href="/artista/vendas"><span className="lab">Em custódia</span><b className="money">{brl(net(os.filter((o) => o.stage < 3)))}</b></Link>
         <Link href="/artista/vendas"><span className="lab">Recebido (líquido)</span><b className="money">{brl(net(os.filter((o) => o.stage === 3)))}</b></Link>
       </div>
+      <OffersToggle initial={!!me.accepts_offers} />
       <section className="sub-sec" aria-labelledby="p-t">
         <SecHead n="01" eyebrow="Propostas" title={<>Aguardando <em>sua resposta</em></>} id="p-t" href="/artista/propostas" linkText="Todas as propostas" />
         <Ledger empty={["Nada pendente.", "Quando um colecionador fizer uma proposta, ela aparece aqui."]}>{open.slice(0, 4).map((p) => <ArtistProposalRow key={p.id} p={p} />)}</Ledger>

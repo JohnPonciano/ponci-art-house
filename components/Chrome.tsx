@@ -15,18 +15,19 @@ function Logout({ className = "", children }: { className?: string; children: Re
   return <form action="/auth/sair" method="post" style={{ display: "contents" }}><button type="submit" className={className}>{children}</button></form>;
 }
 
-export function Header({ nav, user, enter, home = "/", tag = "Rede privada de arte", band }: { nav: NavItem[]; user?: User; enter?: boolean; home?: string; tag?: string; band?: [string, string] }) {
+export function Header({ nav, user, enter, home = "/", tag = "Rede privada de arte", band, menuExtra = [] }: { nav: NavItem[]; user?: User; enter?: boolean; home?: string; tag?: string; band?: [string, string]; menuExtra?: NavItem[] }) {
   const path = usePathname();
   const [open, setOpen] = useState(false);
   const cur = nav.filter((n) => !n.href.includes("#")).map((n) => n.href)
     .filter((h) => path === h || (h !== "/" && path.startsWith(h + "/")) ).sort((a, b) => b.length - a.length)[0];
   useEffect(() => { setOpen(false); }, [path]);
+  useEffect(() => { const o = () => setOpen(true); window.addEventListener("ponci:menu", o); return () => window.removeEventListener("ponci:menu", o); }, []);
   useEffect(() => {
     document.body.classList.toggle("locked", open);
     const k = (e: KeyboardEvent) => { if (e.key === "Escape") setOpen(false); };
     window.addEventListener("keydown", k); return () => window.removeEventListener("keydown", k);
   }, [open]);
-  const items = [...nav, ...(enter ? [{ href: "/#entrar", label: "Entrar" }] : [])];
+  const items = [...nav, ...menuExtra, ...(enter ? [{ href: "/#entrar", label: "Entrar" }] : [])];
   return (
     <>
       <a className="skip" href="#main">Pular para o conteúdo</a>

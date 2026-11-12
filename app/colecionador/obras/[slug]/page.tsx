@@ -6,6 +6,7 @@ import { SecHead, Slab, Notice } from "@/components/ui";
 import { WorkCard } from "@/components/area";
 import { ActButton, FavButton, OfferForm } from "@/components/area-client";
 import { Icon } from "@/components/Icon";
+import { Zoomable } from "@/components/Lightbox";
 import { brl, catNo, CAT, dateBR, dims, dimsIn, EVENT_LABEL, firstName, PSTATUS, STATUS } from "@/lib/format";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
@@ -27,7 +28,7 @@ export default async function ObraColecionador({ params }: { params: Promise<{ s
     <div className="wrap">
       <nav className="crumbs" aria-label="Trilha"><Link href="/colecionador">Acervo</Link><span aria-hidden="true">/</span><Link href={`/colecionador/artistas/${ar.member_code}`}>{ar.display_name}</Link><span aria-hidden="true">/</span><span aria-current="page">{a.title}</span></nav>
       <article className="detail">
-        <div className="detail-media"><Slab a={a} label={a.status === "published" ? "Disponível na rede" : STATUS[a.status][0]} /></div>
+        <div className="detail-media"><Zoomable a={a} caption={`${a.title} · ${ar.display_name} · ${a.year}`}><Slab a={a} label={a.status === "published" ? "Disponível na rede" : STATUS[a.status][0]} /></Zoomable></div>
         <div className="detail-info">
           <div className="d-no"><span>{catNo(a.no)}</span><FavButton variant="link" workId={a.id} on={favs.includes(a.id)} title={a.title} /></div>
           <div><h1 className="d-title">{a.title}</h1></div>

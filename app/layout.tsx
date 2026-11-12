@@ -11,13 +11,19 @@ const plex = IBM_Plex_Mono({ subsets: ["latin"], weight: ["400", "500"], variabl
 export const metadata: Metadata = {
   title: { default: "PONCI — Rede privada de arte", template: "%s — PONCI" },
   description: "Rede fechada, por convite, onde artistas e colecionadores compram e vendem obras de arte diretamente, com curadoria e transação em custódia.",
+  applicationName: "PONCI",
+  appleWebApp: { capable: true, title: "PONCI", statusBarStyle: "black-translucent" },
+  formatDetection: { telephone: false, email: false, address: false },
 };
-export const viewport: Viewport = { width: "device-width", initialScale: 1, viewportFit: "cover", themeColor: "#121211" };
+export const viewport: Viewport = {
+  width: "device-width", initialScale: 1, viewportFit: "cover",
+  themeColor: [{ media: "(prefers-color-scheme: light)", color: "#121211" }, { media: "(prefers-color-scheme: dark)", color: "#0A0A09" }],
+};
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="pt-BR" className={`${archivo.variable} ${instrument.variable} ${plex.variable}`}>
-      <body>
+      <body className="book">
         <Concrete />
         <ToastProvider>{children}</ToastProvider>
       </body>

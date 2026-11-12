@@ -6,6 +6,7 @@ import { SecHead, Slab, Tag, Notice } from "@/components/ui";
 import { Ledger, ArtistProposalRow } from "@/components/area";
 import { ActButton, PriceForm } from "@/components/area-client";
 import { Icon } from "@/components/Icon";
+import { Zoomable } from "@/components/Lightbox";
 import { brl, catNo, CAT, dateBR, dims, dimsIn, STATUS } from "@/lib/format";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
@@ -22,7 +23,7 @@ export default async function ObraArtista({ params }: { params: Promise<{ slug: 
     <div className="wrap">
       <nav className="crumbs" aria-label="Trilha"><Link href="/artista">Ateliê</Link><span aria-hidden="true">/</span><Link href="/artista/obras">Obras</Link><span aria-hidden="true">/</span><span aria-current="page">{a.title}</span></nav>
       <article className="detail">
-        <div className="detail-media"><Slab a={a} label={STATUS[a.status][0]} /></div>
+        <div className="detail-media"><Zoomable a={a}><Slab a={a} label={STATUS[a.status][0]} /></Zoomable></div>
         <div className="detail-info">
           <div className="d-no"><span>{catNo(a.no)}</span><Tag s={a.status} /></div>
           <div><h1 className="d-title">{a.title}</h1></div>

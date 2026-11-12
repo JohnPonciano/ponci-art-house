@@ -1,5 +1,5 @@
 "use client";
-import { useState, useTransition, type ReactNode } from "react";
+import { useEffect, useState, useTransition, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { Icon } from "./Icon";
 import { useToast } from "./Toast";
@@ -31,9 +31,13 @@ export function inviteMessage(name: string, code: string, role: string, origin =
 
 export function InviteShare({ name, email, code, role }: { name: string; email?: string; code: string; role: string }) {
   const toast = useToast();
+  const [canShare, setCanShare] = useState(false);
+  useEffect(() => { setCanShare(typeof navigator !== "undefined" && "share" in navigator); }, []);
   const msg = inviteMessage(name, code, role, typeof window !== "undefined" ? location.origin : "https://ponci.art");
   return (<>
     <code className="code-tag">{code}</code>
+    {canShare
+      ? <button type="button" className="btn sm" onClick={async () => { try { await navigator.share({ title: "Convite PONCI", text: msg }); } catch { /* cancelado */ } }}><Icon n="share" /> Compartilhar convite</button> : null}
     <button type="button" className="btn sm ghost" onClick={async () => { try { await navigator.clipboard.writeText(msg); toast("Mensagem de convite copiada."); } catch { toast("Não foi possível copiar."); } }}>Copiar convite</button>
     {email && <a className="linkbtn" href={`mailto:${email}?subject=${encodeURIComponent("Seu convite para a PONCI")}&body=${encodeURIComponent(msg)}`}>Abrir no meu e-mail</a>}
   </>);

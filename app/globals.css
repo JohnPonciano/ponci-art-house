@@ -3,7 +3,7 @@
    Heavy expanded grotesk for structure, an italic serif for the human voice, mono for catalogue data.
    Single deliberate light theme on the brand palette. */
 :root{
-  color-scheme:light;
+  color-scheme:light dark;
   --paper:#F2F0EB;      /* warm off-white */
   --field:#FBFAF7;      /* input fill on focus */
   --slab:#C6C2BA;       /* concrete */
@@ -806,3 +806,121 @@ a.chip{display:inline-flex;align-items:center;gap:6px}
 .stepper li.done span{background:var(--ink);color:var(--on-ink);border-color:var(--ink)}
 .known{border:var(--b);background:var(--slab-lt);padding:14px 16px;display:flex;flex-direction:column;gap:10px}
 .known .spec{background:var(--paper);padding:0 12px}
+
+/* =====================================================================
+   Apple: modo escuro, toque (44 pt), barra de abas, app instalado,
+   tela cheia da obra e "modo livro" para o iPhone dobrável.
+   ===================================================================== */
+
+/* ---------- Modo escuro (segue o sistema) ---------- */
+@media (prefers-color-scheme: dark){
+  :root{
+    --paper:#131312; --field:#1C1C1A; --slab:#2C2B28; --slab-lt:#1F1E1C;
+    --ink:#EDEAE3; --ink-line:#3A3936; --ink-ghost:#2B2A28;
+    --muted:#A39F97; --hair:#3A3936; --ocre:#B98F6B;
+    --on-ink:#131312; --on-ink-muted:#55534F; --error:#E5765D;
+    --b:2px solid var(--ink);
+  }
+  /* faixas escuras continuam escuras (protobar, rodapé, manifesto, avisos) */
+  .protobar,.area-band,.foot,.manifesto,.uptodate,.toast{--ink:#0A0A09;--on-ink:#EDEAE3;--on-ink-muted:#A39F97;--ink-line:#2E2D2B;--ink-ghost:#1E1D1B}
+  .foot,.manifesto{border-top:1px solid #2E2D2B}
+  .field select,.sortwrap select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23EDEAE3' stroke-width='2.5'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E")}
+  .field input::placeholder,.field textarea::placeholder{color:#6F6C66}
+  .slab .hang img,.card-img img,.post-shot img{filter:drop-shadow(10px 14px 14px rgba(0,0,0,.55))}
+  .md .md-note{background:var(--slab-lt)}
+}
+
+/* ---------- Toque: alvos de 44 pt, campos sem zoom, resposta ao toque ---------- */
+html{-webkit-tap-highlight-color:transparent}
+@media (pointer:coarse){
+  .btn,.btn.sm{min-height:44px}
+  .chip,.seg button,.tabs a,.styles button{min-height:44px;display:inline-flex;align-items:center}
+  .linkbtn,.subnav a,.post-report{min-height:44px;display:inline-flex;align-items:center;padding-top:10px;padding-bottom:10px}
+  .post-icon{min-height:44px;padding:10px 12px}
+  .fav{width:48px;height:44px}
+  .faq summary{min-height:56px}
+  .menu ul a{min-height:56px}
+  /* iOS dá zoom em campos com menos de 16px */
+  input,select,textarea,.inline-form input,.composer-select,.sortwrap select{font-size:16px!important}
+  .lab,.card-top,.plaque,.strip > *{font-size:11.5px}
+  .btn:active,.chip:active,.post-icon:active,.tabbar a:active,.card-link:active{transform:scale(.97);transition:transform .08s}
+}
+@media (hover:none){
+  .card-link:hover .card-foot{background:none;color:inherit}
+  .card-link:active .card-foot{background:var(--ink);color:var(--on-ink)}
+  .idx-row:hover{background:none;color:inherit}
+}
+
+/* ---------- Barra de abas (iPhone) ---------- */
+.tabbar{display:none}
+@media (max-width:820px){
+  .has-tabbar .tabbar{
+    display:grid;grid-template-columns:repeat(var(--tabs,5),minmax(0,1fr));position:fixed;left:0;right:0;bottom:0;z-index:60;
+    padding:6px max(8px,env(safe-area-inset-right)) calc(6px + env(safe-area-inset-bottom)) max(8px,env(safe-area-inset-left));
+    background:color-mix(in srgb,var(--paper) 86%,transparent);-webkit-backdrop-filter:saturate(180%) blur(18px);backdrop-filter:saturate(180%) blur(18px);
+    border-top:var(--b)}
+  .tabbar a,.tabbar button{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:50px;background:none;border:0;cursor:pointer;
+    color:var(--muted);font:600 10px/1.1 var(--grot);letter-spacing:.02em;text-decoration:none}
+  .tabbar .ico{width:24px;height:24px;stroke-width:1.6}
+  .tabbar [aria-current="page"]{color:var(--ink)}
+  .tabbar [aria-current="page"] .ico{stroke-width:2.2}
+  .tabbar [aria-current="page"]::before{content:"";position:absolute;top:-6px;left:28%;right:28%;height:3px;background:var(--ink)}
+  .tabbar .tb-badge{position:absolute;top:4px;left:calc(50% + 6px);min-width:17px;height:17px;padding:0 4px;display:grid;place-items:center;background:var(--ocre);color:#fff;font:600 10px/1 var(--grot);border-radius:9px}
+  .has-tabbar main{padding-bottom:calc(76px + env(safe-area-inset-bottom))}
+  .has-tabbar .foot{padding-bottom:calc(70px + env(safe-area-inset-bottom))}
+  .has-tabbar .head .menu-btn{display:none}
+  .has-tabbar .toast{bottom:calc(84px + env(safe-area-inset-bottom))}
+}
+
+/* ---------- App instalado (tela de início) ---------- */
+@media (display-mode: standalone){
+  .protobar{display:none}
+  .head{top:env(safe-area-inset-top,0px)}
+}
+.install-hint{display:flex;gap:12px;align-items:flex-start;border:var(--b);background:var(--slab-lt);padding:12px 14px;margin-top:16px;font-size:14px;line-height:1.5}
+.install-hint .ico{flex:none;margin-top:2px}
+.install-hint button{margin-left:auto;flex:none}
+
+/* ---------- Obra em tela cheia ---------- */
+.zoomable{cursor:zoom-in;display:block;width:100%;background:none;border:0;padding:0;color:inherit;text-align:inherit}
+.lightbox{position:fixed;inset:0;z-index:95;background:#0A0A09;display:flex;flex-direction:column;
+  padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);animation:lb-in .22s var(--ease)}
+@keyframes lb-in{from{opacity:0}to{opacity:1}}
+.lightbox-bar{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 16px;color:#EDEAE3;font:500 11px/1.3 var(--mono);letter-spacing:.06em;text-transform:uppercase}
+.lightbox-bar button{background:none;border:1.5px solid #EDEAE3;color:#EDEAE3;min-height:44px;padding:0 14px;display:inline-flex;align-items:center;gap:8px;cursor:pointer;font:inherit}
+.lightbox-stage{flex:1;overflow:auto;display:flex;align-items:center;justify-content:center;touch-action:pinch-zoom pan-x pan-y;-webkit-overflow-scrolling:touch}
+.lightbox-stage img{max-width:100%;max-height:100%;width:auto;height:auto;transition:max-width .25s var(--ease)}
+.lightbox-stage.zoom{display:block}
+.lightbox-stage.zoom img{max-width:none;max-height:none;width:220%}
+.lightbox-hint{color:#A39F97;text-align:center;padding:8px 16px 14px;font:400 12px/1.4 var(--mono)}
+
+/* ---------- iPhone dobrável aberto: "modo livro" ----------
+   Tela quase quadrada e larga (dobrável aberto, iPad em retrato estreito): duas páginas lado a lado. */
+@media (min-width:600px) and (max-width:1180px) and (min-aspect-ratio:4/5) and (max-aspect-ratio:5/4){
+  .book .detail{grid-template-columns:1fr 1fr}
+  .book .detail-media{grid-column:1/2;border-right:var(--b);border-bottom:0;position:sticky;top:calc(env(safe-area-inset-top,0px) + 66px);align-self:start}
+  .book .detail-media .slab{--h:calc(100dvh - 140px)}
+  .book .detail-info{grid-column:2/3}
+  .book .detail-info > *{padding-left:20px}
+  .book .diary-feed{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start}
+  .book .diary-feed > .tabs,.book .diary-feed > .composer,.book .diary-feed > .uptodate{grid-column:1/-1}
+  .book .post-shot{height:clamp(240px,34vw,420px)}
+  .book .gate-art,.book .gate-main{grid-column:auto}
+  .book .gate{grid-template-columns:1fr 1fr}
+  .book .gate-art{border-right:var(--b);border-bottom:0}
+  .book .gate-art .slab{--h:calc(100dvh - 200px)}
+  .book-chip{display:inline-flex}
+}
+.book-chip{display:none;align-items:center;gap:6px;font:500 10.5px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+/* com a dobra detectável (Viewport Segments API), a divisão das páginas cai exatamente na dobra */
+@media (horizontal-viewport-segments: 2){
+  .book .detail,.book .gate{grid-template-columns:env(viewport-segment-width 0 0) env(viewport-segment-width 1 0);column-gap:calc(env(viewport-segment-left 1 0) - env(viewport-segment-right 0 0))}
+  .book .diary-feed{grid-template-columns:env(viewport-segment-width 0 0) env(viewport-segment-width 1 0);column-gap:calc(env(viewport-segment-left 1 0) - env(viewport-segment-right 0 0))}
+}
+@media (max-width:820px){
+  .has-tabbar .protobar,.has-tabbar .area-band{display:none}
+  .has-tabbar .head .wrap{height:54px}
+  .install-hint{font-size:13.5px;padding:10px 12px}
+}
+@media (pointer:coarse){ select,.sortwrap select{min-height:44px} }
+@media (pointer:coarse){ .crumbs a{display:inline-flex;align-items:center;min-height:44px} .crumbs{padding-block:0} }

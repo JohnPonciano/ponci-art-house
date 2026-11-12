@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Header, Footer } from "@/components/Chrome";
+import { TabBar } from "@/components/TabBar";
 import { getAdmin, adminByEmail, authLevel } from "@/lib/supabase/server";
 import { counts } from "@/lib/admin";
 
@@ -22,10 +23,11 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   const sub = [["/admin", "Painel"], ["/admin/diario", "Diário"], ["/admin/documentos", "Documentos"], ["/admin/auditoria", "Auditoria"], ["/admin/convites", "Convites"], ["/seguranca", "Segurança"], ["/admin/conta", "Senha"]];
   return (
     <>
-      <Header nav={nav} home="/admin" tag="Painel admin" user={{ name: "Admin", role: admin.email }} band={["Painel administrativo · PONCI", admin.email]} />
+      <Header nav={nav} menuExtra={sub.map(([href, label]) => ({ href, label }))} home="/admin" tag="Painel admin" user={{ name: "Admin", role: admin.email }} band={["Painel administrativo · PONCI", admin.email]} />
       <nav className="subnav" aria-label="Registros"><div className="wrap">{sub.map(([h, l]) => <Link key={h} href={h}>{l}</Link>)}</div></nav>
       <main id="main" tabIndex={-1} className="enter">{children}</main>
       <Footer />
+      <TabBar nav={nav} />
     </>
   );
 }

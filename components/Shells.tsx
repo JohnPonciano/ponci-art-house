@@ -1,5 +1,7 @@
 import type { ReactNode } from "react";
 import { Header, Footer, type NavItem } from "./Chrome";
+import { TabBar } from "./TabBar";
+import { InstallHint } from "./InstallHint";
 import type { Me } from "@/lib/supabase/server";
 
 const PUBLIC_NAV: NavItem[] = [
@@ -24,8 +26,9 @@ export function AreaShell({ children, me, nav, tag }: { children: ReactNode; me:
     <>
       <Header nav={nav} home="/" tag={tag} user={{ name, role: me.role === "artist" ? "Artista" : me.member_code }}
         band={[`${tag} · ${name}${me.role === "buyer" ? " · " + me.member_code : ""}`, me.email.endsWith("@demo.ponci.art") ? "Conta de demonstração" : "Membro verificado"]} />
-      <main id="main" tabIndex={-1} className="enter">{children}</main>
+      <main id="main" tabIndex={-1} className="enter"><InstallHint />{children}</main>
       <Footer />
+      <TabBar nav={nav} />
     </>
   );
 }

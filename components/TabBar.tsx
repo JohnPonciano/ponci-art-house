@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Icon } from "./Icon";
 import type { NavItem } from "./Chrome";
 
@@ -16,12 +16,15 @@ const SHORT: Record<string, string> = { "Solicitações": "Pedidos LGPD", "Aquis
 export function TabBar({ nav }: { nav: NavItem[] }) {
   const path = usePathname();
   useEffect(() => { document.body.classList.add("has-tabbar"); return () => document.body.classList.remove("has-tabbar"); }, []);
+  // destaque otimista: a aba acende no toque, antes da página chegar
+  const [tapped, setTapped] = useState<string | null>(null);
+  useEffect(() => setTapped(null), [path]);
   const main = nav.filter((n) => ICON[n.href]).slice(0, 4);
-  const cur = [...nav].map((n) => n.href).filter((h) => path === h || path.startsWith(h + "/")).sort((a, b) => b.length - a.length)[0];
+  const cur = tapped ?? [...nav].map((n) => n.href).filter((h) => path === h || path.startsWith(h + "/")).sort((a, b) => b.length - a.length)[0];
   return (
     <nav className="tabbar" aria-label="Navegação" style={{ ["--tabs" as any]: main.length + 1 }}>
       {main.map((n) => (
-        <Link key={n.href} href={n.href} aria-current={cur === n.href ? "page" : undefined}>
+        <Link key={n.href} href={n.href} onClick={() => n.href !== cur && setTapped(n.href)} aria-current={cur === n.href ? "page" : undefined}>
           <Icon n={ICON[n.href]} />{SHORT[n.label] || n.label}
           {n.badge ? <span className="tb-badge" aria-label={`${n.badge} novos`}>{n.badge}</span> : null}
         </Link>))}

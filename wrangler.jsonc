@@ -5,6 +5,8 @@
   "main": ".open-next/worker.js",
   "compatibility_date": "2026-10-01",
   "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  // roda o Worker perto do banco (Supabase us-west-2) quando a página faz várias consultas em sequência
+  "placement": { "mode": "smart" },
   "assets": { "directory": ".open-next/assets", "binding": "ASSETS" },
   "services": [{ "binding": "WORKER_SELF_REFERENCE", "service": "ponci-art-house" }],
   "workers_dev": true,

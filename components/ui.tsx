@@ -5,7 +5,7 @@ import { Icon } from "./Icon";
 import { Fit } from "./Fit";
 import { STATUS, PSTATUS } from "@/lib/format";
 
-export function Slab({ a, h, plaque = true, label = "Composição de demonstração" }: { a: ArtLike; h?: string; plaque?: boolean; label?: string }) {
+export function Slab({ a, h, plaque = true, label = "Composição ilustrativa" }: { a: ArtLike; h?: string; plaque?: boolean; label?: string }) {
   return (
     <div className={"slab" + (plaque ? "" : " np")} style={h ? ({ ["--h" as any]: h }) : undefined}>
       <div className="hang"><ArtImage a={a} /></div>

@@ -76,7 +76,7 @@ export function NewWorkForm({ userId }: { userId: string }) {
   return (
     <section className="acq" aria-labelledby="nf-t" style={{ marginTop: "clamp(36px,5vw,64px)" }}>
       <div className="acq-aside"><p className="lab">Prévia</p><h2 id="nf-t">Como a obra aparecerá.</h2>
-        <p>Envie uma fotografia da obra. Sem foto, geramos uma composição de demonstração no estilo escolhido.</p>
+        <p>Envie uma fotografia da obra. Sem foto, geramos uma composição ilustrativa no estilo escolhido.</p>
         <div className="preview-slab" aria-live="polite"><Slab a={preview} label="Prévia · Em curadoria" /></div></div>
       <div className="acq-main">
         <form className="form" onSubmit={submit} noValidate>
@@ -101,7 +101,7 @@ export function NewWorkForm({ userId }: { userId: string }) {
               <span>{photo ? "Imagem carregada. Ela substitui a composição gerada." : "JPG, PNG ou WebP. A imagem é reduzida para 1600 px antes do envio."}</span>
             </label>
             {photo ? <button type="button" className="linkbtn" style={{ alignSelf: "flex-start" }} onClick={() => { URL.revokeObjectURL(photo.url); setPhoto(null); }}>Remover imagem</button> : <>
-              <span className="lab" style={{ marginTop: 8 }}>Ou estilo da composição de demonstração</span>
+              <span className="lab" style={{ marginTop: 8 }}>Ou estilo da composição ilustrativa</span>
               <div className="styles" role="group" aria-label="Estilo">{Object.keys(STYLE_NAMES).map((k) => (
                 <button key={k} type="button" aria-pressed={style.g === k} onClick={() => setStyle({ g: k, pi: Math.floor(Math.random() * 9), seed: rand() })}>{(STYLE_NAMES as any)[k]}</button>))}</div>
               <button type="button" className="linkbtn" style={{ alignSelf: "flex-start", marginTop: 4 }} onClick={() => setStyle({ ...style, pi: style.pi + 1, seed: rand() })}>Gerar outra variação</button></>}

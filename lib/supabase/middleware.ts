@@ -19,12 +19,15 @@ export async function updateSession(request: NextRequest) {
       },
     }
   );
-  const { data: { user } } = await supabase.auth.getUser();
+  // getClaims valida o JWT localmente (chaves assimétricas) e renova a sessão quando expira — sem ida aos EUA a cada clique
+  const { data: cl } = await supabase.auth.getClaims();
+  const user = cl?.claims?.sub ? cl.claims : null;
 
   const path = request.nextUrl.pathname;
   // segundo fator: quem tem autenticador ativo precisa passar pelo código antes das áreas restritas
   const guarded = ["/artista", "/colecionador", "/conta", "/admin", "/aceite", "/contrato"].some((p) => path === p || path.startsWith(p + "/"));
-  if (user && guarded) {
+  // sessão já em aal2 (código confirmado) não precisa consultar os fatores de novo
+  if (user && guarded && user.aal !== "aal2") {
     const { data: aal } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
     if (aal?.currentLevel === "aal1" && aal?.nextLevel === "aal2") {
       const url = request.nextUrl.clone();

@@ -31,7 +31,7 @@ export function Header({ nav, user, enter, home = "/", tag = "Rede privada de ar
   return (
     <>
       <a className="skip" href="#main">Pular para o conteúdo</a>
-      <div className="protobar" role="note"><div className="wrap"><span><span className="dot" aria-hidden="true" /><span>Protótipo · Conteúdo de demonstração</span></span><span id="pb-r">ponci.art — Rede privada · Brasil</span></div></div>
+      <div className="protobar" role="note"><div className="wrap"><span><span className="dot" aria-hidden="true" /><span>Rede privada · Acesso só por convite</span></span><span id="pb-r">ponci.art — Rede privada · Brasil</span></div></div>
       {band && <div className="area-band"><div className="wrap"><span>{band[0]}</span><span>{band[1]}</span></div></div>}
       <header className="head" id="head"><div className="wrap">
         <span id="brand"><Wordmark home={home} tag={tag} /></span>
@@ -65,7 +65,7 @@ export function Footer() {
         <div className="c1"><p className="lab">PONCI</p><p className="ftag">Rede privada de artistas e colecionadores. Brasil, fund. 2026.</p><span className="domain">ponci.art</span></div>
         <nav className="c2" aria-label="Índice"><p className="lab">Índice</p><ul><li><Link href="/">A rede</Link></li><li><Link href="/artista">Área do artista</Link></li><li><Link href="/colecionador">Área do colecionador</Link></li><li><Link href="/#acesso">Solicitar acesso</Link></li></ul></nav>
         <nav className="c3" aria-label="Documentos"><p className="lab">Documentos</p><ul><li><Link href="/termos">Termos de Uso</Link></li><li><Link href="/privacidade">Privacidade</Link></li><li><Link href="/contratos/artista">Contrato · Artista</Link></li><li><Link href="/contratos/colecionador">Condições de compra</Link></li></ul></nav>
-        <p className="c4 note">Este site é um protótipo. Obras, nomes de artistas e colecionadores, preços e transações são conteúdo de demonstração.</p>
+        <p className="c4 note">Acesso restrito a membros convidados. Obras, preços e negociações são confidenciais entre as partes e a PONCI.</p>
       </div>
       <FootMega />
       <div className="foot-base"><span>© 2026 PONCI</span><span>ponci.art</span><span>Brasil — Fund. 2026</span></div>

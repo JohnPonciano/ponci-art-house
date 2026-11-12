@@ -38,11 +38,20 @@ export type Me = {
   email: string;
 };
 
+/** Usuário da sessão, verificado localmente pela assinatura do JWT (ES256 + JWKS em cache):
+ *  sem ida ao servidor de autenticação a cada navegação. Cacheado por requisição. */
+export const authUser = cache(async (): Promise<{ id: string; email: string } | null> => {
+  const sb = await createClient();
+  const { data } = await sb.auth.getClaims();
+  const c: any = data?.claims;
+  return c?.sub ? { id: c.sub, email: c.email ?? "" } : null;
+});
+
 /** Membro logado (perfil público + privado), ou null. Cacheado por requisição. */
 export const getMe = cache(async (): Promise<Me | null> => {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const user = await authUser();
   if (!user) return null;
+  const supabase = await createClient();
   const { data } = await supabase
     .from("profiles")
     .select("id,role,member_code,display_name,city,practice,bio,created_at,status,private:profile_private(full_name,email)")
@@ -55,10 +64,9 @@ export const getMe = cache(async (): Promise<Me | null> => {
 
 /** E-mail do admin logado, ou null. A permissão vem da tabela public.admins (função is_admin). */
 export const getAdmin = cache(async (): Promise<{ id: string; email: string } | null> => {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const user = await authUser();
   if (!user) return null;
-  const { data } = await supabase.rpc("is_admin");
+  const { data } = await (await createClient()).rpc("is_admin");
   return data === true ? { id: user.id, email: user.email ?? "" } : null;
 });
 
@@ -89,7 +97,7 @@ export type Kyc = { person_type: "pf" | "pj"; legal_name: string; doc_number: st
   number: string | null; complement: string; district: string | null; city: string | null; uf: string | null; occupation: string; pep: boolean; payout_info: string; completed_at: string | null };
 export const myKyc = cache(async (): Promise<Kyc | null> => {
   const sb = await createClient();
-  const { data: { user } } = await sb.auth.getUser();
+  const user = await authUser();
   if (!user) return null;
   const { data } = await sb.from("kyc").select("*").eq("user_id", user.id).maybeSingle();
   return (data as any) || null;
@@ -105,7 +113,7 @@ export const authLevel = cache(async () => {
 /** Admin pelo e-mail, independentemente do segundo fator (usado só para encaminhar). */
 export const adminByEmail = cache(async (): Promise<boolean> => {
   const sb = await createClient();
-  const { data: { user } } = await sb.auth.getUser();
+  const user = await authUser();
   if (!user) return false;
   const { data } = await sb.rpc("admin_email");
   return data === true;

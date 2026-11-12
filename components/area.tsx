@@ -83,7 +83,7 @@ export function OrderBlock({ o, side }: { o: Order; side: "artist" | "buyer" }) 
         {side === "buyer" && <div className="acts">{o.stage < 3 ? <>
           {o.stage === 0 && !bothSigned(o) ? <span className="hint">O pagamento libera depois que as duas partes assinarem o contrato.</span> : <>
           <ActButton action="advanceOrder" args={[o.id]} ok="Etapa atualizada." className="btn sm">{["Pagar em custódia", "Confirmar envio", "Confirmar recebimento"][o.stage]} <Icon n="right" /></ActButton>
-          <span className="hint">Simulação do protótipo: avança uma etapa.</span></>}</>
+          <span className="hint">Confirme aqui depois de concluir esta etapa com a PONCI.</span></>}</>
           : <><span className="tag t-accepted">Certificado PNC-CA-{o.ref.slice(4)}</span><span className="hint">Procedência registrada na rede.</span></>}</div>}
         {side === "buyer" && o.stage === 3 && o.delivered_at && withinWithdrawal(o.delivered_at) && <details className="acts" style={{ display: "block" }}>
           <summary className="linkbtn" style={{ display: "inline-block", cursor: "pointer" }}>Desistir da compra (até {dateBR(new Date(o.delivered_at).getTime() + 7 * 864e5)})</summary>

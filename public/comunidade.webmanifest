@@ -1,0 +1,24 @@
+{
+  "name": "PONCI Comunidade",
+  "short_name": "Comunidade",
+  "description": "Artistas e colecionadores da rede PONCI: processo, ateliê, coleção e agenda.",
+  "lang": "pt-BR",
+  "id": "/?app=comunidade",
+  "start_url": "/?app=comunidade",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "portrait",
+  "background_color": "#F2F0EB",
+  "theme_color": "#F2F0EB",
+  "categories": ["social", "lifestyle"],
+  "icons": [
+    { "src": "/icons/c-icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icons/c-icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/icons/c-icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Publicar nota", "url": "/novo", "icons": [{ "src": "/icons/c-icon-192.png", "sizes": "192x192" }] },
+    { "name": "Atividade", "url": "/atividade", "icons": [{ "src": "/icons/c-icon-192.png", "sizes": "192x192" }] }
+  ]
+}

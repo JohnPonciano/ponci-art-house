@@ -1,4 +1,5 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
+import { RnApp } from "@/components/rn/App";
 import { Suspense } from "react";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
@@ -12,7 +13,14 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: { default: "Comunidade PONCI", template: "%s — Comunidade PONCI" },
   description: "A comunidade da rede PONCI: artistas e colecionadores mostrando processo, ateliê, coleção e agenda.",
-  appleWebApp: { capable: true, title: "Comunidade", statusBarStyle: "black-translucent" },
+  applicationName: "PONCI Comunidade",
+  manifest: "/comunidade.webmanifest",
+  icons: { icon: [{ url: "/icons/c-icon-192.png", sizes: "192x192", type: "image/png" }], apple: [{ url: "/icons/c-apple-touch-icon.png", sizes: "180x180" }] },
+  appleWebApp: { capable: true, title: "Comunidade", statusBarStyle: "default" },
+};
+export const viewport: Viewport = {
+  width: "device-width", initialScale: 1, viewportFit: "cover",
+  themeColor: [{ media: "(prefers-color-scheme: light)", color: "#F2F0EB" }, { media: "(prefers-color-scheme: dark)", color: "#131312" }],
 };
 
 export default async function CommunityLayout({ children }: { children: React.ReactNode }) {
@@ -29,6 +37,7 @@ export default async function CommunityLayout({ children }: { children: React.Re
       <Suspense><RnHeader {...p} /></Suspense>
       <main id="main" tabIndex={-1} className="rn-main">{children}</main>
       <Suspense><RnTabs {...p} /></Suspense>
+      <RnApp />
     </div>
   );
 }

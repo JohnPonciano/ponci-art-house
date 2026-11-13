@@ -12,6 +12,8 @@ export const metadata: Metadata = {
   title: { default: "PONCI — Rede privada de arte", template: "%s — PONCI" },
   description: "Rede fechada, por convite, onde artistas e colecionadores compram e vendem obras de arte diretamente, com curadoria e transação em custódia.",
   applicationName: "PONCI",
+  manifest: "/manifest.webmanifest",
+  icons: { icon: [{ url: "/icons/icon-192.png", sizes: "192x192", type: "image/png" }], apple: [{ url: "/icons/apple-touch-icon.png", sizes: "180x180" }] },
   appleWebApp: { capable: true, title: "PONCI", statusBarStyle: "black-translucent" },
   formatDetection: { telephone: false, email: false, address: false },
 };

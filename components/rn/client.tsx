@@ -5,7 +5,8 @@ import { Icon } from "../Icon";
 import { useToast } from "../Toast";
 import { createClient } from "@/lib/supabase/client";
 import * as D from "@/app/diary-actions";
-import { TOPICS, POSTABLE, type Topic } from "@/lib/community";
+import { TOPICS, POSTABLE, type Topic, type Post } from "@/lib/community";
+import { NoteCard, noteHeight } from "./Notes";
 
 /** Grade em cascata (masonry) com ordem da esquerda para a direita, como no RedNote. */
 export function Masonry({ children, heights }: { children: ReactNode; heights: number[] }) {
@@ -22,12 +23,16 @@ export function Masonry({ children, heights }: { children: ReactNode; heights: n
 /** Coração pequeno do card e grande da nota, com resposta imediata. */
 export function Heart({ postId, on, count, big }: { postId: string; on: boolean; count: number; big?: boolean }) {
   const toast = useToast(); const [s, setS] = useState({ on, count }); const [pending, start] = useTransition();
+  const cur = useRef(s); cur.current = s;
   useEffect(() => setS({ on, count }), [on, count]);
-  const flip = (e: React.MouseEvent) => {
-    e.preventDefault(); e.stopPropagation();
-    const n = { on: !s.on, count: s.count + (s.on ? -1 : 1) }; setS(n);
-    start(async () => { const r = await D.toggleLike(postId, n.on); if (!r.ok) { setS(s); toast(r.error); } });
+  const set = (want: boolean) => {
+    const old = cur.current; if (old.on === want) return;
+    const n = { on: want, count: old.count + (want ? 1 : -1) }; setS(n);
+    start(async () => { const r = await D.toggleLike(postId, want); if (!r.ok) { setS(old); toast(r.error); } });
   };
+  // toque duplo na foto curte (nunca descurte)
+  useEffect(() => { if (!big) return; const f = (e: Event) => (e as CustomEvent).detail === postId && set(true); addEventListener("rn:like", f); return () => removeEventListener("rn:like", f); });
+  const flip = (e: React.MouseEvent) => { e.preventDefault(); e.stopPropagation(); set(!cur.current.on); };
   return <button type="button" className={"rn-heart" + (big ? " big" : "")} aria-pressed={s.on} disabled={pending} onClick={flip} aria-label={s.on ? "Descurtir" : "Curtir"}>
     <Icon n="heart" /><span>{s.count}</span></button>;
 }
@@ -46,10 +51,12 @@ export function ShareBtn({ title }: { title: string }) {
 }
 
 /** Carrossel da nota com pontos (como no RedNote). */
-export function Carousel({ children, count }: { children: ReactNode; count: number }) {
-  const ref = useRef<HTMLDivElement>(null); const [i, setI] = useState(0);
+export function Carousel({ children, count, likeId }: { children: ReactNode; count: number; likeId?: string }) {
+  const ref = useRef<HTMLDivElement>(null); const [i, setI] = useState(0); const [burst, setBurst] = useState(0); const last = useRef(0);
+  const tap = () => { const t = Date.now(); if (likeId && t - last.current < 300) { dispatchEvent(new CustomEvent("rn:like", { detail: likeId })); setBurst(t); } last.current = t; };
   return (
-    <div className="rn-carousel">
+    <div className="rn-carousel" onClick={tap}>
+      {burst > 0 && <span key={burst} className="rn-burst" aria-hidden="true"><Icon n="heart" /></span>}
       <div className="rn-slides" ref={ref} onScroll={(e) => { const el = e.currentTarget; setI(Math.round(el.scrollLeft / el.clientWidth)); }}>{children}</div>
       {count > 1 && <>
         <div className="rn-dots" aria-hidden="true">{Array.from({ length: count }, (_, k) => <i key={k} className={k === i ? "on" : ""} />)}</div>
@@ -123,5 +130,30 @@ export function NoteComposer({ userId, role, base, works = [], topic: t0 }: { us
       {err && <p className="err">{err}</p>}
       <div className="rn-compose-foot"><button className="btn" type="submit" disabled={busy}>{busy ? "Publicando…" : <>Publicar nota <Icon n="right" /></>}</button></div>
     </form>
+  );
+}
+
+/** Feed com rolagem infinita: carrega mais notas quando o fim da grade se aproxima. */
+export function InfiniteNotes({ initial, more: more0, base, liked, mode, topic }: { initial: Post[]; more: boolean; base: string; liked: string[]; mode: "tudo" | "seguindo"; topic: Topic | null }) {
+  const [posts, setPosts] = useState(initial); const [likes, setLikes] = useState(new Set(liked)); const [more, setMore] = useState(more0); const [busy, setBusy] = useState(false);
+  const sent = useRef<HTMLDivElement>(null);
+  useEffect(() => { setPosts(initial); setMore(more0); setLikes(new Set(liked)); }, [initial, more0, liked]);
+  useEffect(() => {
+    if (!more || !sent.current) return;
+    const io = new IntersectionObserver(async ([e]) => {
+      if (!e.isIntersecting || busy) return; setBusy(true);
+      const last = posts[posts.length - 1]; const r = await D.loadNotes(mode, topic, last?.created_at);
+      if (r.ok && r.data) { setPosts((p) => [...p, ...r.data!.posts.filter((x) => !p.some((y) => y.id === x.id))]); setMore(r.data.more); setLikes((l) => new Set([...l, ...r.data!.liked])); }
+      else setMore(false);
+      setBusy(false);
+    }, { rootMargin: "900px 0px" });
+    io.observe(sent.current); return () => io.disconnect();
+  }, [more, busy, posts, mode, topic]);
+  return (
+    <>
+      <Masonry heights={posts.map(noteHeight)}>{posts.map((p) => <NoteCard key={p.id} p={p} base={base} liked={likes.has(p.id)} />)}</Masonry>
+      {more && <div ref={sent} className="rn-loading" aria-live="polite">{busy ? "Carregando mais notas…" : ""}</div>}
+      {!more && posts.length > 8 && <p className="rn-end">Você viu todas as notas por aqui.</p>}
+    </>
   );
 }

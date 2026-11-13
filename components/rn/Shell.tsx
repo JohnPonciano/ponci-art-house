@@ -17,6 +17,7 @@ export function RnHeader({ base, main, initials, buyer, area }: P) {
         <form className="rn-search" role="search" onSubmit={(e) => { e.preventDefault(); router.push(`${base}/busca?q=${encodeURIComponent(q.trim())}`); }}>
           <Icon n="search" /><input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Buscar notas, artistas, técnicas…" aria-label="Buscar" enterKeyHint="search" />
         </form>
+        <Link href={`${base}/busca`} className="rn-search-btn" aria-label="Buscar"><Icon n="search" /></Link>
         <nav className="rn-head-nav" aria-label="PONCI">
           <a href={main + area} className="rn-back"><Icon n={buyer ? "grid" : "home"} /><span>{buyer ? "Acervo" : "Ateliê"}</span></a>
           <Link href={`${base}/novo`} className="btn sm rn-post"><Icon n="plus" /><span>Publicar</span></Link>
@@ -42,4 +43,20 @@ export function RnTabs({ base, unseen }: P) {
       <Link href={`${b}/eu`} aria-current={at("/eu") || at("/u") ? "page" : undefined}><Icon n="user" />Eu</Link>
     </nav>
   );
+}
+
+/** Campo de busca da tela de busca (no iPhone, a busca fica numa tela própria). */
+export function SearchBox({ base, q }: { base: string; q: string }) {
+  const router = useRouter(); const [v, setV] = useState(q);
+  return (
+    <form className="rn-searchpage" role="search" onSubmit={(e) => { e.preventDefault(); router.replace(`${base}/busca?q=${encodeURIComponent(v.trim())}`); }}>
+      <Icon n="search" /><input autoFocus={!q} value={v} onChange={(e) => setV(e.target.value)} placeholder="Buscar notas, artistas, técnicas…" aria-label="Buscar" enterKeyHint="search" type="search" />
+      {v && <button type="button" aria-label="Limpar" onClick={() => setV("")}><Icon n="x" /></button>}
+    </form>
+  );
+}
+/** Voltar: para a tela anterior se veio de dentro da comunidade, senão para o início. */
+export function BackBtn({ base }: { base: string }) {
+  const router = useRouter();
+  return <button type="button" className="rn-backbtn" aria-label="Voltar" onClick={() => (history.length > 1 && document.referrer.includes(location.host) ? router.back() : router.push(base || "/"))}><Icon n="left" /></button>;
 }

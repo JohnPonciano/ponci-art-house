@@ -23,7 +23,8 @@ export function LoginForm({ perfil, next }: { perfil: "artista" | "colecionador"
     const { data: prof } = await sb.from("profiles").select("role").eq("id", data.user.id).maybeSingle();
     const home = admin === true ? "/admin" : prof?.role === "artist" ? "/artista" : "/colecionador";
     const sn = safeNext(next);
-    const dest = sn && (sn.startsWith(home) || /^https:\/\/comunidade\./.test(sn) || sn.startsWith("/c")) ? sn : home;
+    const onCommunity = location.hostname.startsWith("comunidade.");
+    const dest = sn && (onCommunity || sn.startsWith(home) || /^https:\/\/comunidade\./.test(sn) || sn.startsWith("/c")) ? sn : onCommunity ? "/" : home;
     const { data: aal } = await sb.auth.mfa.getAuthenticatorAssuranceLevel();
     const go = aal?.currentLevel === "aal1" && aal?.nextLevel === "aal2" ? `/entrar/verificacao?next=${encodeURIComponent(dest)}` : admin === true ? "/admin" : dest;
     goTo(go, router);

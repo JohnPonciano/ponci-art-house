@@ -1,6 +1,7 @@
 "use server";
 import { revalidatePath } from "next/cache";
 import { createClient, getMe } from "@/lib/supabase/server";
+import { feed, myLikes, type Post, type Topic } from "@/lib/diary";
 import type { Result } from "@/app/actions";
 
 const done = <T,>(data?: T): Result<T> => { revalidatePath("/", "layout"); return { ok: true, data }; };
@@ -99,4 +100,11 @@ export async function moderatePost(postId: string, remove: boolean, reason: stri
   const sb = await createClient();
   const { error } = await sb.rpc("admin_moderate_post", { p_post: postId, p_remove: remove, p_reason: reason });
   return error ? fail(error) : done();
+}
+
+/** Próxima página do feed da comunidade (rolagem infinita). */
+export async function loadNotes(mode: "tudo" | "seguindo", topic: Topic | null, before?: string): Promise<Result<{ posts: Post[]; more: boolean; liked: string[] }>> {
+  const me = await getMe(); if (!me) return { ok: false, error: "Entre novamente." };
+  const [f, likes] = await Promise.all([feed(me.id, mode, topic, before, undefined, 20), myLikes(me.id)]);
+  return { ok: true, data: { posts: f.posts, more: f.more, liked: f.posts.filter((p) => likes.has(p.id)).map((p) => p.id) } };
 }

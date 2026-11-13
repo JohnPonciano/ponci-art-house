@@ -9,6 +9,7 @@ export function safeNext(n?: string | null): string | null {
   if (!n) return null;
   if (n.startsWith("/") && !n.startsWith("//")) return n;
   if (n === COMMUNITY_ORIGIN || n.startsWith(COMMUNITY_ORIGIN + "/")) return n;
+  try { const u = new URL(n); if (/^comunidade\./.test(u.host) && cookieDomain(u.host)) return n; } catch {}
   return null;
 }
 /** Caminho da Comunidade: no subdomínio fica na raiz; no site principal (ou local), em /c. */

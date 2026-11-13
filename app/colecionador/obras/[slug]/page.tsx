@@ -7,6 +7,7 @@ import { WorkCard } from "@/components/area";
 import { ActButton, FavButton, OfferForm } from "@/components/area-client";
 import { Icon } from "@/components/Icon";
 import { Zoomable } from "@/components/Lightbox";
+import { SwipeNav, StickyBuy } from "@/components/Explore";
 import { brl, catNo, CAT, dateBR, dims, dimsIn, EVENT_LABEL, firstName, PSTATUS, STATUS } from "@/lib/format";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
@@ -26,9 +27,11 @@ export default async function ObraColecionador({ params }: { params: Promise<{ s
   const rel = [...cat.filter((x) => x.artist_id === a.artist_id && x.id !== a.id), ...cat.filter((x) => x.artist_id !== a.artist_id && x.cat === a.cat && x.id !== a.id)].slice(0, 3);
   return (
     <div className="wrap">
+      <Link className="backlink" href="/colecionador"><Icon n="left" />Acervo</Link>
       <nav className="crumbs" aria-label="Trilha"><Link href="/colecionador">Acervo</Link><span aria-hidden="true">/</span><Link href={`/colecionador/artistas/${ar.member_code}`}>{ar.display_name}</Link><span aria-hidden="true">/</span><span aria-current="page">{a.title}</span></nav>
       <article className="detail">
-        <div className="detail-media"><Zoomable a={a} caption={`${a.title} · ${ar.display_name} · ${a.year}`}><Slab a={a} label={a.status === "published" ? "Disponível na rede" : STATUS[a.status][0]} /></Zoomable></div>
+        <div className="detail-media"><SwipeNav prev={prev ? `/colecionador/obras/${prev.slug}` : undefined} next={next ? `/colecionador/obras/${next.slug}` : undefined}>
+          <Zoomable a={a} caption={`${a.title} · ${ar.display_name} · ${a.year}`}><Slab a={a} label={a.status === "published" ? "Disponível na rede" : STATUS[a.status][0]} /></Zoomable></SwipeNav></div>
         <div className="detail-info">
           <div className="d-no"><span>{catNo(a.no)}</span><FavButton variant="link" workId={a.id} on={favs.includes(a.id)} title={a.title} /></div>
           <div><h1 className="d-title">{a.title}</h1></div>
@@ -43,7 +46,8 @@ export default async function ObraColecionador({ params }: { params: Promise<{ s
           {myOrder ? <div className="d-buy"><span className="price">{brl(myOrder.amount)}<small>Reservada para você · {myOrder.ref}</small></span><Link className="btn" href="/colecionador/aquisicoes">Acompanhar aquisição <Icon n="right" /></Link></div>
             : a.status !== "published" ? <div className="d-buy"><span className="price">{brl(a.price)}<small>{STATUS[a.status][0]} por outro membro</small></span><Notice>Salve nos favoritos: se a reserva cair, você vê a obra voltar à vitrine.</Notice></div>
             : <>
-              <div className="d-buy">
+              <StickyBuy price={brl(a.price)} />
+              <div className="d-buy" id="comprar">
                 <span className="price">{brl(a.price)}<small>Preço da artista · transação em custódia</small></span>
                 <ActButton action="reserveWork" args={[a.id]} ok="Obra reservada para você." go="/colecionador/aquisicoes"
                   confirm={<>Reservar <b>{a.title}</b> por {brl(a.price)}? A obra sai da vitrine e você tem 48 h para concluir o pagamento em custódia.</>}>Reservar pelo preço <Icon n="right" /></ActButton>

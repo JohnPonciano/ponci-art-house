@@ -75,7 +75,7 @@ export function BuyerProposalActions({ id, status, current, slug }: { id: string
 export function FavButton({ workId, on, title, variant = "card" }: { workId: string; on: boolean; title: string; variant?: "card" | "link" }) {
   const { run, pending } = useAct();
   const toggle = (e: React.MouseEvent) => { e.preventDefault(); run(() => A.toggleFavorite(workId, !on), on ? "Removida dos favoritos." : "Salva nos favoritos."); };
-  if (variant === "link") return <button type="button" className="linkbtn" aria-pressed={on} disabled={pending} onClick={toggle}>{on ? "Salva nos favoritos" : "Salvar nos favoritos"}</button>;
+  if (variant === "link") return <button type="button" className="favlink" aria-pressed={on} disabled={pending} onClick={toggle}><Icon n="bookmark" />{on ? "Salva" : "Salvar"}</button>;
   return <button type="button" className="fav" aria-pressed={on} disabled={pending} onClick={toggle} aria-label={`${on ? "Remover dos" : "Salvar nos"} favoritos: ${title}`}><Icon n="bookmark" /></button>;
 }
 

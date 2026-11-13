@@ -1,3 +1,4 @@
+import { ExploreBar } from "@/components/Explore";
 import Link from "next/link";
 import { requireMember } from "@/lib/supabase/server";
 import { artists, catalogue, favoriteIds } from "@/lib/data";
@@ -26,12 +27,14 @@ export default async function Acervo({ searchParams }: { searchParams: Promise<R
     <div className="wrap">
       <PageHead title="Acervo" label="Somente membros" intro={`Olá, ${firstName(me.full_name)}. Estas obras só estão disponíveis dentro da rede. Reserve pelo preço ou, quando a artista aceita negociar, envie uma proposta direto a ela.`}
         count={<>{all.filter((a) => a.status === "published").length} disponíveis<br />{arts.length} artistas</>} />
+      <ExploreBar active={[f.cat, f.artist, f.price].filter((v) => v !== "all").length} total={list.length}>
       <div className="filters" role="region" aria-label="Filtros">
         <div className="frow" role="group" aria-label="Categoria"><span className="lab">Categoria</span>{chip("cat", "all", "Todas")}{Object.keys(CAT).map((k) => chip("cat", k, CAT[k]))}</div>
         <div className="frow" role="group" aria-label="Artista"><span className="lab">Artista</span>{chip("artist", "all", "Todos")}{arts.map((a: any) => chip("artist", a.id, a.display_name))}</div>
         <div className="frow" role="group" aria-label="Preço"><span className="lab">Preço</span>{Object.keys(PRICE).map((k) => chip("price", k, PRICE[k][0]))}</div>
         <div className="frow"><label className="lab" htmlFor="sort">Ordenar</label><div className="sortwrap"><SortSelect value={f.sort} /></div></div>
       </div>
+      </ExploreBar>
       <div className="results-meta" aria-live="polite"><span>{list.length} {list.length === 1 ? "obra" : "obras"}</span>{any && <Link href={f.sort === "new" ? "/colecionador" : `/colecionador?sort=${f.sort}`} scroll={false} className="linkbtn">Limpar filtros</Link>}</div>
       {list.length ? <div className="board cat">{list.map((a) => <WorkCard key={a.id} a={a} href={`/colecionador/obras/${a.slug}`} sub={a.artist?.display_name} fav={favs.includes(a.id)}
           foot={<><span className="price">{brl(a.price)}<small>{a.status === "published" ? "Disponível" : "Indisponível no momento"}</small></span><span className="go">Ver <Icon n="right" /></span></>} />)}</div>

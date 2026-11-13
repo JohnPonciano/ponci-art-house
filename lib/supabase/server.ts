@@ -35,6 +35,7 @@ export type Me = {
   created_at: string;
   status: "pending" | "active" | "suspended";
   accepts_offers: boolean;
+  show_name: boolean;
   full_name: string;
   email: string;
 };
@@ -55,7 +56,7 @@ export const getMe = cache(async (): Promise<Me | null> => {
   const supabase = await createClient();
   const { data } = await supabase
     .from("profiles")
-    .select("id,role,member_code,display_name,city,practice,bio,created_at,status,accepts_offers,private:profile_private(full_name,email)")
+    .select("id,role,member_code,display_name,city,practice,bio,created_at,status,accepts_offers,show_name,private:profile_private(full_name,email)")
     .eq("id", user.id)
     .maybeSingle();
   if (!data) return null;

@@ -6,8 +6,8 @@ import { Icon } from "./Icon";
 import type { NavItem } from "./Chrome";
 
 const ICON: Record<string, string> = {
-  "/artista": "home", "/artista/diario": "book", "/artista/obras": "image", "/artista/propostas": "swap", "/artista/vendas": "bag",
-  "/colecionador": "grid", "/colecionador/diario": "book", "/colecionador/favoritos": "bookmark", "/colecionador/propostas": "swap", "/colecionador/aquisicoes": "bag",
+  "/artista": "home", "/artista/comunidade": "chat", "/artista/obras": "image", "/artista/propostas": "swap", "/artista/vendas": "bag",
+  "/colecionador": "grid", "/colecionador/comunidade": "chat", "/colecionador/favoritos": "bookmark", "/colecionador/propostas": "swap", "/colecionador/aquisicoes": "bag",
   "/admin/pedidos": "inbox", "/admin/membros": "users", "/admin/curadoria": "image", "/admin/solicitacoes": "user", "/admin/compliance": "scale", "/conta": "user",
 };
 const SHORT: Record<string, string> = { "Solicitações": "Pedidos LGPD", "Aquisições": "Compras" };

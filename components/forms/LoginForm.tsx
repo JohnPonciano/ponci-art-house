@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/client";
 import { Field, isEmail } from "./Field";
 import { Icon } from "../Icon";
 import { DEMO, DEMO_PASSWORD } from "@/lib/format";
+import { safeNext, go as goTo } from "@/lib/site";
 
 export function LoginForm({ perfil, next }: { perfil: "artista" | "colecionador"; next?: string }) {
   const router = useRouter();
@@ -21,10 +22,11 @@ export function LoginForm({ perfil, next }: { perfil: "artista" | "colecionador"
     const { data: admin } = await sb.rpc("admin_email");
     const { data: prof } = await sb.from("profiles").select("role").eq("id", data.user.id).maybeSingle();
     const home = admin === true ? "/admin" : prof?.role === "artist" ? "/artista" : "/colecionador";
-    const dest = next && next.startsWith(home) ? next : home;
+    const sn = safeNext(next);
+    const dest = sn && (sn.startsWith(home) || /^https:\/\/comunidade\./.test(sn) || sn.startsWith("/c")) ? sn : home;
     const { data: aal } = await sb.auth.mfa.getAuthenticatorAssuranceLevel();
     const go = aal?.currentLevel === "aal1" && aal?.nextLevel === "aal2" ? `/entrar/verificacao?next=${encodeURIComponent(dest)}` : admin === true ? "/admin" : dest;
-    router.replace(go); router.refresh();
+    goTo(go, router);
   }
   function submit(ev: React.FormEvent) {
     ev.preventDefault();

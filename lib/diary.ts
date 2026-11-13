@@ -4,7 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { type Topic, type Person, type PostMedia, type Comment, type Post } from "@/lib/community";
 export * from "@/lib/community";
 const PERSON = "id,role,display_name,city,practice,member_code,show_name";
-export const SEL = `id,kind,topic,body,created_at,removed_at,removed_reason,author:profiles!posts_artist_id_fkey(${PERSON}),media:post_media(id,position,path,gen,w,h),work:works(id,slug,title,year,price,status,h,w,gen,image_path,img_w,img_h,medium,no),likes:post_likes(count),comments:post_comments(count)`;
+export const SEL = `id,kind,topic,title,body,created_at,removed_at,removed_reason,author:profiles!posts_artist_id_fkey(${PERSON}),media:post_media(id,position,path,gen,w,h),work:works(id,slug,title,year,price,status,h,w,gen,image_path,img_w,img_h,medium,no),likes:post_likes(count),comments:post_comments(count)`;
 const one = (x: any) => (Array.isArray(x) ? x[0] : x);
 const cnt = (x: any) => (Array.isArray(x) ? x[0]?.count ?? 0 : x?.count ?? 0);
 export const norm = (p: any): Post => ({ ...p, author: one(p.author), work: one(p.work) || null, likes: cnt(p.likes), comments: cnt(p.comments),
@@ -13,9 +13,11 @@ export const PAGE = 12;
 
 export type FeedMode = "tudo" | "seguindo" | "salvos";
 /** Feed cronológico (sem algoritmo), filtrável por espaço. */
-export async function feed(meId: string, mode: FeedMode, topic?: Topic | null, before?: string) {
+export async function feed(meId: string, mode: FeedMode, topic?: Topic | null, before?: string, search?: string, size = PAGE) {
   const sb = await createClient();
-  let q = sb.from("posts").select(SEL).is("removed_at", null).order("created_at", { ascending: false }).limit(PAGE + 1);
+  let q = sb.from("posts").select(SEL).is("removed_at", null).order("created_at", { ascending: false }).limit(size + 1);
+  const term = (search || "").replace(/[%,()*]/g, " ").trim().slice(0, 60);
+  if (term) q = q.or(`title.ilike.%${term}%,body.ilike.%${term}%`);
   if (before) q = q.lt("created_at", before);
   if (topic) q = q.eq("topic", topic);
   if (mode === "seguindo") {
@@ -28,7 +30,24 @@ export async function feed(meId: string, mode: FeedMode, topic?: Topic | null, b
     q = q.in("id", ids);
   }
   const rows = (((await q).data as any[]) || []).map(norm);
-  return { posts: rows.slice(0, PAGE), more: rows.length > PAGE };
+  return { posts: rows.slice(0, size), more: rows.length > size };
+}
+/** Perfil público na comunidade (por código de membro) com números que não expõem seguidores. */
+export async function memberByCode(code: string) {
+  const sb = await createClient();
+  const { data } = await sb.from("profiles").select("id,role,display_name,city,practice,bio,member_code,show_name,created_at").eq("member_code", code).maybeSingle();
+  if (!data) return null;
+  const { data: ps } = await sb.from("posts").select("id,likes:post_likes(count)").eq("artist_id", data.id).is("removed_at", null);
+  const likes = ((ps as any[]) || []).reduce((s, p) => s + cnt(p.likes), 0);
+  return { ...(data as any), posts: (ps || []).length, likes } as Person & { bio: string; created_at: string; posts: number; likes: number };
+}
+export async function likedBy(meId: string, size = 40) {
+  const sb = await createClient();
+  const ids = (await sb.from("post_likes").select("post_id").eq("member_id", meId).order("created_at", { ascending: false }).limit(size)).data?.map((r: any) => r.post_id) || [];
+  if (!ids.length) return [] as Post[];
+  const { data } = await sb.from("posts").select(SEL).in("id", ids).is("removed_at", null);
+  const by = new Map(((data as any[]) || []).map((p) => [p.id, norm(p)]));
+  return ids.map((i) => by.get(i)).filter(Boolean) as Post[];
 }
 export async function postById(id: string) {
   const sb = await createClient();

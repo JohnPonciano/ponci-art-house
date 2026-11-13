@@ -16,7 +16,7 @@ export type Person = { id: string; role: "artist" | "buyer"; display_name: strin
 export type PostMedia = { id: string; position: number; path: string | null; gen: any; w: number; h: number };
 export type Comment = { id: string; post_id: string; parent_id: string | null; body: string; created_at: string; removed_at: string | null; author: Person };
 export type Post = {
-  id: string; kind: "post" | "obra_nova"; topic: Topic; body: string; created_at: string; removed_at: string | null; removed_reason?: string;
+  id: string; kind: "post" | "obra_nova"; topic: Topic; title: string; body: string; created_at: string; removed_at: string | null; removed_reason?: string;
   author: Person; media: PostMedia[]; likes: number; comments: number;
   work: { id: string; slug: string; title: string; year: number; price: number; status: string; h: number; w: number; gen: any; image_path: string | null; img_w: number | null; img_h: number | null; medium: string; no: number } | null;
 };
@@ -39,3 +39,11 @@ export const ago = (iso: string) => {
   if (s < 7 * 86400) return `há ${Math.round(s / 86400)} ${Math.round(s / 86400) === 1 ? "dia" : "dias"}`;
   return dateBR(iso);
 };
+
+/** Título da nota: o título escrito, ou a primeira frase do texto, ou a obra. */
+export function noteTitle(p: Pick<Post, "title" | "body" | "work" | "kind">) {
+  if (p.title) return p.title;
+  if (p.kind === "obra_nova" && p.work) return `Obra nova: ${p.work.title}`;
+  const first = (p.body || "").split(/(?<=[.!?])\s|\n/)[0].trim();
+  return first.length > 80 ? first.slice(0, 77).trimEnd() + "…" : first || (p.work ? p.work.title : "Nota");
+}

@@ -7,7 +7,7 @@ const done = <T,>(data?: T): Result<T> => { revalidatePath("/", "layout"); retur
 const fail = (e: any): Result<any> => ({ ok: false, error: e?.message || "Algo deu errado." });
 
 const TOPIC_OK = ["geral", "processo", "exposicoes", "colecao", "mercado"];
-export async function createPost(body: string, media: { path: string; w: number; h: number }[], workId?: string | null, topic = "geral"): Promise<Result<string>> {
+export async function createPost(body: string, media: { path: string; w: number; h: number }[], workId?: string | null, topic = "geral", title = ""): Promise<Result<string>> {
   const me = await getMe();
   if (!me) return { ok: false, error: "Entre novamente." };
   if (me.status !== "active") return { ok: false, error: "Sua conta ainda não está ativa." };
@@ -17,7 +17,7 @@ export async function createPost(body: string, media: { path: string; w: number;
   if (media.some((m) => !m.path.startsWith(me.id + "/diario/"))) return { ok: false, error: "Imagem inválida." };
   if (!TOPIC_OK.includes(topic)) topic = "geral";
   const sb = await createClient();
-  const { data, error } = await sb.from("posts").insert({ artist_id: me.id, body: text.slice(0, 2200), work_id: me.role === "artist" ? workId || null : null, topic }).select("id").single();
+  const { data, error } = await sb.from("posts").insert({ artist_id: me.id, body: text.slice(0, 2200), title: title.trim().slice(0, 90), work_id: me.role === "artist" ? workId || null : null, topic }).select("id").single();
   if (error) return fail(error);
   if (media.length) {
     const r = await sb.from("post_media").insert(media.map((m, i) => ({ post_id: data.id, position: i, path: m.path, w: Math.round(m.w), h: Math.round(m.h) })));

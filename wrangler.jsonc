@@ -12,7 +12,8 @@
   "workers_dev": true,
   "routes": [
     { "pattern": "ponci.art", "custom_domain": true },
-    { "pattern": "www.ponci.art", "custom_domain": true }
+    { "pattern": "www.ponci.art", "custom_domain": true },
+    { "pattern": "comunidade.ponci.art", "custom_domain": true }
   ],
   "vars": {
     "NEXT_PUBLIC_SUPABASE_URL": "https://wcdetrugbkgmapeehyxg.supabase.co",

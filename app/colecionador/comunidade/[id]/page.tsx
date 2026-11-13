@@ -1,9 +1,6 @@
-import { requireMember } from "@/lib/supabase/server";
-import { CommunityPost } from "@/components/Community";
-
-export const metadata = { title: "Comunidade" };
-
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
+import { communityHome } from "@/lib/site";
 export default async function Publicacao({ params }: { params: Promise<{ id: string }> }) {
-  const me = await requireMember("buyer");
-  return <CommunityPost me={me} base="/colecionador/comunidade" id={(await params).id} />;
+  redirect(communityHome((await headers()).get("host")) + "/p/" + (await params).id);
 }

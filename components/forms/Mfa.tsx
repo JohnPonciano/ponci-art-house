@@ -83,7 +83,7 @@ export function MfaChallenge({ next }: { next: string }) {
     if (!f) { setBusy(false); setErr("Nenhum autenticador ativo nesta conta."); return; }
     const { error } = await sb.auth.mfa.challengeAndVerify({ factorId: f.id, code: code.replace(/\D/g, "") });
     if (error) { setBusy(false); setErr(msg(error)); setCode(""); return; }
-    router.replace(next); router.refresh();
+    if (/^https?:\/\//.test(next)) location.assign(next); else { router.replace(next); router.refresh(); }
   }
   return (
     <form className="form" onSubmit={submit} noValidate>

@@ -3,13 +3,14 @@ import { PublicShell } from "@/components/Shells";
 import { PageHead, Notice } from "@/components/ui";
 import { MfaChallenge } from "@/components/forms/Mfa";
 import { createClient, authLevel } from "@/lib/supabase/server";
+import { safeNext } from "@/lib/site";
 
 export const metadata = { title: "Verificação" };
 export const dynamic = "force-dynamic";
 
 export default async function Verificacao({ searchParams }: { searchParams: Promise<{ next?: string }> }) {
   const n = (await searchParams).next;
-  const next = n && n.startsWith("/") && !n.startsWith("//") ? n : "/entrar/redirecionar";
+  const next = safeNext(n) || "/entrar/redirecionar";
   const { data: { user } } = await (await createClient()).auth.getUser();
   if (!user) redirect("/entrar");
   const lvl = await authLevel();

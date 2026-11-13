@@ -1,15 +1,18 @@
 import "server-only";
 import { createServerClient } from "@supabase/ssr";
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
+import { cookieDomain } from "@/lib/site";
 import { cache } from "react";
 import { redirect } from "next/navigation";
 
 export async function createClient() {
   const cookieStore = await cookies();
+  const domain = cookieDomain((await headers()).get("host"));
   return createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
     {
+      cookieOptions: domain ? { domain } : undefined,
       cookies: {
         getAll: () => cookieStore.getAll(),
         setAll: (list) => {

@@ -1,4 +1,6 @@
 import { redirect } from "next/navigation";
+import { headers } from "next/headers";
+import { communityHome } from "@/lib/site";
 import { AreaShell } from "@/components/Shells";
 import { PendingMember } from "@/components/PendingMember";
 import { KycBanner } from "@/components/KycBanner";
@@ -17,8 +19,9 @@ export default async function ColecionadorLayout({ children }: { children: React
     return <AreaShell me={me} nav={[]} tag={"Área do colecionador"}><PendingMember me={me} /></AreaShell>;
   const [ps, favs, act] = await Promise.all([proposalsForBuyer(me.id), favoriteIds(me.id), activity()]);
   const c = ps.filter((p) => p.status === "countered").length;
+  const com = communityHome((await headers()).get("host"));
   const nav = [
-    { href: "/colecionador", label: "Acervo" }, { href: "/colecionador/comunidade", label: "Comunidade", badge: act.unseen || undefined }, { href: "/colecionador/favoritos", label: "Favoritos", badge: favs.length || undefined },
+    { href: "/colecionador", label: "Acervo" }, { href: com, label: "Comunidade", badge: act.unseen || undefined }, { href: "/colecionador/favoritos", label: "Favoritos", badge: favs.length || undefined },
     { href: "/colecionador/propostas", label: "Propostas", badge: c || undefined }, { href: "/colecionador/aquisicoes", label: "Aquisições" },
   ];
   return <AreaShell me={me} nav={[...nav, { href: "/conta", label: "Conta" }]} tag="Área do colecionador">{!kyc?.completed_at && <KycBanner />}{children}</AreaShell>;

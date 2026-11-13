@@ -1,9 +1,9 @@
-import { requireMember } from "@/lib/supabase/server";
-import { CommunityFeed } from "@/components/Community";
-
-export const metadata = { title: "Comunidade" };
-
-export default async function Comunidade({ searchParams }: { searchParams: Promise<{ aba?: string; t?: string; antes?: string }> }) {
-  const me = await requireMember("artist");
-  return <CommunityFeed me={me} base="/artista/comunidade" sp={await searchParams} />;
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
+import { communityHome } from "@/lib/site";
+/** A Comunidade mudou para comunidade.ponci.art. */
+export default async function Comunidade({ searchParams }: { searchParams: Promise<Record<string, string>> }) {
+  const sp = new URLSearchParams(await searchParams); if (sp.get("aba") !== "seguindo") sp.delete("aba");
+  const home = communityHome((await headers()).get("host"));
+  redirect((home === "/c" ? "/c" : home + "/") + (sp.size ? "?" + sp : ""));
 }

@@ -19,13 +19,14 @@ export function TabBar({ nav }: { nav: NavItem[] }) {
   // destaque otimista: a aba acende no toque, antes da página chegar
   const [tapped, setTapped] = useState<string | null>(null);
   useEffect(() => setTapped(null), [path]);
-  const main = nav.filter((n) => ICON[n.href]).slice(0, 4);
+  const icon = (n: NavItem) => ICON[n.href] || (n.label === "Comunidade" ? "chat" : "");
+  const main = nav.filter((n) => icon(n)).slice(0, 4);
   const cur = tapped ?? [...nav].map((n) => n.href).filter((h) => path === h || path.startsWith(h + "/")).sort((a, b) => b.length - a.length)[0];
   return (
     <nav className="tabbar" aria-label="Navegação" style={{ ["--tabs" as any]: main.length + 1 }}>
       {main.map((n) => (
         <Link key={n.href} href={n.href} onClick={() => n.href !== cur && setTapped(n.href)} aria-current={cur === n.href ? "page" : undefined}>
-          <Icon n={ICON[n.href]} />{SHORT[n.label] || n.label}
+          <Icon n={icon(n)} />{SHORT[n.label] || n.label}
           {n.badge ? <span className="tb-badge" aria-label={`${n.badge} novos`}>{n.badge}</span> : null}
         </Link>))}
       <button type="button" onClick={() => window.dispatchEvent(new Event("ponci:menu"))} aria-current={cur && !main.some((m) => m.href === cur) ? "page" : undefined}>

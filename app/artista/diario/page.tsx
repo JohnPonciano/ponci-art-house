@@ -1,6 +1,5 @@
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-/** O Diário virou Comunidade: links antigos continuam funcionando. */
-export default async function Diario({ searchParams }: { searchParams: Promise<Record<string, string>> }) {
-  const sp = new URLSearchParams(await searchParams); if (sp.get("aba") === "rede") sp.delete("aba");
-  redirect("/artista/comunidade" + (sp.size ? "?" + sp : ""));
-}
+import { communityHome } from "@/lib/site";
+/** O Diário virou a Comunidade (comunidade.ponci.art). */
+export default async function Diario() { const h = communityHome((await headers()).get("host")); redirect(h === "/c" ? "/c" : h + "/"); }

@@ -5,15 +5,18 @@ import { PageHead, Slab } from "@/components/ui";
 import { LoginForm } from "@/components/forms/LoginForm";
 import { DEMO_ART } from "@/lib/demoArt";
 import { adminByEmail, getMe } from "@/lib/supabase/server";
+import { safeNext } from "@/lib/site";
 
 export const metadata: Metadata = { title: "Entrar" };
 
 export default async function Entrar({ searchParams }: { searchParams: Promise<{ perfil?: string; next?: string; erro?: string }> }) {
   const sp = await searchParams;
   const perfil = sp.perfil === "colecionador" ? "colecionador" : "artista";
-  if (await adminByEmail()) redirect("/admin");
+  const next = safeNext(sp.next);
+  const toCommunity = !!next && (next.startsWith("https://comunidade.") || next.startsWith("/c"));
+  if (await adminByEmail()) redirect(toCommunity ? next! : "/admin");
   const me = await getMe();
-  if (me) redirect(me.role === "artist" ? "/artista" : "/colecionador");
+  if (me) redirect(toCommunity ? next! : me.role === "artist" ? "/artista" : "/colecionador");
   const A = perfil === "artista";
   return (
     <PublicShell>

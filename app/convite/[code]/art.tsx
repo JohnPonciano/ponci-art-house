@@ -21,7 +21,7 @@ function Panel({ c, w, h }: { c: InviteCard; w: number; h: number }) {
     <div style={{ width: w, height: h, background: WALL, display: "flex", alignItems: "center", justifyContent: "center" }}>
       <div style={{ width: w * 0.62, height: h * 0.62, background: PAPER, display: "flex", position: "relative", boxShadow: "14px 18px 26px rgba(18,18,17,.3)" }}>
         <div style={{ position: "absolute", left: "10%", top: "12%", width: "52%", height: "44%", background: OCRE }} />
-        <div style={{ position: "absolute", right: "10%", bottom: "10%", width: "46%", height: "46%", borderRadius: 9999, background: INK }} />
+        <div style={{ position: "absolute", right: "10%", bottom: "10%", width: Math.round(Math.min(w, h) * 0.62 * 0.5), height: Math.round(Math.min(w, h) * 0.62 * 0.5), borderRadius: 9999, background: INK }} />
         <div style={{ position: "absolute", left: "10%", bottom: "14%", width: "30%", height: 6, background: INK }} />
       </div>
     </div>);

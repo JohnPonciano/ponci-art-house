@@ -110,3 +110,11 @@ export async function signContract(contractId: string): Promise<Result> {
 export async function createRequest(kind: string, details: string, orderId?: string): Promise<Result<string>> {
   return rpc("create_request", { p_kind: kind, p_details: details, p_order: orderId ?? null });
 }
+
+/* ---------- Convites de membros (até 3) ---------- */
+export async function createMemberInvite(role: "artist" | "buyer", name: string): Promise<Result<string>> {
+  return rpc("member_create_invite", { p_role: role, p_name: name }) as any;
+}
+export async function cancelMemberInvite(code: string): Promise<Result> {
+  return rpc("member_cancel_invite", { p_code: code });
+}

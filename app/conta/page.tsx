@@ -8,6 +8,7 @@ import { Icon } from "@/components/Icon";
 import { getMe, myKyc, createClient, authLevel, DOC_PATH } from "@/lib/supabase/server";
 import { ARTIST_NAV, BUYER_NAV } from "@/lib/nav";
 import { dateBR } from "@/lib/format";
+import { MemberInvites } from "@/components/MemberInvites";
 
 export const metadata = { title: "Minha conta" };
 export const dynamic = "force-dynamic";
@@ -17,11 +18,12 @@ export default async function Conta() {
   const me = await getMe();
   if (!me) redirect("/entrar");
   const sb = await createClient();
-  const [kyc, lvl, acc, reqs, factors] = await Promise.all([
+  const [kyc, lvl, acc, reqs, factors, invs] = await Promise.all([
     myKyc(), authLevel(),
     sb.from("acceptances").select("id,doc_slug,doc_version,doc_sha256,method,accepted_at,ip").eq("user_id", me.id).order("accepted_at", { ascending: false }),
     sb.from("member_requests").select("id,ref,kind,details,status,response,created_at,resolved_at").eq("user_id", me.id).order("created_at", { ascending: false }),
     sb.auth.mfa.listFactors(),
+    sb.from("invites").select("code,role,uses_left,invitee_name,created_at").eq("invited_by", me.id).order("created_at", { ascending: false }),
   ]);
   const mfaOn = (factors.data?.totp || []).some((f) => f.status === "verified");
   const A = me.role === "artist";
@@ -29,6 +31,11 @@ export default async function Conta() {
     <AreaShell me={me} nav={A ? ARTIST_NAV : BUYER_NAV} tag={A ? "Área do artista" : "Área do colecionador"}>
       <div className="wrap">
         <PageHead title="Conta" label="Minha conta" intro="Identificação, segurança, documentos aceitos e seus direitos sobre os dados pessoais." count={<>{me.member_code}<br />{me.email}</>} />
+
+        {me.status === "active" && <section className="sub-sec" id="convites" aria-labelledby="cv-t">
+          <SecHead n="—" eyebrow="Convites" title={<>Traga quem <em>importa</em></>} id="cv-t" />
+          <div style={{ paddingTop: 20 }}><MemberInvites invites={(invs.data as any) || []} /></div>
+        </section>}
 
         <section className="sub-sec" id="identificacao" aria-labelledby="id-t">
           <SecHead n="01" eyebrow="Identificação" title={kyc?.completed_at ? <>Cadastro <em>completo</em></> : <>Complete seu <em>cadastro</em></>} id="id-t" />

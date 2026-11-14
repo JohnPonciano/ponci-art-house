@@ -24,5 +24,5 @@ export default async function ColecionadorLayout({ children }: { children: React
     { href: "/colecionador", label: "Acervo" }, { href: com, label: "Comunidade", badge: act.unseen || undefined }, { href: "/colecionador/favoritos", label: "Favoritos", badge: favs.length || undefined },
     { href: "/colecionador/propostas", label: "Propostas", badge: c || undefined }, { href: "/colecionador/aquisicoes", label: "Aquisições" },
   ];
-  return <AreaShell me={me} nav={[...nav, { href: "/conta", label: "Conta" }]} tag="Área do colecionador">{!kyc?.completed_at && <KycBanner />}{children}</AreaShell>;
+  return <AreaShell me={me} nav={[...nav, { href: "/conta#convites", label: "Convidar" }, { href: "/conta", label: "Conta" }]} tag="Área do colecionador">{!kyc?.completed_at && <KycBanner />}{children}</AreaShell>;
 }

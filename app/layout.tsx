@@ -9,6 +9,7 @@ const instrument = Instrument_Serif({ subsets: ["latin"], weight: "400", style: 
 const plex = IBM_Plex_Mono({ subsets: ["latin"], weight: ["400", "500"], variable: "--font-plex", display: "swap" });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://ponci.art"),
   title: { default: "PONCI — Rede privada de arte", template: "%s — PONCI" },
   description: "Rede fechada, por convite, onde artistas e colecionadores compram e vendem obras de arte diretamente, com curadoria e transação em custódia.",
   applicationName: "PONCI",

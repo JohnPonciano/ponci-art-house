@@ -24,5 +24,5 @@ export default async function ArtistaLayout({ children }: { children: React.Reac
     { href: "/artista", label: "Ateliê" }, { href: com, label: "Comunidade", badge: unseen || undefined }, { href: "/artista/obras", label: "Obras" },
     { href: "/artista/propostas", label: "Propostas", badge: open || undefined }, { href: "/artista/vendas", label: "Vendas" },
   ];
-  return <AreaShell me={me} nav={[...nav, { href: "/conta", label: "Conta" }]} tag="Área do artista">{!kyc?.completed_at && <KycBanner />}{children}</AreaShell>;
+  return <AreaShell me={me} nav={[...nav, { href: "/conta#convites", label: "Convidar" }, { href: "/conta", label: "Conta" }]} tag="Área do artista">{!kyc?.completed_at && <KycBanner />}{children}</AreaShell>;
 }

@@ -1,6 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import { COMMUNITY_ORIGIN, MAIN_ORIGIN, cookieDomain, isCommunityHost } from "@/lib/site";
+import { checkAal, signAal } from "@/lib/env";
 
 const AREAS: Record<string, string> = { "/artista": "artista", "/colecionador": "colecionador", "/conta": "artista", "/aceite": "artista", "/contrato": "artista" };
 // rotas que o subdomínio comunidade.ponci.art serve (mapeadas para /c/*); o resto vai para o site principal
@@ -50,10 +51,16 @@ export async function updateSession(request: NextRequest) {
   const back = community ? origin + path + request.nextUrl.search : path + request.nextUrl.search;
   // segundo fator: quem tem autenticador ativo precisa passar pelo código antes das áreas restritas
   const guarded = ["/artista", "/colecionador", "/conta", "/admin", "/aceite", "/contrato", "/c"].some((p) => here === p || here.startsWith(p + "/"));
+  let aalCookie: string | null = null;
   if (user && guarded && user.aal !== "aal2") {
-    const { data: aal } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
-    if (aal?.currentLevel === "aal1" && aal?.nextLevel === "aal2")
-      return NextResponse.redirect(`${community ? origin : request.nextUrl.origin}/entrar/verificacao?next=${encodeURIComponent(back)}`);
+    const sub = String(user.sub), sid = String((user as any).session_id || "");
+    // conferido nas últimas 12 h para esta sessão? (cookie assinado) — senão pergunta ao Supabase
+    if (!(sid && (await checkAal(request.cookies.get("ponci-aal")?.value, sub, sid)))) {
+      const { data: aal } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+      if (aal?.currentLevel === "aal1" && aal?.nextLevel === "aal2")
+        return NextResponse.redirect(`${community ? origin : request.nextUrl.origin}/entrar/verificacao?next=${encodeURIComponent(back)}`);
+      if (sid) aalCookie = await signAal(sub, sid);
+    }
   }
   if ((path === "/admin" || path.startsWith("/admin/")) && !user) {
     const url = request.nextUrl.clone();
@@ -69,6 +76,7 @@ export async function updateSession(request: NextRequest) {
     url.search = `?perfil=${AREAS[area]}&next=${encodeURIComponent(path + request.nextUrl.search)}`;
     return NextResponse.redirect(url);
   }
+  if (aalCookie) response.cookies.set("ponci-aal", aalCookie, { httpOnly: true, secure: !!domain, sameSite: "lax", path: "/", maxAge: 12 * 3600, ...(domain ? { domain } : {}) });
   // login único: cookies antigos (só de ponci.art) passam a valer para *.ponci.art, uma vez por navegador
   if (domain && !refreshed && !request.cookies.get("ponci-sso")) {
     const sb = request.cookies.getAll().filter((c) => c.name.startsWith("sb-"));

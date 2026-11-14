@@ -3,7 +3,7 @@ import { ArtImage } from "../ArtImage";
 import { Icon } from "../Icon";
 import { initials, brl, catNo } from "@/lib/format";
 import { TOPICS, personName, personLine, ago, noteTitle, type Post, type Comment } from "@/lib/community";
-import { Heart, Masonry, Carousel, SaveToggle, ShareBtn, CommentPill } from "./client";
+import { Heart, Masonry, Carousel, SaveToggle, ShareBtn, CommentPill, PreviewLink } from "./client";
 import { BackBtn } from "./Shell";
 import { Thread, FollowBtn, InterestBtn, ReportBtn, DeleteBtn } from "../diary-client";
 
@@ -19,13 +19,13 @@ export function NoteCard({ p, base, liked }: { p: Post; base: string; liked: boo
   const c = cover(p);
   return (
     <article className="rn-card">
-      <Link href={`${base}/p/${p.id}`} className="rn-card-link">
+      <PreviewLink href={`${base}/p/${p.id}`} className="rn-card-link" preview={{ id: p.id, title: noteTitle(p), author: personName(p.author), line: personLine(p.author), ini: p.author.role === "artist" || p.author.show_name ? initials(p.author.display_name) : "C", buyer: p.author.role === "buyer", ratio: c ? c.w / c.h : 0.75, topic: TOPICS[p.topic]?.[0] || "" }}>
         {c ? <div className="rn-cover" style={{ aspectRatio: `${Math.max(.75, Math.min(1.34, c.w / c.h))}` }}><ArtImage a={art(p, c)} max={560} />{p.media.length > 1 && <span className="rn-multi" aria-label={`${p.media.length} fotos`}><Icon n="image" />{p.media.length}</span>}</div>
           : <div className={"rn-textcover t-" + p.topic}><span>#{TOPICS[p.topic]?.[0]}</span><p>{noteTitle(p)}</p></div>}
         <h3 className="rn-card-title">{noteTitle(p)}</h3>
-      </Link>
+      </PreviewLink>
       <div className="rn-card-foot">
-        <Link href={`${base}/u/${p.author.member_code}`} className="rn-author"><Avatar p={p.author} sm /><span>{personName(p.author)}</span></Link>
+        <Link href={`${base}/u/${p.author.member_code}`} prefetch={false} className="rn-author"><Avatar p={p.author} sm /><span>{personName(p.author)}</span></Link>
         <Heart postId={p.id} on={liked} count={p.likes} />
       </div>
     </article>

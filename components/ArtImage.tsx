@@ -21,7 +21,10 @@ export const imageUrl = (path: string) =>
 
 /** Foto enviada pela artista, ou composição generativa desenhada no navegador. */
 export function ArtImage({ a, max = 1000 }: { a: ArtLike; max?: number }) {
-  const photo = a.preview || (a.image_path ? imageUrl(a.image_path) : null);
+  // na grade, fotos da comunidade usam a miniatura (-t.jpg); se não existir, cai para a original
+  const thumb = !a.preview && a.image_path && max <= 640 && /\/(diario|obras-gen)\/[^/]+\.jpg$/.test(a.image_path) && !a.image_path.endsWith("-t.jpg") ? imageUrl(a.image_path.replace(/\.jpg$/, "-t.jpg")) : null;
+  const photo = a.preview || thumb || (a.image_path ? imageUrl(a.image_path) : null);
+  const full = a.image_path ? imageUrl(a.image_path) : null;
   const { W, H } = renderSize(photo ? a : { h: a.h, w: a.w }, max);
   const [src, setSrc] = useState<string>(photo || BLANK);
   const [ready, setReady] = useState(!!photo);
@@ -45,7 +48,8 @@ export function ArtImage({ a, max = 1000 }: { a: ArtLike; max?: number }) {
   return (
     // eslint-disable-next-line @next/next/no-img-element
     <img
-      ref={ref} src={src} data-art="" loading={photo ? "lazy" : undefined} className={ready ? "ready" : ""} width={W} height={H}
+      ref={ref} src={src} data-art="" loading={photo ? "lazy" : undefined}
+      onError={thumb && full ? (e) => { const t = e.currentTarget; if (t.src !== full) t.src = full; } : undefined} className={ready ? "ready" : ""} width={W} height={H}
       style={{ aspectRatio: `${W}/${H}` }} decoding="async"
       alt={(photo ? "Fotografia da obra: " : "Composição generativa no lugar da fotografia da obra: ") + `${a.title}, ${a.year}`}
     />

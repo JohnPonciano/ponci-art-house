@@ -25,11 +25,10 @@ export const viewport: Viewport = {
 
 export default async function CommunityLayout({ children }: { children: React.ReactNode }) {
   const host = (await headers()).get("host"); const main = isCommunityHost(host) ? MAIN_ORIGIN : ""; const base = communityBase(host);
-  const [me, docs] = await Promise.all([getMe(), pendingDocs()]);
+  const [me, docs, act] = await Promise.all([getMe(), pendingDocs(), activity()]);
   if (!me) redirect(main + "/entrar");
   if (docs.length) redirect(main + "/aceite?next=" + encodeURIComponent(me.role === "artist" ? "/artista" : "/colecionador"));
   if (me.status !== "active") redirect(main + (me.role === "artist" ? "/artista" : "/colecionador"));
-  const act = await activity();
   const p = { base, main, code: me.member_code, unseen: act.unseen, initials: me.role === "artist" || me.show_name ? initials(me.display_name) : "C", buyer: me.role === "buyer", area: me.role === "buyer" ? "/colecionador" : "/artista" };
   return (
     <div className="rn">

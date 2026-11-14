@@ -67,7 +67,7 @@ export default async function Home() {
         <div className="board">{sel.map((a) => (
           <article className="card" key={a.id}><Link className="card-link" href={`/colecionador/obras/${a.slug}`}>
             <div className="card-top"><span>{catNo(a.no)}</span><span>{a.year}</span></div>
-            <div className="card-img veil"><ArtImage a={a} /></div>
+            <div className="card-img veil"><ArtImage a={a} max={560} /></div>
             <div className="card-cap"><h3 className="card-title">{a.title}</h3><p className="card-en">{a.artist_name}</p>
               <p className="card-meta first">{a.medium}</p><p className="card-meta">{dims(a)}{a.edition ? " · " + a.edition : ""}</p></div>
             <div className="card-foot"><span className="locked-p"><Icon n="lock" /> Preço para membros</span><span className="go">Ver <Icon n="right" /></span></div>

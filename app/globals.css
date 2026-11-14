@@ -1323,3 +1323,6 @@ html{-webkit-tap-highlight-color:transparent}
   .rn-note-side > .rn-note-head{display:none}
   .rn-tabs .tb-badge{top:3px;left:calc(50% + 6px)}
 }
+.rn-card > span.skel{display:block}
+.rn-preview .rn-note-media{min-height:240px}
+@media (max-width:820px){ .rn:has(.rn-preview) .rn-head,.rn:has(.rn-preview) .rn-tabs{display:none} }

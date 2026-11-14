@@ -1,6 +1,7 @@
 "use client";
 import { Children, useEffect, useRef, useState, useTransition, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { Icon } from "../Icon";
 import { useToast } from "../Toast";
 import { createClient } from "@/lib/supabase/client";
@@ -74,7 +75,8 @@ export function CommentPill() {
     <Icon n="edit" />Diga algo…</button>;
 }
 
-type Shot = { blob: Blob; url: string; w: number; h: number };
+type Shot = { blob: Blob; thumb: Blob; url: string; w: number; h: number };
+const toJpeg = (cv: HTMLCanvasElement, q: number) => new Promise<Blob>((r) => cv.toBlob((b) => r(b!), "image/jpeg", q));
 /** Publicar uma nota: fotos primeiro, depois título, texto e espaço. */
 export function NoteComposer({ userId, role, base, works = [], topic: t0 }: { userId: string; role: "artist" | "buyer"; base: string; works?: { id: string; title: string }[]; topic?: Topic | null }) {
   const router = useRouter(); const toast = useToast();
@@ -89,8 +91,12 @@ export function NoteComposer({ userId, role, base, works = [], topic: t0 }: { us
       const bmp = await createImageBitmap(f); const k = Math.min(1, 1600 / Math.max(bmp.width, bmp.height));
       const cv = document.createElement("canvas"); cv.width = Math.round(bmp.width * k); cv.height = Math.round(bmp.height * k);
       cv.getContext("2d")!.drawImage(bmp, 0, 0, cv.width, cv.height);
-      const blob: Blob = await new Promise((r) => cv.toBlob((b) => r(b!), "image/jpeg", 0.85));
-      next.push({ blob, url: URL.createObjectURL(blob), w: cv.width, h: cv.height });
+      const blob = await toJpeg(cv, 0.85);
+      // miniatura para a grade (lado maior 640 px): carrega rápido no 4G
+      const kt = Math.min(1, 640 / Math.max(cv.width, cv.height)); const ct = document.createElement("canvas");
+      ct.width = Math.round(cv.width * kt); ct.height = Math.round(cv.height * kt); ct.getContext("2d")!.drawImage(cv, 0, 0, ct.width, ct.height);
+      const thumb = await toJpeg(ct, 0.8);
+      next.push({ blob, thumb, url: URL.createObjectURL(blob), w: cv.width, h: cv.height });
     }
     setShots(next);
   }
@@ -100,9 +106,13 @@ export function NoteComposer({ userId, role, base, works = [], topic: t0 }: { us
     setBusy(true);
     const sb = createClient(); const media: { path: string; w: number; h: number }[] = [];
     for (const s of shots) {
-      const path = `${userId}/diario/${crypto.randomUUID()}.jpg`;
-      const { error } = await sb.storage.from("works").upload(path, s.blob, { contentType: "image/jpeg" });
-      if (error) { setBusy(false); setErr("Falha ao enviar foto: " + error.message); return; }
+      const id = crypto.randomUUID(), path = `${userId}/diario/${id}.jpg`;
+      const [a, b] = await Promise.all([
+        sb.storage.from("works").upload(path, s.blob, { contentType: "image/jpeg", cacheControl: "31536000" }),
+        sb.storage.from("works").upload(`${userId}/diario/${id}-t.jpg`, s.thumb, { contentType: "image/jpeg", cacheControl: "31536000" }),
+      ]);
+      if (a.error) { setBusy(false); setErr("Falha ao enviar foto: " + a.error.message); return; }
+      void b;
       media.push({ path, w: s.w, h: s.h });
     }
     const r = await D.createPost(body || title, media, workId || null, topic, title);
@@ -155,5 +165,32 @@ export function InfiniteNotes({ initial, more: more0, base, liked, mode, topic }
       {more && <div ref={sent} className="rn-loading" aria-live="polite">{busy ? "Carregando mais notas…" : ""}</div>}
       {!more && posts.length > 8 && <p className="rn-end">Você viu todas as notas por aqui.</p>}
     </>
+  );
+}
+
+/* Abertura instantânea da nota: o card guarda capa e título; a tela de carregamento mostra isso na hora. */
+export type Preview = { id: string; title: string; author: string; line: string; ini: string; buyer: boolean; ratio: number; topic: string; src?: string };
+const PREV = new Map<string, Preview>();
+export function PreviewLink({ href, className, preview, children }: { href: string; className?: string; preview: Preview; children: ReactNode }) {
+  return <Link href={href} prefetch={false} className={className} onClick={(e) => {
+    const img = (e.currentTarget as HTMLElement).querySelector("img") as HTMLImageElement | null;
+    PREV.set(preview.id, { ...preview, src: img?.classList.contains("ready") ? img.src : undefined });
+  }}>{children}</Link>;
+}
+export function NotePreview() {
+  const [p, setP] = useState<Preview | null>(null);
+  useEffect(() => { const id = location.pathname.split("/p/")[1]?.split(/[/?#]/)[0]; if (id && PREV.has(id)) setP(PREV.get(id)!); }, []);
+  return (
+    <div className="rn-wrap rn-notepage" aria-busy="true" aria-label="Abrindo nota">
+      <article className="rn-note rn-preview">
+        <header className="rn-note-head rn-note-top"><span className="rn-backbtn" /><span className="rn-author lg"><span className={"rn-av" + (p?.buyer ? " av-buyer" : "")}>{p?.ini || ""}</span><span><b>{p?.author || "\u00a0"}</b><small>{p?.line || "\u00a0"}</small></span></span></header>
+        <div className="rn-note-media">
+          {p?.src ? <div className="rn-slide">{/* eslint-disable-next-line @next/next/no-img-element */}<img src={p.src} alt="" /></div>
+            : <div className="skel" style={{ aspectRatio: `${p?.ratio || .8}`, width: "100%" }} />}
+        </div>
+        <div className="rn-note-side"><div className="rn-note-body"><h1>{p?.title || <span className="skel" style={{ display: "block", height: 28, width: "70%" }} />}</h1>
+          <span className="skel" style={{ display: "block", height: 14, width: "92%" }} /><span className="skel" style={{ display: "block", height: 14, width: "64%" }} /></div></div>
+      </article>
+    </div>
   );
 }

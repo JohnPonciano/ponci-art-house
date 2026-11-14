@@ -12,7 +12,7 @@ export function WorkCard({ a, href, foot, sub, fav }: { a: Work; href: string; f
   return (
     <article className="card"><Link className="card-link" href={href}>
       <div className="card-top"><span>{catNo(a.no)}</span><span>{a.year}</span></div>
-      <div className="card-img"><ArtImage a={a} /></div>
+      <div className="card-img"><ArtImage a={a} max={560} /></div>
       <div className="card-cap">
         <h3 className="card-title">{a.title}</h3>
         {sub && <p className="card-en">{sub}</p>}
@@ -35,7 +35,7 @@ export function ArtistProposalRow({ p }: { p: Proposal }) {
   return (
     <div className="lrow">
       <span className="l-ref">{p.ref}<small>{dateBR(p.created_at)}</small></span>
-      <Link className="l-thumb" href={`/artista/obras/${a.slug}`} aria-hidden="true" tabIndex={-1}><ArtImage a={a} /></Link>
+      <Link className="l-thumb" href={`/artista/obras/${a.slug}`} aria-hidden="true" tabIndex={-1}><ArtImage a={a} max={240} /></Link>
       <span className="l-main"><Link href={`/artista/obras/${a.slug}`}><b>{a.title}</b></Link><span>{p.buyer?.member_code} · {p.buyer?.city}</span><span>{p.last?.actor === "artist" ? "Você respondeu" : p.last?.actor === "system" ? "Sistema" : "Colecionador"} · {dateBR(p.last?.created_at)}</span></span>
       <span className="l-msg">{p.last?.msg ? `“${p.last.msg}”` : ""}</span>
       <span className="l-val">{brl(p.current)}<small>{p.last?.actor === "artist" ? "Sua contraproposta" : "Oferta"}</small><small>{diff >= 0 ? "+" : ""}{diff}% do preço ({brl(a.price)})</small></span>
@@ -51,7 +51,7 @@ export function BuyerProposalRow({ p }: { p: Proposal }) {
   return (
     <div className="lrow">
       <span className="l-ref">{p.ref}<small>{dateBR(p.created_at)}</small></span>
-      <Link className="l-thumb" href={`/colecionador/obras/${a.slug}`} aria-hidden="true" tabIndex={-1}><ArtImage a={a} /></Link>
+      <Link className="l-thumb" href={`/colecionador/obras/${a.slug}`} aria-hidden="true" tabIndex={-1}><ArtImage a={a} max={240} /></Link>
       <span className="l-main"><Link href={`/colecionador/obras/${a.slug}`}><b>{a.title}</b></Link><span>{a.artist?.display_name}</span><span>{p.last?.actor === "artist" ? "Artista respondeu" : p.last?.actor === "system" ? "Sistema" : "Você"} · {dateBR(p.last?.created_at)}</span></span>
       <span className="l-msg">{p.last?.msg ? `“${p.last.msg}”` : ""}</span>
       <span className="l-val">{brl(p.current)}<small>{p.last?.actor === "artist" ? "Contraproposta" : "Sua oferta"}</small><small>Preço: {brl(a.price)}</small></span>

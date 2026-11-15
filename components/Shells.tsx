@@ -22,9 +22,11 @@ export function PublicShell({ children, me }: { children: ReactNode; me?: Me | n
 
 export function AreaShell({ children, me, nav, tag }: { children: ReactNode; me: Me; nav: NavItem[]; tag: string }) {
   const name = me.role === "artist" ? me.display_name : me.full_name;
+  // "Convidar" fica no menu (Mais), não na barra principal
+  const extra = nav.filter((n) => n.label === "Convidar"); nav = nav.filter((n) => n.label !== "Convidar");
   return (
     <>
-      <Header nav={nav} home="/" tag={tag} user={{ name, role: me.role === "artist" ? "Artista" : me.member_code }}
+      <Header nav={nav} menuExtra={extra} home="/" tag={tag} user={{ name, role: me.role === "artist" ? "Artista" : me.member_code }}
         band={[`${tag} · ${name}${me.role === "buyer" ? " · " + me.member_code : ""}`, me.email.endsWith("@demo.ponci.art") ? "Conta de demonstração" : "Membro verificado"]} />
       <main id="main" tabIndex={-1} className="enter"><InstallHint />{children}</main>
       <Footer />

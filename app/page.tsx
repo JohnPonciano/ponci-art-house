@@ -2,6 +2,7 @@ import Link from "next/link";
 import { PublicShell } from "@/components/Shells";
 import { Slab, SecHead, Notice } from "@/components/ui";
 import { ArtImage } from "@/components/ArtImage";
+import { Rail } from "@/components/GalleryClient";
 import { Fit } from "@/components/Fit";
 import { Icon } from "@/components/Icon";
 import { AccessForm, PickRole } from "@/components/forms/AccessForm";
@@ -13,9 +14,10 @@ import { catNo, dims, pad } from "@/lib/format";
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
-  const [me, works, st] = await Promise.all([getMe(), vitrine(7), networkStats()]);
+  const [me, works, st] = await Promise.all([getMe(), vitrine(12), networkStats()]);
   const hero = works.find((w) => w.slug === "gesto-n3") || works[0];
-  const sel = works.filter((w) => w !== hero).slice(0, 6);
+  const sel = works.filter((w) => w !== hero).slice(0, 10);
+  const doorA = sel[1] || hero, doorB = sel[3] || sel[0] || hero, formArt = sel[4] || hero;
   const area = me ? (me.role === "artist" ? "/artista" : "/colecionador") : null;
   return (
     <PublicShell me={me}>
@@ -41,7 +43,7 @@ export default async function Home() {
         <div className="doors">
           <article className="door" id="artistas">
             <div className="door-head"><span>Porta A</span><span>Artistas</span></div>
-            <Slab a={DEMO_ART.artista} plaque={false} />
+            <Slab a={doorA || DEMO_ART.artista} plaque={false} />
             <div className="door-body">
               <h3>Para <em>artistas</em></h3>
               <p>Publique obras para um público pequeno e qualificado. Você define o preço, recebe propostas e decide com quem negociar.</p>
@@ -51,7 +53,7 @@ export default async function Home() {
           </article>
           <article className="door dark" id="colecionadores">
             <div className="door-head"><span>Porta B</span><span>Colecionadores</span></div>
-            <Slab a={DEMO_ART.colecionador} plaque={false} />
+            <Slab a={doorB || DEMO_ART.colecionador} plaque={false} />
             <div className="door-body">
               <h3>Para <em>colecionadores</em></h3>
               <p>Acesse obras que não estão em nenhuma outra vitrine, com preço visível, documentação completa e contato direto com quem fez.</p>
@@ -64,15 +66,12 @@ export default async function Home() {
 
       <section className="sec wrap" id="vitrine" aria-labelledby="vit-t" style={{ paddingTop: 0 }}>
         <SecHead n="02" eyebrow="Vitrine" title={<>Na rede <em>agora</em></>} id="vit-t" href="/colecionador" linkText="Ver acervo completo" />
-        <div className="board">{sel.map((a) => (
-          <article className="card" key={a.id}><Link className="card-link" href={`/colecionador/obras/${a.slug}`}>
-            <div className="card-top"><span>{catNo(a.no)}</span><span>{a.year}</span></div>
-            <div className="card-img veil"><ArtImage a={a} max={560} /></div>
-            <div className="card-cap"><h3 className="card-title">{a.title}</h3><p className="card-en">{a.artist_name}</p>
-              <p className="card-meta first">{a.medium}</p><p className="card-meta">{dims(a)}{a.edition ? " · " + a.edition : ""}</p></div>
-            <div className="card-foot"><span className="locked-p"><Icon n="lock" /> Preço para membros</span><span className="go">Ver <Icon n="right" /></span></div>
-          </Link></article>))}
-        </div>
+        <div className="gallery lp-rail"><Rail>{sel.map((a) => (
+          <article className="g-card g-m" key={a.id}><Link className="g-link" href={`/colecionador/obras/${a.slug}`}>
+            <div className="g-wall"><ArtImage a={a} max={560} /></div>
+            <div className="g-label"><span className="g-no">{catNo(a.no)} · {a.year}</span><h3 className="g-title">{a.title}</h3><span className="g-artist">{a.artist_name}</span>
+              <span className="g-meta">{a.medium} · {dims(a)}</span><span className="g-price locked"><Icon n="lock" /> Preço para membros</span></div>
+          </Link></article>))}</Rail></div>
         <div style={{ marginTop: 16 }}><Notice icon="lock">Preços, disponibilidade e propostas ficam visíveis apenas para membros.</Notice></div>
       </section>
 
@@ -121,7 +120,7 @@ export default async function Home() {
           <div className="acq-aside"><p className="lab">06 — Solicitar acesso</p><h2 id="form-t">Peça o seu convite.</h2>
             <p>Conte quem você é. Cada pedido é lido pessoalmente pela curadoria da PONCI.</p>
             <Notice>Já recebeu um código? <Link href="/cadastro" style={{ textDecoration: "underline" }}>Crie sua conta de membro</Link>.</Notice>
-            <div aria-hidden="true"><Slab a={DEMO_ART.convite} plaque={false} /></div></div>
+            <div aria-hidden="true"><Slab a={formArt || DEMO_ART.convite} plaque={false} /></div></div>
           <div className="acq-main"><AccessForm /></div>
         </section>
       </div>

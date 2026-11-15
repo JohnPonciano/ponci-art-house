@@ -1508,3 +1508,6 @@ html{-webkit-tap-highlight-color:transparent}
   .detail-info.ob > *{padding-left:0}
   .detail-info.ob > .ob-buy{padding-left:var(--gutter)}
 }
+.lp-rail{padding-top:22px}
+.g-price.locked{display:inline-flex;align-items:center;gap:6px;font:500 11px/1.2 var(--mono);letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+.g-price.locked .ico{width:13px;height:13px}

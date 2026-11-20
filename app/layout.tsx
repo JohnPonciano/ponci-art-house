@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Archivo, Instrument_Serif, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
+import Script from "next/script";
 import { Concrete } from "@/components/Concrete";
 import { ToastProvider } from "@/components/Toast";
 
@@ -27,6 +28,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="pt-BR" className={`${archivo.variable} ${instrument.variable} ${plex.variable}`}>
       <body className="book">
+        {/* Google Tag Manager */}
+        <Script id="gtm-init" strategy="afterInteractive">{`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());`}</Script>
+        <Script id="gtm" strategy="afterInteractive" src="https://www.googletagmanager.com/gtm.js?id=GTM-TZRKM9K6" />
         <Concrete />
         <ToastProvider>{children}</ToastProvider>
       </body>

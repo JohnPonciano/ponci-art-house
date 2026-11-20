@@ -4,43 +4,58 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Icon } from "../Icon";
 
-type P = { base: string; main: string; code: string; unseen: number; initials: string; buyer: boolean; area: string };
+type P = { base: string; main: string; code: string; unseen: number; initials: string; buyer: boolean; area: string; admin?: boolean };
 
-/** Cabeçalho da Comunidade: marca, busca e volta ao site principal. */
-export function RnHeader({ base, main, initials, buyer, area }: P) {
-  const router = useRouter(); const path = usePathname(); const [q, setQ] = useState("");
-  useEffect(() => { try { setQ(new URLSearchParams(location.search).get("q") || ""); } catch {} }, [path]);
+/** Navegação da Comunidade: barra lateral no Mac (como no Instagram), topo + abas no iPhone. */
+export function RnNav({ base, main, initials, buyer, area, unseen, code, admin }: P) {
+  const path = usePathname(); const sp = useSearchParams(); const b = base || "";
+  useEffect(() => { document.body.classList.add("has-rntabs"); return () => document.body.classList.remove("has-rntabs"); }, []);
+  const home = b || "/";
+  const isHome = (path === home || path === b + "/") && sp.get("aba") !== "seguindo";
+  const at = (p: string) => path === b + p || path.startsWith(b + p + "/");
+  const me = at("/eu") || path === `${b}/u/${code}`;
+  type It = [string, string, string, boolean, number?]; const items: It[] = [
+    [home, "grid", "Início", isHome],
+    [b ? `${b}?aba=seguindo` : "/?aba=seguindo", "users", "Seguindo", sp.get("aba") === "seguindo"],
+    [`${b}/busca`, "search", "Buscar", at("/busca")],
+    ...(admin ? [] as It[] : [[`${b}/atividade`, "heart", "Atividade", at("/atividade"), unseen], [`${b}/novo`, "plus", "Publicar", at("/novo")]] as It[]),
+  ];
   return (
-    <header className="rn-head">
-      <div className="rn-head-in">
-        <Link href={base || "/"} className="rn-logo" aria-label="Comunidade PONCI — início"><b>PONCI</b><span>comunidade</span></Link>
-        <form className="rn-search" role="search" onSubmit={(e) => { e.preventDefault(); router.push(`${base}/busca?q=${encodeURIComponent(q.trim())}`); }}>
-          <Icon n="search" /><input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Buscar notas, artistas, técnicas…" aria-label="Buscar" enterKeyHint="search" />
-        </form>
-        <Link href={`${base}/busca`} className="rn-search-btn" aria-label="Buscar"><Icon n="search" /></Link>
-        <nav className="rn-head-nav" aria-label="PONCI">
-          <a href={main + area} className="rn-back"><Icon n={buyer ? "grid" : "home"} /><span>{buyer ? "Acervo" : "Ateliê"}</span></a>
-          <Link href={`${base}/novo`} className="btn sm rn-post"><Icon n="plus" /><span>Publicar</span></Link>
-          <Link href={`${base}/eu`} className={"rn-me" + (buyer ? " av-buyer" : "")} aria-label="Meu perfil">{initials}</Link>
+    <>
+      <aside className="ig-side" aria-label="Comunidade">
+        <Link href={home} className="ig-brand" aria-label="Comunidade PONCI"><b>PONCI</b><span>comunidade</span><i aria-hidden="true">P</i></Link>
+        <nav className="ig-nav">
+          {items.map(([h, ic, l, on, n]) => <Link key={l} href={h} aria-current={on ? "page" : undefined} className={ic === "plus" ? "ig-pub" : ""}>
+            <span className="ig-ico"><Icon n={ic} />{n ? <i className="tb-badge">{n}</i> : null}</span><span className="ig-l">{l}</span></Link>)}
+          <Link href={`${b}/eu`} aria-current={me ? "page" : undefined}><span className={"ig-ico ig-me" + (buyer ? " av-buyer" : "")}>{initials}</span><span className="ig-l">Perfil</span></Link>
         </nav>
-      </div>
-    </header>
+        {admin ? <a className="ig-out ig-admin" href={main + area}><span className="ig-ico"><Icon n="shield" />{unseen ? <i className="tb-badge">{unseen}</i> : null}</span><span className="ig-l">Moderação{unseen ? ` · ${unseen} ${unseen === 1 ? "denúncia" : "denúncias"}` : ""}</span></a>
+          : <a className="ig-out" href={main + area}><span className="ig-ico"><Icon n={buyer ? "grid" : "home"} /></span><span className="ig-l">{buyer ? "Voltar ao Acervo" : "Voltar ao Ateliê"}</span></a>}
+      </aside>
+      <header className="ig-top">
+        <Link href={home} className="ig-brand" aria-label="Comunidade PONCI"><b>PONCI</b><span>comunidade</span></Link>
+        <div className="ig-top-acts">
+          <a href={main + area} aria-label={admin ? "Moderação" : buyer ? "Acervo" : "Ateliê"}><Icon n={admin ? "shield" : buyer ? "grid" : "home"} />{admin && unseen ? <i className="tb-badge">{unseen}</i> : null}</a>
+          {!admin && <Link href={`${b}/atividade`} aria-label="Atividade"><Icon n="heart" />{unseen ? <i className="tb-badge">{unseen}</i> : null}</Link>}
+        </div>
+      </header>
+    </>
   );
 }
 
-/** Barra inferior no iPhone: Início, Seguindo, Publicar, Atividade, Eu. */
-export function RnTabs({ base, unseen }: P) {
+/** Barra inferior no iPhone: Início, Buscar, Publicar, Seguindo, Eu. */
+export function RnTabs({ base, unseen, initials, buyer, code, admin }: P) {
   const path = usePathname(); const b = base || ""; const sp = useSearchParams();
-  const at = (p: string) => path === (b + p || "/") || (p !== "" && path.startsWith(b + p + "/"));
-  useEffect(() => { document.body.classList.add("has-rntabs"); return () => document.body.classList.remove("has-rntabs"); }, []);
-  const home = (path === (b || "/") || path === b + "/") && sp?.get("aba") !== "seguindo";
+  const at = (p: string) => path === b + p || path.startsWith(b + p + "/");
+  const home = (path === (b || "/") || path === b + "/") && sp.get("aba") !== "seguindo";
+  void unseen;
   return (
-    <nav className="rn-tabs" aria-label="Comunidade">
+    <nav className="rn-tabs" aria-label="Comunidade" style={admin ? ({ ["--tabs" as any]: 4, gridTemplateColumns: "repeat(4,1fr)" }) : undefined}>
       <Link href={b || "/"} aria-current={home ? "page" : undefined}><Icon n="grid" />Início</Link>
-      <Link href={b ? `${b}?aba=seguindo` : "/?aba=seguindo"} aria-current={sp?.get("aba") === "seguindo" ? "page" : undefined}><Icon n="users" />Seguindo</Link>
-      <Link href={`${b}/novo`} className="rn-plus" aria-label="Publicar"><span><Icon n="plus" /></span></Link>
-      <Link href={`${b}/atividade`} aria-current={at("/atividade") ? "page" : undefined}><Icon n="bell" />Atividade{unseen ? <i className="tb-badge">{unseen}</i> : null}</Link>
-      <Link href={`${b}/eu`} aria-current={at("/eu") || at("/u") ? "page" : undefined}><Icon n="user" />Eu</Link>
+      <Link href={`${b}/busca`} aria-current={at("/busca") ? "page" : undefined}><Icon n="search" />Buscar</Link>
+      {!admin && <Link href={`${b}/novo`} className="rn-plus" aria-label="Publicar"><span><Icon n="plus" /></span></Link>}
+      <Link href={b ? `${b}?aba=seguindo` : "/?aba=seguindo"} aria-current={sp.get("aba") === "seguindo" ? "page" : undefined}><Icon n="users" />Seguindo</Link>
+      <Link href={`${b}/eu`} aria-current={at("/eu") || path === `${b}/u/${code}` ? "page" : undefined}><span className={"rn-tab-av" + (buyer ? " av-buyer" : "")}>{initials}</span>Eu</Link>
     </nav>
   );
 }

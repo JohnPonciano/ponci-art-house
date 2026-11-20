@@ -35,11 +35,11 @@ export async function feed(meId: string, mode: FeedMode, topic?: Topic | null, b
 /** Perfil público na comunidade (por código de membro) com números que não expõem seguidores. */
 export async function memberByCode(code: string) {
   const sb = await createClient();
-  const { data } = await sb.from("profiles").select("id,role,display_name,city,practice,bio,member_code,show_name,created_at").eq("member_code", code).maybeSingle();
+  const { data } = await sb.from("profiles").select("id,role,display_name,city,practice,bio,member_code,show_name,created_at,status").eq("member_code", code).maybeSingle();
   if (!data) return null;
   const { data: ps } = await sb.from("posts").select("id,likes:post_likes(count)").eq("artist_id", data.id).is("removed_at", null);
   const likes = ((ps as any[]) || []).reduce((s, p) => s + cnt(p.likes), 0);
-  return { ...(data as any), posts: (ps || []).length, likes } as Person & { bio: string; created_at: string; posts: number; likes: number };
+  return { ...(data as any), posts: (ps || []).length, likes } as Person & { bio: string; created_at: string; posts: number; likes: number; status: string };
 }
 export async function likedBy(meId: string, size = 40) {
   const sb = await createClient();

@@ -194,3 +194,24 @@ export function NotePreview() {
     </div>
   );
 }
+
+/** Moldura do modal da nota: fundo escuro, fechar com X, Esc ou toque fora; trava a rolagem do feed. */
+export function NoteModal({ children }: { children: ReactNode }) {
+  const router = useRouter();
+  useEffect(() => {
+    document.body.classList.add("locked", "ig-modal-open");
+    const k = (e: KeyboardEvent) => e.key === "Escape" && router.back(); addEventListener("keydown", k);
+    return () => { document.body.classList.remove("locked", "ig-modal-open"); removeEventListener("keydown", k); };
+  }, [router]);
+  return (
+    <div className="ig-modal" role="dialog" aria-modal="true" aria-label="Nota" onClick={(e) => e.target === e.currentTarget && router.back()}>
+      <button type="button" className="ig-modal-x" aria-label="Fechar" onClick={() => router.back()}><Icon n="x" /></button>
+      <div className="ig-modal-box">{children}</div>
+    </div>
+  );
+}
+
+export function ModalBack() {
+  const router = useRouter();
+  return <button type="button" className="rn-backbtn" aria-label="Fechar" onClick={() => router.back()}><Icon n="left" /></button>;
+}

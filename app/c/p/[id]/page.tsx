@@ -9,9 +9,9 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 }
 
 export default async function Nota({ params }: { params: Promise<{ id: string }> }) {
-  const { me, base, main } = await rnCtx();
+  const { me, base, main, isAdmin } = await rnCtx();
   const p = await postById((await params).id);
-  if (!p || (p.removed_at && p.author.id !== me.id)) notFound();
+  if (!p || (p.removed_at && p.author.id !== me.id && !isAdmin)) notFound();
   const [cs, saves, likes, follows, ints] = await Promise.all([commentsFor([p.id]), mySaves(me.id), myLikes(me.id), myFollows(me.id),
     me.role === "buyer" ? myInterests(me.id) : Promise.resolve(new Set<string>())]);
   return (

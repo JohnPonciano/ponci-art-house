@@ -175,6 +175,7 @@ export function Thread({ postId, postAuthorId, viewer, comments, full }: { postI
       <div className="c-main">
         <p className="c-head"><b>{personName(c.author)}</b>{c.author.id === postAuthorId && <span className="c-badge">Autor</span>}<time dateTime={c.created_at}>{ago(c.created_at)}</time></p>
         <p className="c-body">{c.body}</p>
+        {full && viewer.role === "admin" && <p className="c-acts"><button type="button" className="linkbtn" disabled={pending} onClick={() => run(() => D.moderateComment(c.id, true, "Removido pela moderação"), "Comentário removido.")}>Remover (moderação)</button></p>}
         {full && viewer.role !== "admin" && <p className="c-acts">
           {!child && <button type="button" className="linkbtn" onClick={() => setReplyTo(replyTo === c.id ? null : c.id)}><Icon n="reply" />Responder</button>}
           {canDel(c) && <button type="button" className="linkbtn" disabled={pending} onClick={() => run(() => D.deleteComment(c.id), "Comentário apagado.")}>Apagar</button>}</p>}

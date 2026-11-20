@@ -1,3 +1,4 @@
+import { redirect } from "next/navigation";
 import { rnCtx } from "@/lib/rn";
 import { worksByArtist } from "@/lib/data";
 import { NoteComposer } from "@/components/rn/client";
@@ -5,7 +6,8 @@ import { TOPICS, type Topic } from "@/lib/diary";
 
 export const metadata = { title: "Publicar" };
 export default async function Novo({ searchParams }: { searchParams: Promise<{ t?: string }> }) {
-  const { me, base } = await rnCtx(); const t = (await searchParams).t;
+  const { me, base, isAdmin } = await rnCtx(); const t = (await searchParams).t;
+  if (isAdmin) redirect(base || "/");
   const works = me.role === "artist" ? (await worksByArtist(me.id)).filter((w) => w.status === "published") : [];
   return (
     <div className="rn-wrap rn-narrow">

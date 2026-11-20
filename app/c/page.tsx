@@ -2,6 +2,7 @@ import Link from "next/link";
 import { rnCtx } from "@/lib/rn";
 import { feed, myLikes, myFollows, TOPICS, type Topic } from "@/lib/diary";
 import { InfiniteNotes } from "@/components/rn/client";
+import { Stories } from "@/components/rn/Stories";
 
 export const metadata = { title: "Descobrir" };
 
@@ -12,7 +13,8 @@ export default async function Descobrir({ searchParams }: { searchParams: Promis
   const q = (o: Record<string, string | undefined>) => { const u = new URLSearchParams(); const v = { aba: seguindo ? "seguindo" : undefined, t: topic || undefined, ...o };
     Object.entries(v).forEach(([k, x]) => x && u.set(k, x)); const s = u.toString(); return (base || "/") + (s ? "?" + s : ""); };
   return (
-    <div className="rn-wrap">
+    <div className="rn-wrap ig-feed">
+      {!topic && <Stories base={base} me={me as any} />}
       <nav className="rn-feedtabs" aria-label="Feed">
         <Link href={q({ aba: undefined })} aria-current={!seguindo ? "page" : undefined}>Descobrir</Link>
         <Link href={q({ aba: "seguindo" })} aria-current={seguindo ? "page" : undefined}>Seguindo</Link>

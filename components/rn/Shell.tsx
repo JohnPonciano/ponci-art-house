@@ -3,6 +3,7 @@ import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Icon } from "../Icon";
+import { CookieLink } from "../CookieConsent";
 
 type P = { base: string; main: string; code: string; unseen: number; initials: string; buyer: boolean; area: string; admin?: boolean; avatar?: string | null };
 
@@ -31,6 +32,7 @@ export function RnNav({ base, main, initials, buyer, area, unseen, code, admin, 
         </nav>
         {admin ? <a className="ig-out ig-admin" href={main + area}><span className="ig-ico"><Icon n="shield" />{unseen ? <i className="tb-badge">{unseen}</i> : null}</span><span className="ig-l">Moderação{unseen ? ` · ${unseen} ${unseen === 1 ? "denúncia" : "denúncias"}` : ""}</span></a>
           : <a className="ig-out" href={main + area}><span className="ig-ico"><Icon n={buyer ? "grid" : "home"} /></span><span className="ig-l">{buyer ? "Voltar ao Acervo" : "Voltar ao Ateliê"}</span></a>}
+        <CookieLink className="ig-cookies" />
       </aside>
       <header className="ig-top">
         <Link href={home} className="ig-brand" aria-label="Comunidade PONCI"><b>PONCI</b><span>comunidade</span></Link>

@@ -5,7 +5,7 @@ import { checkAal, signAal } from "@/lib/env";
 
 const AREAS: Record<string, string> = { "/artista": "artista", "/colecionador": "colecionador", "/conta": "artista", "/aceite": "artista", "/contrato": "artista" };
 // rotas que o subdomínio comunidade.ponci.art serve (mapeadas para /c/*); o resto vai para o site principal
-const COMMUNITY_ROUTES = /^\/($|p\/|u\/|novo$|atividade$|salvos$|eu$|busca$)/;
+const COMMUNITY_ROUTES = /^\/($|p\/|u\/|novo$|atividade$|salvos$|eu$|busca$|ajustes$)/;
 const PASSTHRU = /^\/(_next|auth|icons|manifest|favicon|robots|comunidade\.webmanifest|sw-comunidade\.js|offline-comunidade\.html|entrar|senha)/;
 
 export async function updateSession(request: NextRequest) {

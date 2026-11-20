@@ -5,7 +5,8 @@ import { memberByCode, postsByAuthor, myLikes, myFollows, likedBy, feed, personN
 import { FollowBtn, ShowNameToggle } from "@/components/diary-client";
 import { ProfileGrid } from "@/components/rn/Notes";
 import { Icon } from "@/components/Icon";
-import { initials } from "@/lib/format";
+import { Avatar } from "@/components/Avatar";
+import { handleOf } from "@/lib/community";
 import { AdminMemberTools } from "@/components/rn/AdminTools";
 
 export async function generateMetadata({ params }: { params: Promise<{ code: string }> }) {
@@ -25,12 +26,14 @@ export default async function Perfil({ params, searchParams }: { params: Promise
   return (
     <div className="ig-profile">
       <header className="ig-ph">
-        <span className={"ig-pav" + (m.role === "buyer" ? " av-buyer" : "")} aria-hidden="true">{m.role === "artist" || m.show_name ? initials(m.display_name) : "C"}</span>
+        <Avatar p={m} className="ig-pav" />
         <div className="ig-pinfo">
           <div className="ig-prow"><h1>{name}</h1>
             {!mine && !isAdmin && m.role === "artist" && <FollowBtn artistId={m.id} on={follows.has(m.id)} compact />}
+            {mine && <Link className="btn sm ghost" href={`${base}/ajustes`}>Editar perfil</Link>}
             {mine && <Link className="btn sm ghost" href={`${base}/novo`}>Publicar</Link>}
           </div>
+          {handleOf(m) && <p className="ig-phandle">{handleOf(m)}</p>}
           <dl className="ig-pstats"><div><dd>{m.posts}</dd><dt>{m.posts === 1 ? "nota" : "notas"}</dt></div><div><dd>{m.likes}</dd><dt>curtidas</dt></div></dl>
           <p className="ig-pline">{personLine(m)} · {m.member_code}</p>
           {m.role === "artist" && m.bio && <p className="ig-pbio">{m.bio}</p>}

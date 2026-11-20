@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/client";
 import * as D from "@/app/diary-actions";
 import { personName, ago, TOPICS, POSTABLE, type Comment, type Topic } from "@/lib/community";
 import { initials } from "@/lib/format";
+import { Avatar as AvatarImg } from "./Avatar";
 
 function useRun() {
   const toast = useToast(); const router = useRouter(); const [pending, start] = useTransition();
@@ -149,7 +150,7 @@ export function LikeBtn({ postId, on, count }: { postId: string; on: boolean; co
 }
 
 function Avatar({ p }: { p: Comment["author"] }) {
-  return <span className={"av sm" + (p.role === "buyer" ? " av-buyer" : "")} aria-hidden="true">{p.role === "artist" || p.show_name ? initials(p.display_name) : "C"}</span>;
+  return <AvatarImg p={p} className="av sm" />;
 }
 function CommentForm({ postId, parentId, onDone, autoFocus, placeholder }: { postId: string; parentId?: string; onDone?: () => void; autoFocus?: boolean; placeholder?: string }) {
   const { run, pending, router } = useRun(); const [v, setV] = useState("");

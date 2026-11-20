@@ -26,7 +26,7 @@ export function AreaShell({ children, me, nav, tag }: { children: ReactNode; me:
   const extra = nav.filter((n) => n.label === "Convidar"); nav = nav.filter((n) => n.label !== "Convidar");
   return (
     <>
-      <Header nav={nav} menuExtra={extra} home="/" tag={tag} user={{ name, role: me.role === "artist" ? "Artista" : me.member_code }}
+      <Header nav={nav} menuExtra={extra} home="/" tag={tag} user={{ name, role: me.role === "artist" ? "Artista" : me.member_code, avatar: me.avatar_path ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/works/${me.avatar_path}` : null }}
         band={[`${tag} · ${name}${me.role === "buyer" ? " · " + me.member_code : ""}`, me.email.endsWith("@demo.ponci.art") ? "Conta de demonstração" : "Membro verificado"]} />
       <main id="main" tabIndex={-1} className="enter"><InstallHint />{children}</main>
       <Footer />

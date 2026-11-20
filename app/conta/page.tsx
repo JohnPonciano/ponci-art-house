@@ -9,6 +9,7 @@ import { getMe, myKyc, createClient, authLevel, DOC_PATH } from "@/lib/supabase/
 import { ARTIST_NAV, BUYER_NAV } from "@/lib/nav";
 import { dateBR } from "@/lib/format";
 import { MemberInvites } from "@/components/MemberInvites";
+import { ProfileSettings } from "@/components/ProfileSettings";
 
 export const metadata = { title: "Minha conta" };
 export const dynamic = "force-dynamic";
@@ -31,6 +32,11 @@ export default async function Conta() {
     <AreaShell me={me} nav={A ? ARTIST_NAV : BUYER_NAV} tag={A ? "Área do artista" : "Área do colecionador"}>
       <div className="wrap">
         <PageHead title="Conta" label="Minha conta" intro="Identificação, segurança, documentos aceitos e seus direitos sobre os dados pessoais." count={<>{me.member_code}<br />{me.email}</>} />
+
+        <section className="sub-sec" id="perfil" aria-labelledby="pf-t">
+          <SecHead n="—" eyebrow="Perfil público" title={<>Como você <em>aparece</em></>} id="pf-t" />
+          <div style={{ paddingTop: 20 }}><ProfileSettings me={me as any} /></div>
+        </section>
 
         {me.status === "active" && <section className="sub-sec" id="convites" aria-labelledby="cv-t">
           <SecHead n="—" eyebrow="Convites" title={<>Traga quem <em>importa</em></>} id="cv-t" />

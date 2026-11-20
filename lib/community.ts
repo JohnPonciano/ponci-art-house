@@ -12,7 +12,7 @@ export const TOPICS: Record<Topic, [string, string]> = {
 };
 export const POSTABLE: Topic[] = ["geral", "processo", "exposicoes", "colecao", "mercado"];
 
-export type Person = { id: string; role: "artist" | "buyer"; display_name: string; city: string; practice: string; member_code: string; show_name: boolean };
+export type Person = { id: string; role: "artist" | "buyer"; display_name: string; city: string; practice: string; member_code: string; show_name: boolean; handle?: string | null; avatar_path?: string | null };
 export type PostMedia = { id: string; position: number; path: string | null; gen: any; w: number; h: number };
 export type Comment = { id: string; post_id: string; parent_id: string | null; body: string; created_at: string; removed_at: string | null; author: Person };
 export type Post = {
@@ -47,3 +47,10 @@ export function noteTitle(p: Pick<Post, "title" | "body" | "work" | "kind">) {
   const first = (p.body || "").split(/(?<=[.!?])\s|\n/)[0].trim();
   return first.length > 80 ? first.slice(0, 77).trimEnd() + "…" : first || (p.work ? p.work.title : "Nota");
 }
+
+/** Foto de perfil pública: artistas sempre; colecionadores só se escolheram mostrar o nome. */
+export function avatarUrl(p?: Partial<Person> | null) {
+  if (!p?.avatar_path || !(p.role === "artist" || p.show_name)) return null;
+  return `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/works/${p.avatar_path}`;
+}
+export const handleOf = (p?: Partial<Person> | null) => (p?.handle && (p.role === "artist" || p.show_name) ? "@" + p.handle : null);

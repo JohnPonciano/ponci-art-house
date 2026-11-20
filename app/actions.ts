@@ -118,3 +118,24 @@ export async function createMemberInvite(role: "artist" | "buyer", name: string)
 export async function cancelMemberInvite(code: string): Promise<Result> {
   return rpc("member_cancel_invite", { p_code: code });
 }
+
+/* ---------- Perfil público: nome, @, foto, bio ---------- */
+export type ProfileSettingsInput = { display_name: string; handle: string; bio: string; city: string; practice: string; full_name: string; avatar_path?: string | null };
+export async function updateProfileSettings(v: ProfileSettingsInput): Promise<Result> {
+  const me = await getMe(); if (!me) return { ok: false, error: "Entre novamente." };
+  const handle = v.handle.trim().replace(/^@/, "").toLowerCase();
+  if (!/^[a-z0-9._]{3,30}$/.test(handle)) return { ok: false, error: "O @ precisa ter de 3 a 30 caracteres: letras minúsculas, números, ponto ou _." };
+  const name = v.display_name.trim().replace(/\s+/g, " ");
+  if (name.length < 2 || name.length > 60) return { ok: false, error: "O nome precisa ter entre 2 e 60 caracteres." };
+  if (v.avatar_path && !v.avatar_path.startsWith(me.id + "/avatar/")) return { ok: false, error: "Foto inválida." };
+  const sb = await createClient();
+  const pub: Record<string, unknown> = { display_name: name, handle, bio: v.bio.trim().slice(0, 600), city: v.city.trim().slice(0, 80), practice: v.practice.trim().slice(0, 80) };
+  if (v.avatar_path !== undefined) pub.avatar_path = v.avatar_path;
+  const a = await sb.from("profiles").update(pub).eq("id", me.id);
+  if (a.error) return a.error.code === "23505" ? { ok: false, error: `O @${handle} já está em uso. Tente outro.` } : fail(a.error);
+  if (v.full_name.trim().length >= 2) {
+    const b = await sb.from("profile_private").update({ full_name: v.full_name.trim() }).eq("id", me.id);
+    if (b.error) return fail(b.error);
+  }
+  return done();
+}

@@ -8,7 +8,7 @@ export type Viewer = Omit<Me, "role"> & { role: "artist" | "buyer" | "admin" };
 /** Admin entra na comunidade como "PONCI · Admin" para moderar (não publica, não curte). */
 export const adminViewer = (a: { id: string; email: string }): Viewer => ({
   id: a.id, role: "admin", member_code: "ADMIN", display_name: "PONCI · Admin", city: "", practice: "Moderação", bio: "", created_at: "",
-  status: "active", full_name: "Administração PONCI", email: a.email, accepts_offers: false, show_name: true,
+  status: "active", full_name: "Administração PONCI", email: a.email, accepts_offers: false, show_name: true, handle: "ponci", avatar_path: null,
 });
 
 /** Contexto da Comunidade: membro ativo (ou admin), caminho base e endereço do site principal. */

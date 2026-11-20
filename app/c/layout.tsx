@@ -8,6 +8,7 @@ import { adminViewer } from "@/lib/rn";
 import { activity } from "@/lib/diary";
 import { communityBase, isCommunityHost, MAIN_ORIGIN } from "@/lib/site";
 import { initials } from "@/lib/format";
+import { avatarUrl } from "@/lib/community";
 import { RnNav, RnTabs } from "@/components/rn/Shell";
 
 export const dynamic = "force-dynamic";
@@ -36,7 +37,7 @@ export default async function CommunityLayout({ children, modal }: { children: R
   // admin: quantas denúncias esperam análise
   const reports = isAdmin ? ((await (await createClient()).from("post_reports").select("id", { count: "exact", head: true }).is("resolved_at", null)).count || 0) : 0;
   const p = { base, main, code: me.member_code, unseen: isAdmin ? reports : act.unseen, initials: isAdmin ? "AD" : me.role === "artist" || me.show_name ? initials(me.display_name) : "C",
-    buyer: me.role === "buyer", admin: isAdmin, area: isAdmin ? "/admin/diario" : me.role === "buyer" ? "/colecionador" : "/artista" };
+    buyer: me.role === "buyer", admin: isAdmin, avatar: isAdmin ? null : avatarUrl(me as any), area: isAdmin ? "/admin/diario" : me.role === "buyer" ? "/colecionador" : "/artista" };
   return (
     <div className="rn">
       <a className="skip" href="#main">Pular para o conteúdo</a>

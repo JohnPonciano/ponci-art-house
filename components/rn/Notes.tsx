@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ArtImage } from "../ArtImage";
+import { Avatar as AvatarImg } from "../Avatar";
 import { Icon } from "../Icon";
 import { initials, brl, catNo } from "@/lib/format";
 import { TOPICS, personName, personLine, ago, noteTitle, type Post, type Comment } from "@/lib/community";
@@ -11,7 +12,7 @@ const cover = (p: Post) => p.media[0] || (p.work ? { id: "w", position: 0, path:
 const art = (p: Post, m: { h: number; w: number; gen: any; path: string | null }) =>
   ({ title: p.work?.title || noteTitle(p), year: new Date(p.created_at).getFullYear(), h: m.h, w: m.w, gen: m.gen, image_path: m.path, img_w: m.path ? m.w : null, img_h: m.path ? m.h : null });
 export function Avatar({ p, sm }: { p: Post["author"]; sm?: boolean }) {
-  return <span className={"rn-av" + (sm ? " sm" : "") + (p.role === "buyer" ? " av-buyer" : "")} aria-hidden="true">{p.role === "artist" || p.show_name ? initials(p.display_name) : "C"}</span>;
+  return <AvatarImg p={p} className={"rn-av" + (sm ? " sm" : "")} />;
 }
 
 /** Card da grade: capa, título, autor e curtidas. Notas sem foto viram cartão de texto. */

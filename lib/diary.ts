@@ -3,7 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 
 import { type Topic, type Person, type PostMedia, type Comment, type Post } from "@/lib/community";
 export * from "@/lib/community";
-const PERSON = "id,role,display_name,city,practice,member_code,show_name";
+const PERSON = "id,role,display_name,city,practice,member_code,show_name,handle,avatar_path";
 export const SEL = `id,kind,topic,title,body,created_at,removed_at,removed_reason,author:profiles!posts_artist_id_fkey(${PERSON}),media:post_media(id,position,path,gen,w,h),work:works(id,slug,title,year,price,status,h,w,gen,image_path,img_w,img_h,medium,no),likes:post_likes(count),comments:post_comments(count)`;
 const one = (x: any) => (Array.isArray(x) ? x[0] : x);
 const cnt = (x: any) => (Array.isArray(x) ? x[0]?.count ?? 0 : x?.count ?? 0);
@@ -35,7 +35,8 @@ export async function feed(meId: string, mode: FeedMode, topic?: Topic | null, b
 /** Perfil público na comunidade (por código de membro) com números que não expõem seguidores. */
 export async function memberByCode(code: string) {
   const sb = await createClient();
-  const { data } = await sb.from("profiles").select("id,role,display_name,city,practice,bio,member_code,show_name,created_at,status").eq("member_code", code).maybeSingle();
+  const { data } = await sb.from("profiles").select("id,role,display_name,city,practice,bio,member_code,show_name,created_at,status,handle,avatar_path")
+    .or(`member_code.eq.${code.replace(/[^A-Za-z0-9-]/g, "")},handle.eq.${code.replace(/^@/, "").toLowerCase().replace(/[^a-z0-9._]/g, "")}`).maybeSingle();
   if (!data) return null;
   const { data: ps } = await sb.from("posts").select("id,likes:post_likes(count)").eq("artist_id", data.id).is("removed_at", null);
   const likes = ((ps as any[]) || []).reduce((s, p) => s + cnt(p.likes), 0);

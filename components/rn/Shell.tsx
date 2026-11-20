@@ -4,10 +4,10 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Icon } from "../Icon";
 
-type P = { base: string; main: string; code: string; unseen: number; initials: string; buyer: boolean; area: string; admin?: boolean };
+type P = { base: string; main: string; code: string; unseen: number; initials: string; buyer: boolean; area: string; admin?: boolean; avatar?: string | null };
 
 /** Navegação da Comunidade: barra lateral no Mac (como no Instagram), topo + abas no iPhone. */
-export function RnNav({ base, main, initials, buyer, area, unseen, code, admin }: P) {
+export function RnNav({ base, main, initials, buyer, area, unseen, code, admin, avatar }: P) {
   const path = usePathname(); const sp = useSearchParams(); const b = base || "";
   useEffect(() => { document.body.classList.add("has-rntabs"); return () => document.body.classList.remove("has-rntabs"); }, []);
   const home = b || "/";
@@ -27,7 +27,7 @@ export function RnNav({ base, main, initials, buyer, area, unseen, code, admin }
         <nav className="ig-nav">
           {items.map(([h, ic, l, on, n]) => <Link key={l} href={h} aria-current={on ? "page" : undefined} className={ic === "plus" ? "ig-pub" : ""}>
             <span className="ig-ico"><Icon n={ic} />{n ? <i className="tb-badge">{n}</i> : null}</span><span className="ig-l">{l}</span></Link>)}
-          <Link href={`${b}/eu`} aria-current={me ? "page" : undefined}><span className={"ig-ico ig-me" + (buyer ? " av-buyer" : "")}>{initials}</span><span className="ig-l">Perfil</span></Link>
+          <Link href={`${b}/eu`} aria-current={me ? "page" : undefined}><span className={"ig-ico ig-me" + (buyer ? " av-buyer" : "") + (avatar ? " has-img" : "")}>{/* eslint-disable-next-line @next/next/no-img-element */}{avatar ? <img src={avatar} alt="" /> : initials}</span><span className="ig-l">Perfil</span></Link>
         </nav>
         {admin ? <a className="ig-out ig-admin" href={main + area}><span className="ig-ico"><Icon n="shield" />{unseen ? <i className="tb-badge">{unseen}</i> : null}</span><span className="ig-l">Moderação{unseen ? ` · ${unseen} ${unseen === 1 ? "denúncia" : "denúncias"}` : ""}</span></a>
           : <a className="ig-out" href={main + area}><span className="ig-ico"><Icon n={buyer ? "grid" : "home"} /></span><span className="ig-l">{buyer ? "Voltar ao Acervo" : "Voltar ao Ateliê"}</span></a>}
@@ -44,7 +44,7 @@ export function RnNav({ base, main, initials, buyer, area, unseen, code, admin }
 }
 
 /** Barra inferior no iPhone: Início, Buscar, Publicar, Seguindo, Eu. */
-export function RnTabs({ base, unseen, initials, buyer, code, admin }: P) {
+export function RnTabs({ base, unseen, initials, buyer, code, admin, avatar }: P) {
   const path = usePathname(); const b = base || ""; const sp = useSearchParams();
   const at = (p: string) => path === b + p || path.startsWith(b + p + "/");
   const home = (path === (b || "/") || path === b + "/") && sp.get("aba") !== "seguindo";
@@ -55,7 +55,7 @@ export function RnTabs({ base, unseen, initials, buyer, code, admin }: P) {
       <Link href={`${b}/busca`} aria-current={at("/busca") ? "page" : undefined}><Icon n="search" />Buscar</Link>
       {!admin && <Link href={`${b}/novo`} className="rn-plus" aria-label="Publicar"><span><Icon n="plus" /></span></Link>}
       <Link href={b ? `${b}?aba=seguindo` : "/?aba=seguindo"} aria-current={sp.get("aba") === "seguindo" ? "page" : undefined}><Icon n="users" />Seguindo</Link>
-      <Link href={`${b}/eu`} aria-current={at("/eu") || path === `${b}/u/${code}` ? "page" : undefined}><span className={"rn-tab-av" + (buyer ? " av-buyer" : "")}>{initials}</span>Eu</Link>
+      <Link href={`${b}/eu`} aria-current={at("/eu") || path === `${b}/u/${code}` ? "page" : undefined}><span className={"rn-tab-av" + (buyer ? " av-buyer" : "") + (avatar ? " has-img" : "")}>{/* eslint-disable-next-line @next/next/no-img-element */}{avatar ? <img src={avatar} alt="" /> : initials}</span>Eu</Link>
     </nav>
   );
 }

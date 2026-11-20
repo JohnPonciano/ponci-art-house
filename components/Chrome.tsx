@@ -6,7 +6,7 @@ import { Icon } from "./Icon";
 import { pad, initials } from "@/lib/format";
 
 export type NavItem = { href: string; label: string; badge?: number | string };
-type User = { name: string; role: string } | null;
+type User = { name: string; role: string; avatar?: string | null } | null;
 
 function Wordmark({ home, tag }: { home: string; tag: string }) {
   return <Link href={home} className="wordmark" aria-label="PONCI — início"><b>PONCI</b><small>{tag}</small></Link>;
@@ -42,7 +42,7 @@ export function Header({ nav, user, enter, home = "/", tag = "Rede privada de ar
             ))}
             {enter && <li><Link href="/#entrar" className="enter-a"><span><Icon n="lock" /></span>Entrar</Link></li>}
           </ul>
-          {user && <div className="who"><span className="av" aria-hidden="true">{initials(user.name)}</span><span><b>{user.name}</b>{user.role}</span><Logout><Icon n="logout" /> Sair</Logout></div>}
+          {user && <div className="who"><span className={"av" + (user.avatar ? " has-img" : "")} aria-hidden="true">{/* eslint-disable-next-line @next/next/no-img-element */}{user.avatar ? <img src={user.avatar} alt="" /> : initials(user.name)}</span><span><b>{user.name}</b>{user.role}</span><Logout><Icon n="logout" /> Sair</Logout></div>}
         </nav>
         <button className="menu-btn" type="button" aria-expanded={open} aria-controls="menu" onClick={() => setOpen(true)}>Menu <Icon n="menu" /></button>
       </div></header>

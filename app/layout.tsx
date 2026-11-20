@@ -28,12 +28,16 @@ export const viewport: Viewport = {
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   // um container do Tag Manager para cada produto: site principal e comunidade.ponci.art
-  const gtm = isCommunityHost((await headers()).get("host")) ? "GTM-WMFJVRXD" : "GTM-TZRKM9K6";
+  const com = isCommunityHost((await headers()).get("host"));
+  const gtm = com ? "GTM-WMFJVRXD" : "GTM-TZRKM9K6";
+  const ga4 = com ? "G-K7WLX4WSRV" : "G-N7R525NZ0Y";
   return (
     <html lang="pt-BR" className={`${archivo.variable} ${instrument.variable} ${plex.variable}`}>
       <body className="book">
         {/* Google Tag Manager */}
-        <Script id="gtm-init" strategy="afterInteractive">{`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());`}</Script>
+        <Script id="gtm-init" strategy="afterInteractive">{`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${ga4}');`}</Script>
+        {/* Google Analytics 4 (as trocas de página no app são medidas pelo histórico do navegador) */}
+        <Script id="ga4" strategy="afterInteractive" src={`https://www.googletagmanager.com/gtag/js?id=${ga4}`} />
         <Script id="gtm" strategy="afterInteractive" src={`https://www.googletagmanager.com/gtm.js?id=${gtm}`} />
         <Concrete />
         <ToastProvider>{children}</ToastProvider>

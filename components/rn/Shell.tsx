@@ -27,7 +27,7 @@ export function RnNav({ base, main, initials, buyer, area, unseen, code, admin, 
         <nav className="ig-nav">
           {items.map(([h, ic, l, on, n]) => <Link key={l} href={h} aria-current={on ? "page" : undefined} className={ic === "plus" ? "ig-pub" : ""}>
             <span className="ig-ico"><Icon n={ic} />{n ? <i className="tb-badge">{n}</i> : null}</span><span className="ig-l">{l}</span></Link>)}
-          <Link href={`${b}/eu`} aria-current={me ? "page" : undefined}><span className={"ig-ico ig-me" + (buyer ? " av-buyer" : "") + (avatar ? " has-img" : "")}>{/* eslint-disable-next-line @next/next/no-img-element */}{avatar ? <img src={avatar} alt="" /> : initials}</span><span className="ig-l">Perfil</span></Link>
+          <Link href={`${b}/eu`} aria-current={me ? "page" : undefined}><span className={"ig-ico ig-me" + (buyer ? " av-buyer" : "") + (avatar ? " has-img" : "")}>{/* eslint-disable-next-line @next/next/no-img-element */}{avatar ? <img src={avatar} alt="" /> : initials}</span><span className="ig-l">{admin ? "Moderação" : "Perfil"}</span></Link>
         </nav>
         {admin ? <a className="ig-out ig-admin" href={main + area}><span className="ig-ico"><Icon n="shield" />{unseen ? <i className="tb-badge">{unseen}</i> : null}</span><span className="ig-l">Moderação{unseen ? ` · ${unseen} ${unseen === 1 ? "denúncia" : "denúncias"}` : ""}</span></a>
           : <a className="ig-out" href={main + area}><span className="ig-ico"><Icon n={buyer ? "grid" : "home"} /></span><span className="ig-l">{buyer ? "Voltar ao Acervo" : "Voltar ao Ateliê"}</span></a>}
@@ -55,7 +55,7 @@ export function RnTabs({ base, unseen, initials, buyer, code, admin, avatar }: P
       <Link href={`${b}/busca`} aria-current={at("/busca") ? "page" : undefined}><Icon n="search" />Buscar</Link>
       {!admin && <Link href={`${b}/novo`} className="rn-plus" aria-label="Publicar"><span><Icon n="plus" /></span></Link>}
       <Link href={b ? `${b}?aba=seguindo` : "/?aba=seguindo"} aria-current={sp.get("aba") === "seguindo" ? "page" : undefined}><Icon n="users" />Seguindo</Link>
-      <Link href={`${b}/eu`} aria-current={at("/eu") || path === `${b}/u/${code}` ? "page" : undefined}><span className={"rn-tab-av" + (buyer ? " av-buyer" : "") + (avatar ? " has-img" : "")}>{/* eslint-disable-next-line @next/next/no-img-element */}{avatar ? <img src={avatar} alt="" /> : initials}</span>Eu</Link>
+      <Link href={`${b}/eu`} aria-current={at("/eu") || path === `${b}/u/${code}` ? "page" : undefined} aria-label={admin ? "Moderação" : "Eu"}><span className={"rn-tab-av" + (buyer ? " av-buyer" : "") + (avatar ? " has-img" : "")}>{/* eslint-disable-next-line @next/next/no-img-element */}{avatar ? <img src={avatar} alt="" /> : initials}</span>Eu</Link>
     </nav>
   );
 }

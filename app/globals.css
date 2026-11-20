@@ -1699,3 +1699,10 @@ html{-webkit-tap-highlight-color:transparent}
 .adm-list span{font-size:14px;color:var(--ink);opacity:.8}
 .adm-list small{font:400 12px/1.3 var(--mono);color:var(--muted)}
 .adm-list li > .ico{flex:none;width:16px;height:16px;color:var(--muted)}
+/* submenu do admin: dois grupos */
+.admin-sub .wrap{display:flex;flex-wrap:wrap;gap:4px 28px;align-items:center}
+.admin-sub .sub-g{display:inline-flex;flex-wrap:wrap;align-items:center;gap:2px 4px}
+.admin-sub .sub-l{font:500 10px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-right:6px}
+.admin-sub a{display:inline-flex;align-items:center;gap:6px}
+.admin-sub a .ico{width:14px;height:14px}
+.admin-sub .badge-n{margin-left:2px}

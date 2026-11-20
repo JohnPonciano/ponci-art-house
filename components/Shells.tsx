@@ -1,3 +1,4 @@
+import { getAdmin } from "@/lib/supabase/server";
 import type { ReactNode } from "react";
 import { Header, Footer, type NavItem } from "./Chrome";
 import { TabBar } from "./TabBar";
@@ -9,11 +10,14 @@ const PUBLIC_NAV: NavItem[] = [
   { href: "/#colecionadores", label: "Colecionadores" }, { href: "/#processo", label: "Como funciona" },
 ];
 
-export function PublicShell({ children, me }: { children: ReactNode; me?: Me | null }) {
-  const nav = me ? [...PUBLIC_NAV.slice(0, 2), { href: me.role === "artist" ? "/artista" : "/colecionador", label: "Minha área" }] : PUBLIC_NAV;
+export async function PublicShell({ children, me }: { children: ReactNode; me?: Me | null }) {
+  // admin logado (sem perfil de membro) também é reconhecido: vê "Painel" em vez de "Entrar"
+  const admin = me ? null : await getAdmin().catch(() => null);
+  const nav = me ? [...PUBLIC_NAV.slice(0, 2), { href: me.role === "artist" ? "/artista" : "/colecionador", label: "Minha área" }]
+    : admin ? [...PUBLIC_NAV.slice(0, 2), { href: "/colecionador", label: "Acervo" }, { href: "/admin", label: "Painel admin" }] : PUBLIC_NAV;
   return (
     <>
-      <Header nav={nav} enter={!me} user={me ? { name: me.role === "artist" ? me.display_name : me.full_name, role: me.role === "artist" ? "Artista" : me.member_code } : null} />
+      <Header nav={nav} enter={!me && !admin} user={me ? { name: me.role === "artist" ? me.display_name : me.full_name, role: me.role === "artist" ? "Artista" : me.member_code } : admin ? { name: "Admin", role: admin.email } : null} />
       <main id="main" tabIndex={-1} className="enter">{children}</main>
       <Footer />
     </>

@@ -78,8 +78,15 @@ export const getAdmin = cache(async (): Promise<{ id: string; email: string } | 
 });
 
 /** Membro ativo do papel pedido; senão redireciona (as páginas renderizam em paralelo ao layout). */
+/** Admin navegando a área do colecionador (só leitura): perfil sintético com código ADMIN. */
+export const isAdminView = (me?: { member_code?: string } | null) => me?.member_code === "ADMIN";
+export async function adminAsBuyer(): Promise<Me | null> {
+  const a = await getAdmin(); if (!a) return null;
+  return { id: a.id, role: "buyer", member_code: "ADMIN", display_name: "PONCI · Admin", city: "", practice: "", bio: "", created_at: "", status: "active",
+    full_name: "Admin", email: a.email, accepts_offers: false, show_name: true, handle: "ponci", avatar_path: null };
+}
 export async function requireMember(role: "artist" | "buyer"): Promise<Me> {
-  const me = await getMe();
+  const me = (await getMe()) || (role === "buyer" ? await adminAsBuyer() : null);
   if (!me) redirect(role === "artist" ? "/entrar?perfil=artista" : "/entrar?perfil=colecionador");
   if (me.role !== role) redirect(me.role === "artist" ? "/artista" : "/colecionador");
   if (me.status !== "active") redirect(role === "artist" ? "/artista" : "/colecionador");

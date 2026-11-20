@@ -4,7 +4,8 @@ import { communityHome } from "@/lib/site";
 import { AreaShell } from "@/components/Shells";
 import { PendingMember } from "@/components/PendingMember";
 import { KycBanner } from "@/components/KycBanner";
-import { getMe, pendingDocs, myKyc } from "@/lib/supabase/server";
+import { getMe, pendingDocs, myKyc, adminAsBuyer } from "@/lib/supabase/server";
+import { AdminViewShell } from "@/components/AdminViewShell";
 import { favoriteIds, proposalsForBuyer } from "@/lib/data";
 import { activity } from "@/lib/diary";
 
@@ -12,7 +13,12 @@ export const dynamic = "force-dynamic";
 
 export default async function ColecionadorLayout({ children }: { children: React.ReactNode }) {
   const [me, docs, kyc] = await Promise.all([getMe(), pendingDocs(), myKyc()]);
-  if (!me) redirect("/entrar?perfil=colecionador");
+  if (!me) {
+    // admin também enxerga o acervo (sem comprar), com o menu do painel
+    const adm = await adminAsBuyer();
+    if (adm) return <AdminViewShell com={communityHome((await headers()).get("host"))}>{children}</AdminViewShell>;
+    redirect("/entrar?perfil=colecionador");
+  }
   if (me.role !== "buyer") redirect("/artista");
   if (docs.length) redirect("/aceite?next=/colecionador");
   if (me.status !== "active")

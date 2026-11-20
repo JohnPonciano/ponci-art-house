@@ -1,9 +1,10 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Header, Footer } from "@/components/Chrome";
 import { TabBar } from "@/components/TabBar";
 import { getAdmin, adminByEmail, authLevel } from "@/lib/supabase/server";
-import { counts } from "@/lib/admin";
+import { headers } from "next/headers";
+import { communityHome } from "@/lib/site";
+import { adminNav, AdminSubnav } from "@/components/AdminViewShell";
 
 export const dynamic = "force-dynamic";
 
@@ -14,20 +15,14 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   if (lvl.current !== "aal2") redirect(lvl.needsCode ? "/entrar/verificacao?next=/admin" : "/seguranca");
   const admin = await getAdmin();
   if (!admin) redirect("/entrar/admin");
-  const c = await counts();
-  const nav = [
-    { href: "/admin/pedidos", label: "Pedidos", badge: c.reqs || undefined }, { href: "/admin/membros", label: "Membros", badge: c.pend || undefined },
-    { href: "/admin/curadoria", label: "Curadoria", badge: c.review || undefined }, { href: "/admin/solicitacoes", label: "Solicitações", badge: c.sol || undefined },
-    { href: "/admin/compliance", label: "Compliance" },
-  ];
-  const sub = [["/admin", "Painel"], ["/admin/diario", "Comunidade"], ["/admin/documentos", "Documentos"], ["/admin/auditoria", "Auditoria"], ["/admin/convites", "Convites"], ["/seguranca", "Segurança"], ["/admin/conta", "Senha"]];
+  const { nav, view, records } = await adminNav(communityHome((await headers()).get("host")));
   return (
     <>
-      <Header nav={nav} menuExtra={sub.map(([href, label]) => ({ href, label }))} home="/admin" tag="Painel admin" user={{ name: "Admin", role: admin.email }} band={["Painel administrativo · PONCI", admin.email]} />
-      <nav className="subnav" aria-label="Registros"><div className="wrap">{sub.map(([h, l]) => <Link key={h} href={h}>{l}</Link>)}</div></nav>
+      <Header nav={nav} menuExtra={[...view, ...records]} home="/admin" tag="Painel admin" user={{ name: "Admin", role: admin.email }} band={["Painel administrativo · PONCI", admin.email]} />
+      <AdminSubnav view={view} records={records} />
       <main id="main" tabIndex={-1} className="enter">{children}</main>
       <Footer />
-      <TabBar nav={nav} />
+      <TabBar nav={[nav[0], nav[2], nav[3], nav[4]]} />
     </>
   );
 }

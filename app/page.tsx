@@ -7,7 +7,7 @@ import { Fit } from "@/components/Fit";
 import { Icon } from "@/components/Icon";
 import { AccessForm, PickRole } from "@/components/forms/AccessForm";
 import { vitrine, networkStats } from "@/lib/data";
-import { getMe } from "@/lib/supabase/server";
+import { getMe, getAdmin } from "@/lib/supabase/server";
 import { DEMO_ART } from "@/lib/demoArt";
 import { catNo, dims, pad } from "@/lib/format";
 
@@ -18,7 +18,7 @@ export default async function Home() {
   const hero = works.find((w) => w.slug === "gesto-n3") || works[0];
   const sel = works.filter((w) => w !== hero).slice(0, 10);
   const doorA = sel[1] || hero, doorB = sel[3] || sel[0] || hero, formArt = sel[4] || hero;
-  const area = me ? (me.role === "artist" ? "/artista" : "/colecionador") : null;
+  const area = me ? (me.role === "artist" ? "/artista" : "/colecionador") : (await getAdmin()) ? "/admin" : null;
   return (
     <PublicShell me={me}>
       <section className="hero wrap" id="top" aria-labelledby="hero-t">
@@ -29,7 +29,7 @@ export default async function Home() {
             <p className="hero-quote">“Entre quem cria e quem coleciona, <em style={{ color: "var(--ocre)" }}>nada</em> além da obra.”</p>
             <p className="hero-sub">Uma rede fechada onde artistas e colecionadores verificados negociam obras diretamente, com curadoria, privacidade e pagamento em custódia.</p>
             <div className="hero-ctas">
-              {area ? <Link className="btn" href={area}>Ir para a minha área <Icon n="right" /></Link> : <>
+              {area ? <Link className="btn" href={area}>{area === "/admin" ? "Ir para o painel" : "Ir para a minha área"} <Icon n="right" /></Link> : <>
                 <PickRole role="artist" className="btn">Sou artista — solicitar convite <Icon n="right" /></PickRole>
                 <PickRole role="buyer" className="btn ghost">Sou colecionador — solicitar acesso <Icon n="right" /></PickRole></>}
             </div>

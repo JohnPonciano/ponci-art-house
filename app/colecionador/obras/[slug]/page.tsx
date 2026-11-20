@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { requireMember } from "@/lib/supabase/server";
+import { requireMember, isAdminView } from "@/lib/supabase/server";
 import { catalogue, favoriteIds, ordersForBuyer, proposalsForBuyer, workBySlug } from "@/lib/data";
 import { Slab, Notice } from "@/components/ui";
 import { GalleryCard, Room } from "@/components/Gallery";
@@ -25,7 +25,7 @@ export default async function ObraColecionador({ params }: { params: Promise<{ s
   const [ps, os, favs, cat, follows] = await Promise.all([proposalsForBuyer(me.id), ordersForBuyer(me.id), favoriteIds(me.id), catalogue(), myFollows(me.id)]);
   const mine = ps.find((p) => p.work.id === a.id && (p.status === "open" || p.status === "countered"));
   const myOrder = os.find((o) => o.work.id === a.id);
-  const ar = a.artist!;
+  const ar = a.artist!; const adm = isAdminView(me);
   const i = cat.findIndex((x) => x.id === a.id);
   const prev = i >= 0 && cat.length > 1 ? cat[(i - 1 + cat.length) % cat.length] : null, next = i >= 0 && cat.length > 1 ? cat[(i + 1) % cat.length] : null;
   const rel = [...cat.filter((x) => x.artist_id === a.artist_id && x.id !== a.id), ...cat.filter((x) => x.artist_id !== a.artist_id && x.cat === a.cat && x.id !== a.id)].slice(0, 8);
@@ -37,14 +37,15 @@ export default async function ObraColecionador({ params }: { params: Promise<{ s
         <div className="detail-media"><SwipeNav prev={prev ? `/colecionador/obras/${prev.slug}` : undefined} next={next ? `/colecionador/obras/${next.slug}` : undefined}>
           <Zoomable a={a} caption={`${a.title} · ${ar.display_name} · ${a.year}`}><Slab a={a} label={a.status === "published" ? "Disponível na rede" : STATUS[a.status][0]} /></Zoomable></SwipeNav></div>
         <div className="detail-info ob">
-          <div className="d-no"><span>{catNo(a.no)} · {CAT[a.cat]}</span><FavButton variant="link" workId={a.id} on={favs.includes(a.id)} title={a.title} /></div>
+          <div className="d-no"><span>{catNo(a.no)} · {CAT[a.cat]}</span>{!adm && <FavButton variant="link" workId={a.id} on={favs.includes(a.id)} title={a.title} />}</div>
           <header className="ob-head">
             <h1 className="d-title">{a.title}</h1>
             <p className="ob-by"><Link href={`/colecionador/artistas/${ar.member_code}`}>{ar.display_name}</Link>, {a.year}</p>
             <p className="ob-line">{a.medium} · {dims(a)}</p>
           </header>
           <section className="ob-buy" aria-label="Aquisição">
-          {myOrder ? <div className="d-buy"><span className="price">{brl(myOrder.amount)}<small>Reservada para você · {myOrder.ref}</small></span><Link className="btn" href="/colecionador/aquisicoes">Acompanhar aquisição <Icon n="right" /></Link></div>
+          {adm ? <div className="d-buy"><p className="ob-price">{brl(a.price)}<small>{STATUS[a.status][0]} · {ar.accepts_offers ? "aceita propostas" : "preço fixo"}</small></p><Notice icon="shield">Você está vendo como admin. Reserva, propostas e favoritos ficam com os membros.</Notice><a className="btn ghost" href={`/admin/curadoria`}>Abrir na curadoria <Icon n="right" /></a></div>
+            : myOrder ? <div className="d-buy"><span className="price">{brl(myOrder.amount)}<small>Reservada para você · {myOrder.ref}</small></span><Link className="btn" href="/colecionador/aquisicoes">Acompanhar aquisição <Icon n="right" /></Link></div>
             : a.status !== "published" ? <div className="d-buy"><span className="price">{brl(a.price)}<small>{STATUS[a.status][0]} por outro membro</small></span><Notice>Salve nos favoritos: se a reserva cair, você vê a obra voltar à vitrine.</Notice></div>
             : <>
               <StickyBuy price={brl(a.price)} />
@@ -86,14 +87,14 @@ export default async function ObraColecionador({ params }: { params: Promise<{ s
             <span className="ob-av" aria-hidden="true">{initials(ar.display_name)}</span>
             <div><p className="lab">Sobre a artista</p><h2>{ar.display_name}</h2><p className="ob-line">{ar.practice} · {ar.city}</p>
               {ar.bio && <p className="ob-bio">{ar.bio}</p>}
-              <div className="ob-artist-acts"><FollowBtn artistId={ar.id} on={follows.has(ar.id)} compact /><Link className="linkbtn" href={`/colecionador/artistas/${ar.member_code}`}>Perfil e outras obras</Link></div></div>
+              <div className="ob-artist-acts">{!adm && <FollowBtn artistId={ar.id} on={follows.has(ar.id)} compact />}<Link className="linkbtn" href={`/colecionador/artistas/${ar.member_code}`}>Perfil e outras obras</Link></div></div>
           </section>
         </div>
       </article>
       {prev && next && <nav className="pager" aria-label="Acervo">
         <Link href={`/colecionador/obras/${prev.slug}`}><span><Icon n="left" /> Anterior</span><strong>{prev.title}</strong></Link>
         <Link href={`/colecionador/obras/${next.slug}`}><span>Próxima <Icon n="right" /></span><strong>{next.title}</strong></Link></nav>}
-      {rel.length > 0 && <Room n="Continue olhando" title={<>Outras <em>obras</em></>} href="/colecionador" linkText="Voltar ao acervo">{rel.map((x) => <GalleryCard key={x.id} a={x} fav={favs.includes(x.id)} />)}</Room>}
+      {rel.length > 0 && <Room n="Continue olhando" title={<>Outras <em>obras</em></>} href="/colecionador" linkText="Voltar ao acervo">{rel.map((x) => <GalleryCard key={x.id} a={x} fav={adm ? undefined : favs.includes(x.id)} />)}</Room>}
       <div style={{ height: "clamp(56px,8vw,120px)" }} />
     </div>
   );

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Suspense } from "react";
-import { requireMember } from "@/lib/supabase/server";
+import { requireMember, isAdminView } from "@/lib/supabase/server";
 import { artists, catalogue, favoriteIds } from "@/lib/data";
 import { Empty } from "@/components/ui";
 import { GalleryCard, Room, Feature } from "@/components/Gallery";
@@ -23,7 +23,8 @@ export default async function Acervo({ searchParams }: { searchParams: Promise<R
   const list = all.filter((a) => (f.cat === "all" || a.cat === f.cat) && (f.artist === "all" || a.artist_id === f.artist) && a.price >= lo && a.price < hi)
     .sort((x, y) => avail(x) - avail(y) || by[f.sort](x, y));
   const filtering = sp.ver === "todas" || f.cat !== "all" || f.artist !== "all" || f.price !== "all" || f.sort !== "new";
-  const fav = (id: string) => favs.includes(id);
+  const adm = isAdminView(me);
+  const fav = (id: string) => (adm ? undefined : favs.includes(id)) as boolean;
   const pub = all.filter((a) => a.status === "published");
   const featured = [...pub].sort((x, y) => y.created_at.localeCompare(x.created_at))[0];
   const withWorks = arts.filter((a: any) => all.some((w) => w.artist_id === a.id));
@@ -34,7 +35,7 @@ export default async function Acervo({ searchParams }: { searchParams: Promise<R
     <div className="wrap gallery">
       <header className="g-head">
         <div><span className="lab">Acervo · somente membros</span><h1>Acervo</h1></div>
-        <p>Olá, {firstName(me.full_name)}. {pub.length} obras disponíveis de {withWorks.length} artistas, só dentro da rede.</p>
+        <p>{adm ? "Visualizando como admin. " : `Olá, ${firstName(me.full_name)}. `}{pub.length} obras disponíveis de {withWorks.length} artistas, só dentro da rede.</p>
       </header>
       <Suspense>
         <GalleryFilters total={list.length}

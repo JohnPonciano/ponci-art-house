@@ -34,7 +34,7 @@ export function MemberInvites({ invites }: { invites: MyInvite[] }) {
     window.open(url, "_blank"); toast("Salve a imagem e publique nos Stories. Use o adesivo de link com o endereço do convite.");
   };
   return (
-    <div className="inv">
+    <div className="inv-root">
       <div className="inv-head">
         <p className="inv-count"><b>{left}</b> de {MAX} convites disponíveis</p>
         <div className="inv-dots" aria-hidden="true">{Array.from({ length: MAX }, (_, k) => <i key={k} className={k < invites.length ? "on" : ""} />)}</div>

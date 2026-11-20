@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from "next";
 import { Archivo, Instrument_Serif, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import Script from "next/script";
+import { headers } from "next/headers";
+import { isCommunityHost } from "@/lib/site";
 import { Concrete } from "@/components/Concrete";
 import { ToastProvider } from "@/components/Toast";
 
@@ -24,13 +26,15 @@ export const viewport: Viewport = {
   themeColor: [{ media: "(prefers-color-scheme: light)", color: "#121211" }, { media: "(prefers-color-scheme: dark)", color: "#0A0A09" }],
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  // um container do Tag Manager para cada produto: site principal e comunidade.ponci.art
+  const gtm = isCommunityHost((await headers()).get("host")) ? "GTM-WMFJVRXD" : "GTM-TZRKM9K6";
   return (
     <html lang="pt-BR" className={`${archivo.variable} ${instrument.variable} ${plex.variable}`}>
       <body className="book">
         {/* Google Tag Manager */}
         <Script id="gtm-init" strategy="afterInteractive">{`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());`}</Script>
-        <Script id="gtm" strategy="afterInteractive" src="https://www.googletagmanager.com/gtm.js?id=GTM-TZRKM9K6" />
+        <Script id="gtm" strategy="afterInteractive" src={`https://www.googletagmanager.com/gtm.js?id=${gtm}`} />
         <Concrete />
         <ToastProvider>{children}</ToastProvider>
       </body>

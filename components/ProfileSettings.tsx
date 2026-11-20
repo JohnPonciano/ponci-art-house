@@ -40,7 +40,9 @@ export function ProfileSettings({ me, after }: { me: Me; after?: string }) {
     start(async () => {
       const r = await updateProfileSettings({ ...v, avatar_path: avatar.path });
       if (!r.ok) { setErr(r.error || "Não foi possível salvar."); return; }
-      toast("Perfil atualizado."); if (after) router.push(after); else router.refresh();
+      toast("Perfil atualizado.");
+      // "after" terminado em /u/ volta para o perfil pelo @ novo
+      if (after) router.push(after.endsWith("/u/") ? after + v.handle.replace(/^@/, "").toLowerCase() : after); else router.refresh();
     });
   }
   return (

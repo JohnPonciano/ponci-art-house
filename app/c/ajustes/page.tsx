@@ -16,7 +16,7 @@ export default async function Ajustes() {
       <Link className="backlink always" href={back}><Icon n="left" />Perfil</Link>
       <h1 className="rn-h1">Editar perfil</h1>
       {me.role === "buyer" && <div style={{ marginBottom: 18 }}><ShowNameToggle initial={!!me.show_name} code={me.member_code} /></div>}
-      <ProfileSettings me={me as any} after={back} />
+      <ProfileSettings me={me as any} after={`${base}/u/`} />
       <p className="hint" style={{ marginTop: 24 }}>Documentos, segurança e dados de cadastro ficam na <a href={`${main}/conta`} style={{ textDecoration: "underline" }}>sua conta da PONCI</a>.</p>
     </div>
   );

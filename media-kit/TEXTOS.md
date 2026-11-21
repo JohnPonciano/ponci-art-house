@@ -3,7 +3,7 @@
 ## Perfil
 - **Nome:** PONCI · Rede privada de arte
 - **@:** @ponci.art (sugestão; alternativas: @ponciart, @ponci.rede)
-- **Foto:** `01-icone-perfil-wordmark.png` (alternativa: `02-icone-perfil-monograma.png`)
+- **Foto:** `01-icone-perfil-instagram.png` (mesmo padrão do ícone do app). Para um perfil da Comunidade, use `02-icone-perfil-comunidade.png`
 - **Categoria:** Galeria de arte
 - **Bio (até 150 caracteres):**
   > Rede privada de artistas e colecionadores.

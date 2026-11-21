@@ -1,6 +1,6 @@
 # PONCI · Kit de lançamento do Instagram
 
-O tom é de conversa sobre arte, não de anúncio: a PONCI aparece como uma curadoria que está conhecendo artistas e chamando gente para olhar arte junto. Nada de "custódia", "comissão" ou "procedência" nas peças.
+O tom é de conversa sobre arte, bem brasileiro e sem cara de anúncio: a PONCI aparece como uma curadoria que está conhecendo artistas e chamando gente para olhar arte junto. Nada de "custódia", "comissão" ou "procedência" nas peças.
 
 ## Perfil
 - **Nome:** PONCI · Rede privada de arte
@@ -16,51 +16,53 @@ O tom é de conversa sobre arte, não de anúncio: a PONCI aparece como uma cura
 O Instagram mostra o mais recente primeiro. Postando do 6 para o 1, "Toda obra começa num ateliê" fica no topo.
 
 1. `post-06-conhece-alguem.png`
-2. `post-05-arte-para-viver-junto.png`
+2. `post-05-arte-pra-morar-junto.png`
 3. `post-04-olhe-de-perto.png`
 4. `post-03-o-que-a-gente-procura.png`
 5. `post-02-estamos-conhecendo-artistas.png`
 6. `post-01-toda-obra-comeca-num-atelie.png`
 
-Sugestão: os 3 primeiros no dia do lançamento e depois 1 a cada 2 ou 3 dias, intercalando com stories.
+Sugestão: os 3 primeiros no dia do lançamento e depois 1 a cada 2 ou 3 dias, intercalando com stories. Responder comentário rápido, com o mesmo jeito de conversa, vale mais que qualquer legenda.
 
 ## Legendas
 
 **Toda obra começa num ateliê**
-Antes de chegar a uma parede, toda obra passou por mesa, pincel, erro, recomeço.
-A PONCI nasce para aproximar quem faz e quem coleciona, sem vitrine lotada no meio.
-A gente quer conhecer os dois: a obra e quem faz.
+Antes de chegar na parede, toda obra passou por mesa, pincel, café frio, erro e recomeço. 🎨
+Às vezes o ateliê é um quarto, às vezes a varanda, às vezes a mesa da cozinha depois do jantar.
+A PONCI nasce pra aproximar quem faz de quem coleciona, sem vitrine lotada no meio.
+E aí, como é o seu cantinho de criar?
 
 **Estamos conhecendo artistas**
-Se você pinta, desenha, grava, fotografa ou esculpe, queremos ver o que está saindo do seu ateliê.
-Mande seu portfólio pelo link na bio. A gente olha cada um com calma.
+Do Oiapoque ao Chuí: se você pinta, desenha, grava, fotografa ou esculpe, mostra aí! 👀
+Manda seu portfólio pelo link na bio. A gente olha cada um com calma, sem pressa e sem fórmula.
 
 **O que a gente procura**
 Não é currículo, nem número de seguidores.
-É uma voz própria, constância e vontade de conversar sobre o que você faz.
-Se isso é você, o link está na bio.
+É voz própria, ralação (faça chuva ou faça sol) e aquele papo bom sobre o que você faz.
+Se isso é você, chega mais: o link tá na bio.
 
 **Olhe de perto**
-Toda pincelada é uma decisão. Às vezes a obra inteira está num detalhe de dois centímetros.
-Qual foi a última obra que te fez chegar mais perto?
+Cada pincelada é uma escolha. Às vezes a obra inteira mora num detalhe de dois centímetros.
+Dá um zoom aí 🔍 e conta: qual foi a última obra que te fez chegar mais perto?
 
-**Arte para viver junto**
-Arte não é para ficar guardada. É para estar na sala, no corredor, no lugar onde você toma café.
+**Arte pra morar junto**
+Arte é pra morar junto, não pra ficar guardada no fundo do armário.
+É pra estar na sala, no corredor, do lado do cafezinho da manhã. ☕
 Na PONCI, cada obra é escolhida uma a uma, direto de quem fez.
 
-**Conhece alguém que pinta muito bem?**
-Todo mundo conhece um artista que merecia ser muito mais visto.
-Marca aqui nos comentários. A gente vai olhar um por um.
+**Conhece alguém que pinta demais?**
+Todo mundo tem aquele primo, aquela amiga, aquele vizinho que manda muito bem e quase ninguém viu.
+Marca aqui embaixo! 👇 A gente vai olhar um por um, com carinho.
 
 ## Hashtags (3 a 5 por post, variando)
-#arteContemporanea #arteBrasileira #artistaBrasileiro #ateliedeartista #pinturaContemporanea #artistasBrasileiros #processoCriativo #colecionadorDeArte #arteOriginal
+#arteBrasileira #artistaBrasileiro #feitoNoBrasil #arteContemporanea #ateliedeartista #pinturaContemporanea #processoCriativo #arteNaParede #colecionadorDeArte #arteOriginal
 
 ## Stories
 Cada story deixa espaço livre para a figurinha do próprio Instagram:
-- `story-01-voce-pinta.png`: figurinha de **enquete** ("Sim, pinto" / "Coleciono") ou de **link** para ponci.art/#acesso.
-- `story-02-mostre-seu-atelie.png`: figurinha **"Sua vez"** ou de **pergunta**, pedindo a foto do ateliê.
-- `story-03-primeira-obra.png`: figurinha de **pergunta** ("Conta aqui"). Depois, reposte algumas respostas.
-- `story-04-indique-um-artista.png`: figurinha de **menção** ou **pergunta** ("Quem a gente precisa conhecer?").
+- `story-01-voce-pinta.png`: figurinha de **enquete** ("Pinto sim!" / "Só admiro 😅") ou de **link** para ponci.art/#acesso.
+- `story-02-mostra-teu-atelie.png`: figurinha **"Sua vez"** ou de **pergunta** ("Manda a foto do teu cantinho").
+- `story-03-primeira-obra.png`: figurinha de **pergunta** ("Conta aqui!"). Depois, reposte as respostas mais legais.
+- `story-04-indica-um-artista.png`: figurinha de **menção** ou **pergunta** ("Quem a gente precisa conhecer?").
 Deixe livres os 250 px do topo e os 340 px de baixo, que o Instagram cobre.
 
 ## Destaques
@@ -76,9 +78,9 @@ Licença gratuita do Unsplash, com uso comercial permitido. O crédito não é o
 - **site: login de artistas:** Muhammad Rahim Ali (https://unsplash.com/photos/a-woman-holding-a-bunch-of-paint-brushes-NRBBze-P0Sc)
 - **site: pedido de convite e login da Comunidade:** Zalfa Imani (https://unsplash.com/photos/woman-standing-in-front-of-paintings-DeTWuVp6prg)
 - **post-01 e story-04:** Jade Stephens (https://unsplash.com/photos/woman-painting-tree-and-cliff-WhVO1xKiDVw)
-- **story-02:** Khara Woods (https://unsplash.com/photos/assorted-color-paint-brush-on-brown-wooden-table-top-KR84RpMCb0w)
+- **story-02 (mostra teu ateliê):** Khara Woods (https://unsplash.com/photos/assorted-color-paint-brush-on-brown-wooden-table-top-KR84RpMCb0w)
 - **post-04:** Jené Stephaniuk (https://unsplash.com/photos/red-blue-and-yellow-abstract-painting--MCrF6hnojU)
 - **story-01:** Subhkaran Singh (https://unsplash.com/photos/woman-in-black-and-brown-floral-long-sleeve-shirt-holding-painting-of-man-in-blue-denim--pHEflDEpLo)
-- **post-05:** Andrea G (https://unsplash.com/photos/woman-in-black-shirt-sitting-on-chair-bLhKr1E6tbw)
+- **post-05 (arte pra morar junto):** Andrea G (https://unsplash.com/photos/woman-in-black-shirt-sitting-on-chair-bLhKr1E6tbw)
 
 Quando houver artistas reais na rede, troque por fotos das obras e dos ateliês deles, com autorização de cada um.

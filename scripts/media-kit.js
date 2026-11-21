@@ -95,7 +95,50 @@ add('story-04-indica-um-artista',1080,1920,'ocre',`
  <div style="position:absolute;left:80px;right:80px;top:1020px">
   <p class="cond" style="font-size:118px;color:var(--paper)">Indica um artista.</p>
   <p style="font:400 40px/1.4 Grot;color:#F2E8DA;margin-top:22px">Aquele primo, aquela amiga, aquele vizinho que manda muito bem. Marca o @!</p></div>`);
+
+/* CARROSSÉIS 1080x1350: cada um numa pasta, slides 01, 02… na ordem de postagem */
+const top='<div style="position:absolute;left:0;right:0;top:0;height:260px;background:linear-gradient(180deg,rgba(18,18,17,.55),rgba(18,18,17,0))"></div>';
+const foot=(i,n,c)=>`<div style="position:absolute;left:84px;right:84px;bottom:64px;display:flex;justify-content:space-between;font:400 24px/1 Mono;letter-spacing:.12em;text-transform:uppercase;color:${c};opacity:.75"><span>${String(i).padStart(2,'0')} / ${String(n).padStart(2,'0')}</span><span>${i<n?'Arrasta →':'@ponci.art'}</span></div>`;
+function carousel(dir,slides){const n=slides.length;slides.forEach((s,k)=>{const i=k+1,c=s.cls==='paper'?'var(--ink)':'var(--paper)';
+ add(`${dir}/${String(i).padStart(2,'0')}`,1080,1350,s.cls,`${s.body}${sig(c)}${handle(c)}${foot(i,n,c)}`);});}
+const cover=(photo,pos,title,sub)=>({cls:'dark',body:`<img class="bleed" src="${img(photo)}" style="inset:0;width:1080px;height:1350px;object-position:${pos}">
+ <div style="position:absolute;inset:0;${shade}"></div>${top}
+ <div style="position:absolute;left:84px;right:84px;bottom:150px"><p class="cond" style="font-size:124px;color:var(--paper)">${title}</p>
+ <p class="serif" style="font-size:62px;color:#E6E2DA;margin-top:22px">${sub}</p></div>`});
+const tip=(cls,no,title,text,photo,pos)=>{const dk=cls!=='paper',tc=dk?'var(--paper)':'var(--ink)',bc=cls==='ocre'?'#F2E8DA':dk?'#BDB8AF':'#55524D',nc=cls==='ocre'?'#F2E8DA':'#B98F6B';
+ return {cls,body:(!photo&&no?`<p class="wm" style="position:absolute;right:60px;bottom:120px;font-size:520px;color:${cls==='paper'?'#E2DDD3':'#22211F'}">${no}</p>`:'')+(photo?`<img class="bleed" src="${img(photo)}" style="left:0;top:0;width:1080px;height:640px;object-position:${pos||'center'}">${top}`:'')+
+ `<div style="position:absolute;left:84px;right:84px;top:${photo?700:250}px">${no?`<p class="mono" style="font-size:30px;letter-spacing:.14em;color:${nc}">${no}</p>`:''}
+ <p class="cond" style="font-size:${photo?96:112}px;color:${tc};margin-top:${no?26:0}px">${title}</p>
+ <p style="font:400 ${photo?38:42}px/1.45 Grot;color:${bc};margin-top:${photo?28:40}px;max-width:880px">${text}</p></div>`};};
+const quote=(cls,text,note)=>{const dk=cls!=='paper';return {cls,body:`<div style="position:absolute;left:84px;right:84px;top:0;bottom:0;display:flex;flex-direction:column;justify-content:center">
+ <p class="serif" style="font-size:96px;color:${dk?'var(--paper)':'var(--ink)'}">${text}</p>${note?`<p style="font:400 38px/1.45 Grot;color:${cls==='ocre'?'#F2E8DA':dk?'#BDB8AF':'#55524D'};margin-top:36px">${note}</p>`:''}</div>`};};
+
+carousel('carrossel-01-como-comecar-a-colecionar',[
+ cover('u-visita','center 40%','Como começar a colecionar arte','sem precisar ser milionário'),
+ tip('paper','01','Compra o que te faz parar.','Se você voltou pra olhar duas vezes, já é um bom sinal. Moda passa; o que te pega de jeito fica.'),
+ tip('dark','02','Começa pequeno.','Desenho, gravura, obra em papel. Toda coleção boa começou com uma peça que coube no bolso e na parede.'),
+ tip('paper','03','Conversa com quem fez.','Pergunta do processo, do material, da história. Artista adora um bom papo, e a obra ganha outro sentido.','u-artista','center 30%'),
+ tip('dark','04','Pergunta como cuidar.','Sol direto, umidade, maresia: cada material pede um cuidado. Melhor saber antes de pendurar.'),
+ tip('paper','05','Pendura logo.','Obra embrulhada atrás do armário não é coleção. Arte é pra morar junto.','u-sala','center 35%'),
+ quote('ocre','Salva esse post e manda pra aquele amigo que vive dizendo “um dia eu compro um quadro”.','O dia é hoje.'),
+]);
+carousel('carrossel-02-fotografa-tua-obra',[
+ cover('u-atelie','center 30%','Fotografa tua obra com o celular','4 dicas pro portfólio ficar bonito'),
+ tip('paper','01','Luz de janela, sem flash.','Dia nublado ou fim de tarde é ouro. O flash estoura a cor e ainda faz reflexo no verniz.'),
+ tip('dark','02','Obra reta, celular reto.','Centraliza, deixa a tela paralela à obra e nada de foto de lado. Corta a parede em volta depois.'),
+ tip('paper','03','Chega perto.','Faz uma foto de detalhe. A textura e a pincelada contam muita coisa que a foto inteira esconde.','u-textura','center 40%'),
+ tip('dark','04','Mostra o tamanho.','Uma foto na parede, ou você do lado. Ninguém adivinha se a obra tem 20 centímetros ou 2 metros.','u-galeria','center 45%'),
+ quote('ocre','Fotografou? Agora manda o portfólio.','O link tá na bio. A gente olha cada um com calma.'),
+]);
+carousel('carrossel-03-coisas-que-so-quem-pinta-entende',[
+ cover('u-mesa','center 45%','Coisas que só quem pinta entende','(se identificou, marca um amigo)'),
+ quote('paper','Molhar o pincel no copo do café.','Ou tomar café no copo do pincel. Acontece.'),
+ tip('dark','','Aquela obra “quase pronta” há oito meses.','Falta só um detalhe. Sempre falta só um detalhe.','u-abs-rosa','center 40%'),
+ quote('dark','Tinta na roupa boa.','Nunca na roupa velha. Sempre na roupa boa.'),
+ tip('paper','','“Nossa, eu não tenho dom nenhum.”','Ouvido em todo almoço de família, de tia, de cunhado e de quem pediu um quadro de graça.','u-pincel','center 50%'),
+ quote('ocre','Qual faltou?','Conta aqui embaixo e marca aquele artista que vive isso todo dia.'),
+]);
 (async()=>{fs.mkdirSync(SP+'/kit-html',{recursive:true});const b=await chromium.launch({args:['--allow-file-access-from-files']});
- for(const pc of pieces){const p=await b.newPage({viewport:{width:pc.w,height:pc.h}});const tmp=SP+'/kit-html/'+pc.name+'.html';fs.writeFileSync(tmp,pc.html);await p.goto('file://'+tmp,{waitUntil:'load'});await p.evaluate(()=>document.fonts.ready);await p.waitForTimeout(200);
+ for(const pc of pieces){const p=await b.newPage({viewport:{width:pc.w,height:pc.h}});const tmp=SP+'/kit-html/'+pc.name.replace(/\//g,'_')+'.html';fs.mkdirSync(require('path').dirname(`${OUT}/${pc.name}.png`),{recursive:true});fs.writeFileSync(tmp,pc.html);await p.goto('file://'+tmp,{waitUntil:'load'});await p.evaluate(()=>document.fonts.ready);await p.waitForTimeout(200);
   await p.screenshot({path:`${OUT}/${pc.name}.png`});await p.close();console.log('ok',pc.name);}
  await b.close();})();

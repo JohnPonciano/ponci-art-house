@@ -54,6 +54,25 @@ Na PONCI, cada obra é escolhida uma a uma, direto de quem fez.
 Todo mundo tem aquele primo, aquela amiga, aquele vizinho que manda muito bem e quase ninguém viu.
 Marca aqui embaixo! 👇 A gente vai olhar um por um, com carinho.
 
+## Carrosséis
+Cada carrossel está numa pasta, com os slides numerados na ordem (01, 02…). No Instagram, escolha "Selecionar vários" e marque na ordem. São os posts que mais rendem salvamento e compartilhamento, então vale um por semana.
+
+**carrossel-01-como-comecar-a-colecionar** (7 slides, pra quem coleciona ou quer começar)
+Legenda: Todo mundo acha que colecionar arte é coisa de milionário. Não é, não! 🖼️
+Dá pra começar pequeno, com uma peça que cabe no bolso e na parede.
+Salva pra lembrar depois e manda pra aquele amigo que vive dizendo "um dia eu compro um quadro". 👇
+
+**carrossel-02-fotografa-tua-obra** (6 slides, pra quem pinta)
+Legenda: Portfólio bom não precisa de câmera cara. Precisa de luz de janela e um pouquinho de paciência. 📱
+4 dicas pra sua obra aparecer do jeito que ela é de verdade.
+Fotografou? Manda o portfólio pelo link na bio.
+
+**carrossel-03-coisas-que-so-quem-pinta-entende** (6 slides, pra rir e marcar os amigos)
+Legenda: Se você pinta, já passou por pelo menos três dessas. Confessa! 😂
+Qual faltou? Conta aqui embaixo e marca aquele artista que vive isso todo dia.
+
+Sugestão de calendário: carrossel 03 na primeira semana (puxa marcação e alcance), 02 na segunda (traz artistas) e 01 na terceira (traz colecionadores).
+
 ## Hashtags (3 a 5 por post, variando)
 #arteBrasileira #artistaBrasileiro #feitoNoBrasil #arteContemporanea #ateliedeartista #pinturaContemporanea #processoCriativo #arteNaParede #colecionadorDeArte #arteOriginal
 
@@ -82,5 +101,7 @@ Licença gratuita do Unsplash, com uso comercial permitido. O crédito não é o
 - **post-04:** Jené Stephaniuk (https://unsplash.com/photos/red-blue-and-yellow-abstract-painting--MCrF6hnojU)
 - **story-01:** Subhkaran Singh (https://unsplash.com/photos/woman-in-black-and-brown-floral-long-sleeve-shirt-holding-painting-of-man-in-blue-denim--pHEflDEpLo)
 - **post-05 (arte pra morar junto):** Andrea G (https://unsplash.com/photos/woman-in-black-shirt-sitting-on-chair-bLhKr1E6tbw)
+
+- **carrosséis:** Zalfa Imani (capa 01), Muhammad Rahim Ali, Lotus Design N Print (sala), Avi Richards (capa 02), Jené Stephaniuk, Jessica Pamp, Khara Woods (capa 03), Geordanna Cordero (abstrato rosa), Anna Kolosyuk (pincéis)
 
 Quando houver artistas reais na rede, troque por fotos das obras e dos ateliês deles, com autorização de cada um.

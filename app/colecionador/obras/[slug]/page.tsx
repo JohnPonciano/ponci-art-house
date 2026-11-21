@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requireMember, isAdminView } from "@/lib/supabase/server";
 import { catalogue, favoriteIds, ordersForBuyer, proposalsForBuyer, workBySlug } from "@/lib/data";
-import { Slab, Notice } from "@/components/ui";
+import { Slab, Notice, Reprod } from "@/components/ui";
 import { GalleryCard, Room } from "@/components/Gallery";
 import { Scale } from "@/components/Scale";
 import { FollowBtn } from "@/components/diary-client";
@@ -37,7 +37,7 @@ export default async function ObraColecionador({ params }: { params: Promise<{ s
         <div className="detail-media"><SwipeNav prev={prev ? `/colecionador/obras/${prev.slug}` : undefined} next={next ? `/colecionador/obras/${next.slug}` : undefined}>
           <Zoomable a={a} caption={`${a.title} · ${ar.display_name} · ${a.year}`}><Slab a={a} label={a.status === "published" ? "Disponível na rede" : STATUS[a.status][0]} /></Zoomable></SwipeNav></div>
         <div className="detail-info ob">
-          <div className="d-no"><span>{catNo(a.no)} · {CAT[a.cat]}</span>{!adm && <FavButton variant="link" workId={a.id} on={favs.includes(a.id)} title={a.title} />}</div>
+          <div className="d-no"><span className="g-tags"><span>{catNo(a.no)} · {CAT[a.cat]}</span><Reprod a={a} /></span>{!adm && <FavButton variant="link" workId={a.id} on={favs.includes(a.id)} title={a.title} />}</div>
           <header className="ob-head">
             <h1 className="d-title">{a.title}</h1>
             <p className="ob-by"><Link href={`/colecionador/artistas/${ar.member_code}`}>{ar.display_name}</Link>, {a.year}</p>
@@ -75,7 +75,7 @@ export default async function ObraColecionador({ params }: { params: Promise<{ s
             <dl className="spec">
               <dt>Ano</dt><dd>{a.year}</dd><dt>Técnica</dt><dd>{a.medium}</dd>
               <dt>Dimensões</dt><dd>{dims(a)}<small>{dimsIn(a)}</small></dd>
-              <dt>Edição</dt><dd>{a.edition || "Obra única"}</dd>
+              <dt>Edição</dt><dd>{a.edition || (a.reproduction ? "Reprodução" : "Obra única")}{a.reproduction && <small>Reprodução, não é a obra original</small>}</dd>
               <dt>Procedência</dt><dd>Direto do ateliê<small>{ar.city}</small></dd>
             </dl>
           </section>

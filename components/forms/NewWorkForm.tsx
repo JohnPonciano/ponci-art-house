@@ -14,7 +14,7 @@ const rand = () => Math.floor(Math.random() * 9000) + 100;
 
 export function NewWorkForm({ userId }: { userId: string }) {
   const router = useRouter(); const toast = useToast(); const [pending, start] = useTransition();
-  const [v, setV] = useState({ title: "", year: "2026", cat: "painting", medium: "", h: "120", w: "100", edition: "", price: "", desc: "" });
+  const [v, setV] = useState({ title: "", year: "2026", cat: "painting", medium: "", h: "120", w: "100", edition: "", price: "", desc: "", repro: false });
   const [err, setErr] = useState<Record<string, string>>({}); const [status, setStatus] = useState("");
   const [style, setStyle] = useState({ g: "mono", pi: 0, seed: rand() });
   const [photo, setPhoto] = useState<{ blob: Blob; url: string; w: number; h: number } | null>(null);
@@ -66,7 +66,7 @@ export function NewWorkForm({ userId }: { userId: string }) {
         if (error) { setStatus("Não foi possível enviar a imagem: " + error.message); return; }
         image_path = path;
       }
-      const r = await createWork({ title: v.title, year: +v.year, cat: v.cat, medium: v.medium, h: +v.h, w: +v.w, edition: v.edition, price, description: v.desc, gen,
+      const r = await createWork({ title: v.title, year: +v.year, cat: v.cat, medium: v.medium, h: +v.h, w: +v.w, edition: v.edition, price, description: v.desc, gen, reproduction: v.repro,
         image_path, img_w: photo?.w ?? null, img_h: photo?.h ?? null });
       if (!r.ok) { setStatus(r.error); return; }
       toast("Obra enviada para a curadoria."); router.push(`/artista/obras/${r.data!.slug}`);
@@ -91,6 +91,8 @@ export function NewWorkForm({ userId }: { userId: string }) {
             <Field name="w" label="Largura (cm)" type="number" inputMode="decimal" value={v.w} onChange={on("w")} error={err.w} />
             <Field name="edition" label="Edição" placeholder="Obra única" value={v.edition} onChange={on("edition")} />
           </div>
+          <label className="check"><input type="checkbox" checked={v.repro} onChange={(e) => setV({ ...v, repro: e.target.checked })} />
+            <span><b>É uma reprodução</b> (impressão, fine art, pôster). A obra ganha a etiqueta REPROD pra ninguém confundir com o original.</span></label>
           <Field name="price" label="Preço" placeholder="R$ 0" inputMode="numeric" aside={price ? `Você recebe ${brl(price * (1 - COMMISSION))}` : "Você recebe —"}
             value={v.price} onChange={on("price")} onBlur={() => price && setV({ ...v, price: brl(price) })} error={err.price} />
           <Field as="textarea" name="desc" rows={4} label="Descrição" aside={`${v.desc.trim().length} / 40+`} placeholder="O que a obra investiga, como foi feita, como se comporta na luz…" value={v.desc} onChange={on("desc")} error={err.desc} />

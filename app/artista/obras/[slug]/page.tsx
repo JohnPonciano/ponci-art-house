@@ -2,7 +2,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requireMember } from "@/lib/supabase/server";
 import { ordersForArtist, proposalsForArtist, workBySlug } from "@/lib/data";
-import { SecHead, Slab, Tag, Notice } from "@/components/ui";
+import { SecHead, Slab, Tag, Notice, Reprod } from "@/components/ui";
+import { ReprodToggle } from "@/components/OffersToggle";
 import { Ledger, ArtistProposalRow } from "@/components/area";
 import { ActButton, PriceForm } from "@/components/area-client";
 import { Icon } from "@/components/Icon";
@@ -25,13 +26,14 @@ export default async function ObraArtista({ params }: { params: Promise<{ slug: 
       <article className="detail">
         <div className="detail-media"><Zoomable a={a}><Slab a={a} label={STATUS[a.status][0]} /></Zoomable></div>
         <div className="detail-info">
-          <div className="d-no"><span>{catNo(a.no)}</span><Tag s={a.status} /></div>
+          <div className="d-no"><span>{catNo(a.no)}</span><span className="g-tags"><Reprod a={a} /><Tag s={a.status} /></span></div>
           <div><h1 className="d-title">{a.title}</h1></div>
           <dl className="spec">
             <dt>Ano</dt><dd>{a.year}</dd><dt>Técnica</dt><dd>{a.medium}</dd>
             <dt>Dimensões</dt><dd>{dims(a)}<small>{dimsIn(a)}</small></dd>
-            <dt>Edição</dt><dd>{a.edition || "Obra única"}</dd><dt>Categoria</dt><dd>{CAT[a.cat]}</dd><dt>Cadastro</dt><dd>{dateBR(a.created_at)}</dd>
+            <dt>Edição</dt><dd>{a.edition || (a.reproduction ? "Reprodução" : "Obra única")}</dd><dt>Categoria</dt><dd>{CAT[a.cat]}</dd><dt>Cadastro</dt><dd>{dateBR(a.created_at)}</dd>
           </dl>
+          {a.status !== "sold" && <ReprodToggle workId={a.id} initial={!!a.reproduction} />}
           {a.description?.length > 0 && <div className="d-desc">{a.description.map((p, i) => <p key={i}>{p}</p>)}</div>}
           {a.status === "review" && <div className="d-buy">
             <span className="price">{brl(a.price)}<small>Preço proposto</small></span>

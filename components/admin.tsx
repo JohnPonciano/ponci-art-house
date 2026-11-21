@@ -58,7 +58,7 @@ export function WorkReviewRow({ w }: { w: Work }) {
       <span>{dateBR(w.created_at)}<small>{w.slug}</small><span className="tag t-rev">Em curadoria</span></span>
       <span className="l-thumb"><ArtImage a={w} /></span>
       <span className="det">
-        <span className="who-b"><b>{w.title}</b><span>{w.artist?.display_name} · {w.year} · {CAT[w.cat]}</span><span>{w.medium} · {dims(w)}{w.edition ? " · " + w.edition : ""}</span></span>
+        <span className="who-b"><b>{w.title}</b><span>{w.artist?.display_name} · {w.year} · {CAT[w.cat]}</span><span>{w.medium} · {dims(w)}{w.edition ? " · " + w.edition : ""}{w.reproduction ? " · REPROD" : ""}</span></span>
         {w.description?.[0] && <q>{w.description.join(" ")}</q>}
         <span>Preço pedido: <b style={{ color: "var(--ink)" }}>{brl(w.price)}</b>{w.image_path ? " · com fotografia" : " · sem fotografia (composição gerada)"}</span>
       </span>

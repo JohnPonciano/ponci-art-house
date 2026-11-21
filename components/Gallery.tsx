@@ -6,6 +6,7 @@ import { FavButton } from "./area-client";
 import { Rail } from "./GalleryClient";
 import { brl, catNo, dims, CAT } from "@/lib/format";
 import type { Work } from "@/lib/data";
+import { Reprod } from "./ui";
 
 /** Obra como numa parede de galeria: a peça na parede e a etiqueta (plaqueta) embaixo. */
 export function GalleryCard({ a, fav, size = "m" }: { a: Work; fav?: boolean; size?: "m" | "l" }) {
@@ -15,7 +16,7 @@ export function GalleryCard({ a, fav, size = "m" }: { a: Work; fav?: boolean; si
       <Link href={`/colecionador/obras/${a.slug}`} className="g-link">
         <div className="g-wall"><ArtImage a={a} max={size === "l" ? 1000 : 560} />{sold && <span className="g-dot" title="Reservada">Reservada</span>}</div>
         <div className="g-label">
-          <span className="g-no">{catNo(a.no)} · {a.year}</span>
+          <span className="g-tags"><span className="g-no">{catNo(a.no)} · {a.year}</span><Reprod a={a} /></span>
           <h3 className="g-title">{a.title}</h3>
           <span className="g-artist">{a.artist?.display_name}</span>
           <span className="g-meta">{a.medium} · {dims(a)}</span>

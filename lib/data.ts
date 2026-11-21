@@ -1,14 +1,14 @@
 import "server-only";
 import { createClient } from "@/lib/supabase/server";
 
-export const WORK_COLS =
-  "id,slug,no,title,year,cat,medium,h,w,edition,price,description,status,gen,image_path,img_w,img_h,created_at,artist_id";
+/* "*" em vez de lista fixa: colunas novas (ex.: reproduction) entram sem quebrar antes da migração. */
+export const WORK_COLS = "*";
 const ARTIST = "artist:profiles!works_artist_id_fkey(id,display_name,city,practice,bio,member_code,accepts_offers)";
 
 export type Work = {
   id: string; slug: string; no: number; title: string; year: number; cat: string; medium: string; h: number; w: number;
   edition: string | null; price: number; description: string[]; status: string; gen: any; image_path: string | null;
-  img_w: number | null; img_h: number | null; created_at: string; artist_id: string;
+  img_w: number | null; img_h: number | null; created_at: string; artist_id: string; reproduction?: boolean;
   artist?: { id: string; display_name: string; city: string; practice: string; bio: string; member_code?: string; accepts_offers?: boolean };
 };
 export type PEvent = { id: number; actor: string; kind: string; amount: number | null; msg: string; created_at: string };

@@ -58,7 +58,7 @@ export const approveWorkDemo = async (workId: string) => rpc("demo_approve_work"
 
 export async function createWork(v: {
   title: string; year: number; cat: string; medium: string; h: number; w: number; edition?: string; price: number;
-  description: string; gen: any; image_path?: string | null; img_w?: number | null; img_h?: number | null;
+  description: string; gen: any; image_path?: string | null; img_w?: number | null; img_h?: number | null; reproduction?: boolean;
 }): Promise<Result<{ slug: string }>> {
   const me = await getMe();
   if (!me || me.role !== "artist") return { ok: false, error: "Somente artistas cadastram obras." };
@@ -72,6 +72,7 @@ export async function createWork(v: {
       edition: v.edition?.trim() || null, price: Math.round(v.price), status: "review",
       description: v.description.trim().split(/\n+/).map((s) => s.trim()).filter(Boolean),
       gen: v.gen || {}, image_path: v.image_path || null, img_w: v.img_w || null, img_h: v.img_h || null,
+      ...(v.reproduction ? { reproduction: true } : {}),
     });
     if (!error) return done({ slug }) as any;
     if (error.code !== "23505") return fail(error) as any;
@@ -88,6 +89,8 @@ export async function updateProfile(v: { display_name?: string; city: string; pr
   const b = await sb.from("profile_private").update({ full_name: v.full_name.trim() }).eq("id", me.id);
   return b.error ? fail(b.error) : done();
 }
+
+export const setWorkReproduction = async (workId: string, on: boolean) => rpc("set_work_reproduction", { p_work: workId, p_on: on });
 
 export async function setAcceptsOffers(on: boolean): Promise<Result> {
   const me = await getMe(); if (!me || me.role !== "artist") return { ok: false, error: "Somente artistas." };

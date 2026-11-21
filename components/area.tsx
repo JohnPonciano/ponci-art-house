@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { ArtImage } from "./ArtImage";
 import { Icon } from "./Icon";
-import { Slab, Tag, Empty } from "./ui";
+import { Slab, Tag, Empty, Reprod } from "./ui";
 import { brl, catNo, dateBR, dims, pad, STAGES, COMMISSION } from "@/lib/format";
 import type { Order, Proposal, Work } from "@/lib/data";
 import { ActButton, ArtistProposalActions, BuyerProposalActions, FavButton, SignButton } from "./area-client";
@@ -18,7 +18,7 @@ export function WorkCard({ a, href, foot, sub, fav }: { a: Work; href: string; f
         {sub && <p className="card-en">{sub}</p>}
         <p className="card-meta first">{a.medium}</p>
         <p className="card-meta">{dims(a)}{a.edition ? " · " + a.edition : ""}</p>
-        {(fav === undefined || a.status !== "published") && <Tag s={a.status} />}
+        <Reprod a={a} />{(fav === undefined || a.status !== "published") && <Tag s={a.status} />}
       </div>
       <div className="card-foot">{foot}</div>
     </Link>{fav != null && <FavButton workId={a.id} on={fav} title={a.title} />}</article>

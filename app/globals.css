@@ -564,6 +564,8 @@ img[data-art]:not(.ready){opacity:0}
 .tag.t-rev,.tag.t-open,.tag.t-countered{color:var(--ocre)}
 .tag.t-res,.tag.t-accepted{background:var(--ink);color:var(--on-ink);border-color:var(--ink)}
 .tag.t-sold{color:var(--muted)}
+.tag.t-repro{color:var(--ocre);border-style:dashed}
+.g-tags{display:flex;gap:6px;align-items:center;flex-wrap:wrap}.g-tags .tag{padding:2px 6px;font-size:9.5px}
 .tag.t-declined,.tag.t-closed,.tag.t-withdrawn{color:var(--muted);border-style:dashed}
 .card-link:hover .tag.t-pub,.card-link:hover .tag.t-sold{color:var(--on-ink)}
 

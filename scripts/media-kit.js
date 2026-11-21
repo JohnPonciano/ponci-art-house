@@ -5,7 +5,7 @@ const img=n=>'file://'+I+'/'+n+'.jpg';
 const css=`
 @font-face{font-family:Wide;src:url(file://${F}/wide900.ttf)}@font-face{font-family:Cond;src:url(file://${F}/cond800.ttf)}
 @font-face{font-family:Grot;src:url(file://${F}/reg400.ttf);font-weight:400}@font-face{font-family:Grot;src:url(file://${F}/semi600.ttf);font-weight:600}
-@font-face{font-family:Serif;src:url(file://${F}/InstrumentSerif.ttf);font-style:italic}@font-face{font-family:Serif;src:url(file://${F}/InstrumentSerif.ttf);font-style:normal}@font-face{font-family:Mono;src:url(file://${F}/IBMPlexMono.ttf)}
+@font-face{font-family:PSerif;src:url(file://${F}/InstrumentSerif.ttf);font-style:italic}@font-face{font-family:PSerif;src:url(file://${F}/InstrumentSerif.ttf);font-style:normal}@font-face{font-family:Mono;src:url(file://${F}/IBMPlexMono.ttf)}
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--ink:#121211;--paper:#F2F0EB;--ocre:#8B6A4F;--wall:#E3DED4;--muted:#8E8A82}
 body{width:var(--w);height:var(--h);overflow:hidden;font-family:Grot;color:var(--ink);-webkit-font-smoothing:antialiased}
@@ -17,7 +17,7 @@ body{width:var(--w);height:var(--h);overflow:hidden;font-family:Grot;color:var(-
 .dark .lab{color:#A39F97}
 .wm{font-family:Wide;letter-spacing:-.035em;line-height:.8;text-transform:uppercase}
 .cond{font-family:Cond;text-transform:uppercase;letter-spacing:-.01em;line-height:.9}
-.serif{font-family:Serif;font-style:italic;line-height:1.02}
+.serif{font-family:PSerif;font-style:italic;line-height:1.02}
 .mono{font-family:Mono}
 .rule{height:4px;background:currentColor}
 .wall{background:var(--wall);display:flex;align-items:center;justify-content:center}
@@ -28,87 +28,73 @@ const P=(w,h,cls,body)=>`<!doctype html><html><head><meta charset=utf-8><style>$
 const pieces=[];
 const add=(name,w,h,cls,body)=>pieces.push({name,w,h,html:P(w,h,cls,body)});
 
-/* ---------- ÍCONE DE PERFIL (1080, seguro para o recorte redondo) ---------- */
 
+/* Série 2: conversa sobre arte, sem propaganda. Foto em primeiro plano, texto curto. */
+const shade='background:linear-gradient(180deg,rgba(18,18,17,0) 0%,rgba(18,18,17,.15) 45%,rgba(18,18,17,.82) 100%)';
+const sig=(c='var(--paper)')=>`<div style="position:absolute;left:84px;top:84px;display:flex;align-items:center;gap:14px;font:400 24px/1 Mono;letter-spacing:.14em;text-transform:uppercase;color:${c}"><i style="width:20px;height:20px;background:var(--ocre);display:block"></i>PONCI</div>`;
+const handle=(c='var(--paper)')=>`<div style="position:absolute;right:84px;top:84px;font:400 24px/1 Mono;letter-spacing:.1em;color:${c};opacity:.8">@ponci.art</div>`;
 
+/* POSTS 1080x1350 */
+add('post-01-toda-obra-comeca-num-atelie',1080,1350,'dark',`
+ <img class="bleed" src="${img('u-maos')}" style="inset:0;width:1080px;height:1350px">
+ <div style="position:absolute;inset:0;${shade}"></div><div style="position:absolute;left:0;right:0;top:0;height:260px;background:linear-gradient(180deg,rgba(18,18,17,.55),rgba(18,18,17,0))"></div>${sig()}${handle()}
+ <div style="position:absolute;left:84px;right:84px;bottom:96px">
+  <p class="serif" style="font-size:104px;color:var(--paper)">Toda obra começa num ateliê.</p>
+  <p style="font:400 34px/1.4 Grot;color:#E6E2DA;margin-top:24px;max-width:820px">A gente quer conhecer os dois: a obra e quem faz.</p></div>`);
+add('post-02-estamos-conhecendo-artistas',1080,1350,'paper',`${sig('var(--ink)')}${handle('var(--ink)')}
+ <div style="position:absolute;left:84px;right:84px;top:250px">
+  <p class="cond" style="font-size:132px">Estamos<br>conhecendo<br><span style="color:var(--ocre)">artistas.</span></p>
+  <p style="font:400 40px/1.45 Grot;margin-top:56px;max-width:860px">Se você pinta, desenha, grava, fotografa ou esculpe e quer mostrar seu trabalho para quem coleciona de verdade, queremos ver.</p>
+  <p class="mono" style="font-size:28px;letter-spacing:.1em;text-transform:uppercase;margin-top:56px;color:#6E6A63">Mande seu portfólio · link na bio</p></div>`);
+add('post-03-o-que-a-gente-procura',1080,1350,'dark',`${sig()}${handle()}
+ <div style="position:absolute;left:84px;right:84px;top:230px">
+  <p class="serif" style="font-size:96px;color:var(--paper)">O que a gente procura</p>
+  <div style="margin-top:60px;border-top:2px solid #3A3936">${[['Uma voz própria.','Trabalho que você reconheceria de longe.'],['Constância.','Quem está no ateliê toda semana, não só quando dá.'],['Vontade de conversar.','Sobre o processo, o material, o porquê.']].map(([t,d])=>`
+   <div style="padding:34px 0;border-bottom:2px solid #3A3936"><b class="cond" style="font-size:62px;color:var(--paper);display:block">${t}</b><span style="font:400 32px/1.4 Grot;color:#BDB8AF">${d}</span></div>`).join('')}</div>
+  <p style="font:400 32px/1.4 Grot;color:#B98F6B;margin-top:46px">Currículo não importa. O trabalho, sim.</p></div>`);
+add('post-04-olhe-de-perto',1080,1350,'dark',`
+ <img class="bleed" src="${img('u-textura')}" style="inset:0;width:1080px;height:1350px">
+ <div style="position:absolute;inset:0;${shade}"></div><div style="position:absolute;left:0;right:0;top:0;height:260px;background:linear-gradient(180deg,rgba(18,18,17,.55),rgba(18,18,17,0))"></div>${sig()}${handle()}
+ <div style="position:absolute;left:84px;right:84px;bottom:96px">
+  <p class="cond" style="font-size:120px;color:var(--paper)">Olhe de perto.</p>
+  <p class="serif" style="font-size:58px;color:#E6E2DA;margin-top:18px">Toda pincelada é uma decisão.</p></div>`);
+add('post-05-arte-para-viver-junto',1080,1350,'paper',`
+ <img class="bleed" src="${img('u-olhar')}" style="left:0;top:0;width:1080px;height:860px;object-position:center 45%">
+ ${sig('var(--ink)')}${handle('var(--ink)')}
+ <div style="position:absolute;left:84px;right:84px;top:920px">
+  <p class="serif" style="font-size:86px">Arte para viver junto,<br>não para guardar.</p>
+  <p style="font:400 34px/1.4 Grot;margin-top:24px;color:#55524D">Obras escolhidas uma a uma, direto de quem fez.</p></div>`);
+add('post-06-conhece-alguem',1080,1350,'ocre',`${sig()}${handle()}
+ <div style="position:absolute;left:84px;right:84px;top:260px">
+  <p class="cond" style="font-size:124px;color:var(--paper)">Conhece alguém que pinta muito bem e quase ninguém viu?</p>
+  <p class="serif" style="font-size:66px;color:#F2E8DA;margin-top:56px">Marca aqui nos comentários.</p>
+  <p style="font:400 32px/1.4 Grot;color:#F2E8DA;margin-top:22px;opacity:.85">A gente vai olhar um por um.</p></div>`);
 
-/* ---------- POSTS DE LANÇAMENTO (1080x1350) ---------- */
-const foot=(c='')=>`<div style="position:absolute;left:84px;right:84px;bottom:70px;display:flex;justify-content:space-between;font:400 24px/1 Mono;letter-spacing:.12em;text-transform:uppercase;${c}"><span>ponci.art</span><span>Rede privada de arte</span></div>`;
-add('post-01-manifesto',1080,1350,'dark',`
- <div style="position:absolute;inset:84px 84px 0">
-  <div class="lab"><i></i>PONCI · 01</div>
-  <p class="serif" style="font-size:138px;margin-top:210px">“Entre quem cria e quem coleciona, <span style="color:#B98F6B">nada</span> além da obra.”</p></div>
- ${foot('color:#A39F97')}`);
-add('post-02-chegamos',1080,1350,'paper',`
- <img class="bleed" src="${img('u-galeria')}" style="left:0;top:0;width:1080px;height:800px">
- <div style="position:absolute;left:0;right:0;top:800px;height:6px;background:var(--ink)"></div>
- <div style="position:absolute;left:84px;right:84px;top:860px">
-  <div class="wm" style="font-size:236px">PONCI</div>
-  <p style="font:400 40px/1.35 Grot;margin-top:34px;max-width:840px">Uma rede fechada de artistas e colecionadores. Obras direto do ateliê, <b style="font-weight:600">só por convite.</b></p></div>`);
-add('post-03-como-funciona',1080,1350,'paper',`
- <div style="position:absolute;inset:84px">
-  <div class="lab"><i></i>Como funciona</div>
-  <p class="cond" style="font-size:118px;margin-top:40px">Do convite<br><span class="serif" style="font-family:Serif;text-transform:none;font-size:128px;letter-spacing:0">à parede.</span></p>
-  <div style="margin-top:56px;border-top:6px solid var(--ink)">${[['01','Convite','Artistas e colecionadores entram por indicação. Cada membro é aprovado.'],['02','Curadoria','Toda obra é revisada antes de chegar à vitrine.'],['03','Negociação privada','Compra pelo preço ou proposta direta à artista.'],['04','Custódia e entrega','O pagamento só é liberado quando a obra chega.']].map(([n,t,d])=>`
-   <div style="display:grid;grid-template-columns:110px 1fr;gap:10px;padding:26px 0;border-bottom:2px solid #CDC9C1">
-    <span class="mono" style="font-size:30px;color:var(--ocre)">${n}</span><div><b class="cond" style="font-size:52px;display:block">${t}</b><span style="font-size:30px;line-height:1.35;color:#55524D">${d}</span></div></div>`).join('')}</div></div>`);
-add('post-04-para-artistas',1080,1350,'paper',`
- <img class="bleed" src="${img('u-atelie')}" style="left:0;top:0;width:1080px;height:640px;object-position:center 30%">
- <div style="position:absolute;left:0;right:0;top:640px;bottom:0;background:var(--ink);color:var(--paper);padding:70px 84px">
-  <div class="lab"><i></i>Para artistas</div>
-  <p class="cond" style="font-size:96px;margin-top:30px">Você define<br>o preço.</p>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:26px 40px;margin-top:44px;font-size:30px;line-height:1.3">
-   <div><b class="cond" style="font-size:72px;color:#B98F6B;display:block">0</b>para entrar na rede</div>
-   <div><b class="cond" style="font-size:72px;color:#B98F6B;display:block">15%</b>só quando a obra vende</div></div></div>`);
-add('post-05-para-colecionadores',1080,1350,'paper',`
- <img class="bleed" src="${img('u-sala')}" style="left:0;top:0;width:1080px;height:700px;object-position:center 40%">
- <div style="position:absolute;left:84px;right:84px;top:760px">
-  <div class="lab"><i></i>Para colecionadores</div>
-  <p class="serif" style="font-size:84px;margin-top:28px">Obras que não estão em nenhuma outra vitrine.</p>
-  <div style="display:flex;flex-wrap:wrap;gap:14px;margin-top:38px">${['Preço visível','Pagamento em custódia','Certificado de procedência','Compra direta do ateliê'].map(t=>`<span style="border:3px solid var(--ink);padding:16px 22px;font:600 26px/1 Grot;text-transform:uppercase;letter-spacing:.06em">${t}</span>`).join('')}</div></div>`);
-add('post-06-peca-seu-convite',1080,1350,'dark',`
- <div class="wall" style="position:absolute;left:84px;right:84px;top:84px;height:640px"><img src="${img('u-abs-azul')}" style="height:500px;max-width:760px"></div>
- <div style="position:absolute;left:84px;right:84px;top:780px">
-  <p class="cond" style="font-size:150px">Peça o seu<br><span style="color:#B98F6B">convite.</span></p>
-  <p class="mono" style="font-size:28px;letter-spacing:.12em;text-transform:uppercase;margin-top:40px;color:#A39F97">Link na bio · ponci.art</p></div>`);
-
-/* ---------- STORIES (1080x1920 — zonas seguras: 250 px no topo, 340 px embaixo) ---------- */
-add('story-01-chegamos',1080,1920,'paper',`
- <div style="position:absolute;left:80px;right:80px;top:250px"><div class="lab"><i></i>Rede privada de arte</div></div>
- <div class="wall" style="position:absolute;left:80px;right:80px;top:340px;height:860px"><img src="${img('u-abs-escura')}" style="height:680px;max-width:820px"></div>
- <div style="position:absolute;left:80px;right:80px;top:1250px"><div class="wm" style="font-size:222px">PONCI</div>
-  <p style="font:400 44px/1.3 Grot;margin-top:30px">Artistas e colecionadores.<br><b style="font-weight:600">Só por convite.</b></p></div>`);
-add('story-02-voce-e-artista',1080,1920,'dark',`
- <img class="bleed" src="${img('u-artista')}" style="left:0;top:0;width:1080px;height:960px;object-position:center 30%">
+/* STORIES 1080x1920 — zonas livres: 250 px no topo e 340 px embaixo; espaço reservado para figurinha */
+const ssig=(c='var(--paper)')=>`<div style="position:absolute;left:80px;top:250px;display:flex;align-items:center;gap:14px;font:400 26px/1 Mono;letter-spacing:.14em;text-transform:uppercase;color:${c}"><i style="width:20px;height:20px;background:var(--ocre);display:block"></i>PONCI</div>`;
+add('story-01-voce-pinta',1080,1920,'dark',`
+ <img class="bleed" src="${img('u-pintora')}" style="inset:0;width:1080px;height:1920px;object-position:center 30%">
+ <div style="position:absolute;inset:0;${shade}"></div><div style="position:absolute;left:0;right:0;top:0;height:420px;background:linear-gradient(180deg,rgba(18,18,17,.55),rgba(18,18,17,0))"></div>${ssig()}
+ <div style="position:absolute;left:80px;right:80px;top:1060px">
+  <p class="cond" style="font-size:150px;color:var(--paper)">Você pinta?</p>
+  <p style="font:400 40px/1.4 Grot;color:#E6E2DA;margin-top:22px">Ou desenha, grava, esculpe, fotografa…<br>Conta pra gente.</p></div>`);
+add('story-02-mostre-seu-atelie',1080,1920,'paper',`
+ <img class="bleed" src="${img('u-mesa')}" style="left:0;top:0;width:1080px;height:1020px;object-position:center 40%">
+ <div style="position:absolute;left:0;right:0;top:0;height:420px;background:linear-gradient(180deg,rgba(18,18,17,.55),rgba(18,18,17,0))"></div>${ssig()}
+ <div style="position:absolute;left:80px;right:80px;top:1080px">
+  <p class="serif" style="font-size:112px">Mostre seu ateliê.</p>
+  <p style="font:400 40px/1.4 Grot;margin-top:22px;color:#55524D">Mande uma foto do lugar onde você cria. Alguns vão aparecer aqui.</p></div>`);
+add('story-03-primeira-obra',1080,1920,'dark',`${ssig()}
+ <div style="position:absolute;left:80px;right:80px;top:420px">
+  <p class="mono" style="font-size:28px;letter-spacing:.14em;text-transform:uppercase;color:#B98F6B">Pergunta da semana</p>
+  <p class="serif" style="font-size:118px;color:var(--paper);margin-top:30px">Qual foi a primeira obra de arte que você comprou?</p>
+  <p style="font:400 38px/1.4 Grot;color:#BDB8AF;margin-top:40px">Ou a que você ainda vai comprar.</p></div>`);
+add('story-04-indique-um-artista',1080,1920,'ocre',`
+ <img class="bleed" src="${img('u-maos')}" style="left:0;top:0;width:1080px;height:960px;object-position:center 40%">
+ <div style="position:absolute;left:0;right:0;top:0;height:420px;background:linear-gradient(180deg,rgba(18,18,17,.55),rgba(18,18,17,0))"></div>${ssig()}
  <div style="position:absolute;left:80px;right:80px;top:1020px">
-  <div class="lab"><i></i>Para artistas</div>
-  <p class="cond" style="font-size:128px;margin-top:26px">Você é<br>artista?</p>
-  <p style="font:400 40px/1.35 Grot;margin-top:26px;color:#D8D4CC">Mostre seu trabalho a quem coleciona. Você define o preço.</p></div>`);
-add('story-03-voce-coleciona',1080,1920,'paper',`
- <img class="bleed" src="${img('u-visita')}" style="left:0;top:0;width:1080px;height:960px;object-position:center 40%">
- <div style="position:absolute;left:80px;right:80px;top:1020px">
-  <div class="lab"><i></i>Para colecionadores</div>
-  <p class="serif" style="font-size:118px;margin-top:22px">Você coleciona?</p>
-  <p style="font:400 40px/1.35 Grot;margin-top:22px;color:#55524D">Acervo fechado, preço visível e pagamento em custódia até a obra chegar.</p></div>`);
-add('story-04-fechada-por-principio',1080,1920,'dark',`
- <div style="position:absolute;left:80px;right:80px;top:250px"><div class="lab"><i></i>A rede</div>
-  <p class="cond" style="font-size:150px;margin-top:40px">Fechada<br>por <span style="color:#B98F6B">princípio.</span></p></div>
- <div style="position:absolute;left:80px;right:80px;top:880px;border-top:6px solid var(--paper)">${['Curadoria','Confiança','Privacidade','Procedência'].map((t,i)=>`
-  <div style="display:flex;align-items:baseline;gap:34px;padding:30px 0;border-bottom:2px solid #3A3936"><span class="mono" style="font-size:30px;color:#B98F6B">0${i+1}</span><span class="cond" style="font-size:86px">${t}</span></div>`).join('')}</div>
- <p class="mono" style="position:absolute;left:80px;bottom:360px;font-size:28px;letter-spacing:.12em;text-transform:uppercase;color:#A39F97">ponci.art</p>`);
-
-/* ---------- CAPAS DE DESTAQUES (1080x1920, ícone no centro) ---------- */
-const ic={rede:'<rect x="6" y="6" width="22" height="22"/><rect x="36" y="6" width="22" height="22"/><rect x="6" y="36" width="22" height="22"/><rect x="36" y="36" width="22" height="22"/>',
- artistas:'<path d="M44 8l12 12-26 26-14 2 2-14z"/><path d="M38 14l12 12"/><path d="M10 54c6 0 10-3 10-8"/>',
- colecao:'<rect x="8" y="10" width="48" height="44"/><rect x="18" y="20" width="28" height="24"/>',
- convite:'<rect x="6" y="14" width="52" height="36"/><path d="M6 16l26 20 26-20"/>',
- duvidas:'<circle cx="32" cy="32" r="26"/><path d="M24 25c0-5 4-8 8-8s8 3 8 7c0 6-8 6-8 13"/><circle cx="32" cy="46" r="1.5" fill="currentColor"/>'};
-const names={rede:'A rede',artistas:'Artistas',colecao:'Coleção',convite:'Convite',duvidas:'Dúvidas'};
-Object.keys(ic).forEach((k,i)=>add(`destaque-0${i+1}-${k}`,1080,1920,'ocre',`
- <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center">
-  <svg viewBox="0 0 64 64" width="360" height="360" fill="none" stroke="#F2F0EB" stroke-width="3.4" stroke-linejoin="miter">${ic[k]}</svg></div>
- <p class="mono" style="position:absolute;left:0;right:0;bottom:250px;text-align:center;font-size:30px;letter-spacing:.16em;text-transform:uppercase;color:#F2F0EB;opacity:.75">${names[k]}</p>`));
-
+  <p class="cond" style="font-size:118px;color:var(--paper)">Indique um artista.</p>
+  <p style="font:400 40px/1.4 Grot;color:#F2E8DA;margin-top:22px">Alguém que merece ser visto. Marca o @ ou manda por aqui.</p></div>`);
 (async()=>{fs.mkdirSync(SP+'/kit-html',{recursive:true});const b=await chromium.launch({args:['--allow-file-access-from-files']});
  for(const pc of pieces){const p=await b.newPage({viewport:{width:pc.w,height:pc.h}});const tmp=SP+'/kit-html/'+pc.name+'.html';fs.writeFileSync(tmp,pc.html);await p.goto('file://'+tmp,{waitUntil:'load'});await p.evaluate(()=>document.fonts.ready);await p.waitForTimeout(200);
   await p.screenshot({path:`${OUT}/${pc.name}.png`});await p.close();console.log('ok',pc.name);}

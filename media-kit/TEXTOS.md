@@ -1,79 +1,84 @@
 # PONCI · Kit de lançamento do Instagram
 
+O tom é de conversa sobre arte, não de anúncio: a PONCI aparece como uma curadoria que está conhecendo artistas e chamando gente para olhar arte junto. Nada de "custódia", "comissão" ou "procedência" nas peças.
+
 ## Perfil
 - **Nome:** PONCI · Rede privada de arte
-- **@:** @ponci.art (sugestão; alternativas: @ponciart, @ponci.rede)
+- **@:** @ponci.art (as peças já usam esse @; se escolher outro, me avise que eu troco)
 - **Foto:** `01-icone-perfil-instagram.png` (mesmo padrão do ícone do app). Para um perfil da Comunidade, use `02-icone-perfil-comunidade.png`
-- **Categoria:** Galeria de arte
-- **Bio (até 150 caracteres):**
-  > Rede privada de artistas e colecionadores.
-  > Obras direto do ateliê, com curadoria e custódia.
+- **Bio:**
+  > Rede privada de arte.
+  > Artistas e colecionadores, direto do ateliê.
   > Só por convite ↓
-- **Link:** https://ponci.art (ou https://ponci.art/#acesso, que cai direto no pedido de convite)
+- **Link:** https://ponci.art/#acesso
 
 ## Ordem de postagem
-Poste nesta ordem. O Instagram mostra o mais recente primeiro, então o "Manifesto" fica no topo do perfil.
+O Instagram mostra o mais recente primeiro. Postando do 6 para o 1, "Toda obra começa num ateliê" fica no topo.
 
-1. `post-06-peca-seu-convite.png`
-2. `post-05-para-colecionadores.png`
-3. `post-04-para-artistas.png`
-4. `post-03-como-funciona.png`
-5. `post-02-chegamos.png`
-6. `post-01-manifesto.png`
+1. `post-06-conhece-alguem.png`
+2. `post-05-arte-para-viver-junto.png`
+3. `post-04-olhe-de-perto.png`
+4. `post-03-o-que-a-gente-procura.png`
+5. `post-02-estamos-conhecendo-artistas.png`
+6. `post-01-toda-obra-comeca-num-atelie.png`
 
-Os 6 podem sair no mesmo dia (lançamento) ou um por dia na primeira semana.
+Sugestão: os 3 primeiros no dia do lançamento e depois 1 a cada 2 ou 3 dias, intercalando com stories.
 
 ## Legendas
 
-**Manifesto**
-Entre quem cria e quem coleciona, nada além da obra.
-A PONCI é uma rede privada de arte: artistas e colecionadores verificados, obras vistas pela curadoria antes de chegar à vitrine, negociação direta e pagamento em custódia.
-Só por convite. Peça o seu pelo link na bio.
+**Toda obra começa num ateliê**
+Antes de chegar a uma parede, toda obra passou por mesa, pincel, erro, recomeço.
+A PONCI nasce para aproximar quem faz e quem coleciona, sem vitrine lotada no meio.
+A gente quer conhecer os dois: a obra e quem faz.
 
-**Chegamos**
-Uma rede pequena, de propósito. Cada membro foi convidado e cada obra foi vista antes de aparecer.
-Aqui, artistas não disputam atenção com milhares de anúncios, e colecionadores não precisam adivinhar preço, procedência ou disponibilidade.
+**Estamos conhecendo artistas**
+Se você pinta, desenha, grava, fotografa ou esculpe, queremos ver o que está saindo do seu ateliê.
+Mande seu portfólio pelo link na bio. A gente olha cada um com calma.
 
-**Como funciona**
-Do convite à parede, em 4 passos:
-01. Convite: artistas e colecionadores entram por indicação, e a PONCI aprova cada membro.
-02. Curadoria: toda obra é revisada antes da vitrine.
-03. Negociação privada: compra pelo preço ou proposta direta à artista.
-04. Custódia e entrega: o pagamento só é liberado quando a obra chega.
+**O que a gente procura**
+Não é currículo, nem número de seguidores.
+É uma voz própria, constância e vontade de conversar sobre o que você faz.
+Se isso é você, o link está na bio.
 
-**Para artistas**
-Você define o preço. Entrar na rede não custa nada; a comissão é de 15% e só existe quando a obra vende.
-Publique para um público pequeno e qualificado, responda propostas e receba com garantia.
-Artista? Peça seu convite pelo link na bio.
+**Olhe de perto**
+Toda pincelada é uma decisão. Às vezes a obra inteira está num detalhe de dois centímetros.
+Qual foi a última obra que te fez chegar mais perto?
 
-**Para colecionadores**
-Obras que não estão em nenhuma outra vitrine, com preço visível, documentação completa e contato direto com quem fez.
-O pagamento fica em custódia até a obra chegar na sua parede, com certificado de procedência.
+**Arte para viver junto**
+Arte não é para ficar guardada. É para estar na sala, no corredor, no lugar onde você toma café.
+Na PONCI, cada obra é escolhida uma a uma, direto de quem fez.
 
-**Peça o seu convite**
-A PONCI é só por convite. Conte quem você é pelo link na bio: cada pedido é lido pela curadoria.
+**Conhece alguém que pinta muito bem?**
+Todo mundo conhece um artista que merecia ser muito mais visto.
+Marca aqui nos comentários. A gente vai olhar um por um.
 
-## Hashtags (use de 3 a 5 por post, variando)
-#arteContemporanea #arteBrasileira #colecionadorDeArte #artistaBrasileiro #pinturaContemporanea #artePrivada #galeriaDeArte #obraDeArte #arteOriginal #mercadoDeArte
+## Hashtags (3 a 5 por post, variando)
+#arteContemporanea #arteBrasileira #artistaBrasileiro #ateliedeartista #pinturaContemporanea #artistasBrasileiros #processoCriativo #colecionadorDeArte #arteOriginal
 
 ## Stories
-- `story-01-chegamos.png`: anúncio do lançamento. Adicione o adesivo de link para ponci.art.
-- `story-02-voce-e-artista.png` e `story-03-voce-coleciona.png`: chamadas por público. Adicione o adesivo de link (ponci.art/#acesso) no espaço livre embaixo do texto.
-- `story-04-fechada-por-principio.png`: manifesto em 4 palavras.
-- Deixe livres os 250 px do topo e os 340 px de baixo: o Instagram cobre essas faixas com o nome do perfil e o campo de resposta.
+Cada story deixa espaço livre para a figurinha do próprio Instagram:
+- `story-01-voce-pinta.png`: figurinha de **enquete** ("Sim, pinto" / "Coleciono") ou de **link** para ponci.art/#acesso.
+- `story-02-mostre-seu-atelie.png`: figurinha **"Sua vez"** ou de **pergunta**, pedindo a foto do ateliê.
+- `story-03-primeira-obra.png`: figurinha de **pergunta** ("Conta aqui"). Depois, reposte algumas respostas.
+- `story-04-indique-um-artista.png`: figurinha de **menção** ou **pergunta** ("Quem a gente precisa conhecer?").
+Deixe livres os 250 px do topo e os 340 px de baixo, que o Instagram cobre.
 
 ## Destaques
-Crie 5 destaques com as capas `destaque-01-rede` … `destaque-05-duvidas`: A rede, Artistas, Coleção, Convite, Dúvidas.
+Capas `destaque-01-rede` … `destaque-05-duvidas`: A rede, Artistas, Coleção, Convite, Dúvidas.
 
 ## Fotos (Unsplash)
-As fotos são do Unsplash, com licença gratuita para uso comercial. O crédito não é obrigatório no Instagram, mas é uma gentileza; no site ele aparece em cada foto.
+Licença gratuita do Unsplash, com uso comercial permitido. O crédito não é obrigatório no Instagram, mas é uma gentileza; no site ele aparece em cada foto.
 
-- **post-02 · porta "Colecionadores" no site:** Jessica Pamp (https://unsplash.com/photos/a-group-of-people-standing-in-front-of-a-painting-JNTSoyb_bbw)
-- **post-04 · porta "Artistas" no site:** Avi Richards (https://unsplash.com/photos/man-in-white-and-blue-crew-neck-t-shirt-wearing-black-sunglasses-PfUH_AuFE_0)
-- **post-05:** Lotus Design N Print (https://unsplash.com/photos/a-living-room-with-a-black-couch-and-a-table-with-a-vase-with-flowers-on-it-Nl1cP1Tr2oU)
-- **post-06 · topo da página inicial:** Steve A Johnson (https://unsplash.com/photos/abstract-art-painting-eVaxJVA2zHI)
-- **story-01 · tela de cadastro:** Vojtech Bruzek (https://unsplash.com/photos/blue-white-and-yellow-abstract-painting-zMl9PjGFPWg)
-- **story-02 · login de artistas:** Muhammad Rahim Ali (https://unsplash.com/photos/a-woman-holding-a-bunch-of-paint-brushes-NRBBze-P0Sc)
-- **story-03 · pedido de convite e login da Comunidade:** Zalfa Imani (https://unsplash.com/photos/woman-standing-in-front-of-paintings-DeTWuVp6prg)
+- **site: porta "Colecionadores":** Jessica Pamp (https://unsplash.com/photos/a-group-of-people-standing-in-front-of-a-painting-JNTSoyb_bbw)
+- **site: porta "Artistas":** Avi Richards (https://unsplash.com/photos/man-in-white-and-blue-crew-neck-t-shirt-wearing-black-sunglasses-PfUH_AuFE_0)
+- **site: topo da página inicial:** Steve A Johnson (https://unsplash.com/photos/abstract-art-painting-eVaxJVA2zHI)
+- **site: cadastro:** Vojtech Bruzek (https://unsplash.com/photos/blue-white-and-yellow-abstract-painting-zMl9PjGFPWg)
+- **site: login de artistas:** Muhammad Rahim Ali (https://unsplash.com/photos/a-woman-holding-a-bunch-of-paint-brushes-NRBBze-P0Sc)
+- **site: pedido de convite e login da Comunidade:** Zalfa Imani (https://unsplash.com/photos/woman-standing-in-front-of-paintings-DeTWuVp6prg)
+- **post-01 e story-04:** Jade Stephens (https://unsplash.com/photos/woman-painting-tree-and-cliff-WhVO1xKiDVw)
+- **story-02:** Khara Woods (https://unsplash.com/photos/assorted-color-paint-brush-on-brown-wooden-table-top-KR84RpMCb0w)
+- **post-04:** Jené Stephaniuk (https://unsplash.com/photos/red-blue-and-yellow-abstract-painting--MCrF6hnojU)
+- **story-01:** Subhkaran Singh (https://unsplash.com/photos/woman-in-black-and-brown-floral-long-sleeve-shirt-holding-painting-of-man-in-blue-denim--pHEflDEpLo)
+- **post-05:** Andrea G (https://unsplash.com/photos/woman-in-black-shirt-sitting-on-chair-bLhKr1E6tbw)
 
-Quando houver artistas reais na rede, prefira fotos das obras e dos ateliês deles, com autorização de cada um.
+Quando houver artistas reais na rede, troque por fotos das obras e dos ateliês deles, com autorização de cada um.

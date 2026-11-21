@@ -73,6 +73,21 @@ Qual faltou? Conta aqui embaixo e marca aquele artista que vive isso todo dia.
 
 Sugestão de calendário: carrossel 03 na primeira semana (puxa marcação e alcance), 02 na segunda (traz artistas) e 01 na terceira (traz colecionadores).
 
+## Reels (pasta `reels/`)
+Vídeos verticais de 13 a 17 segundos, sem som de propósito: no Instagram, escolha um áudio em alta na hora de postar (isso ajuda muito o alcance). Use o arquivo `-capa.jpg` como capa do reel. O texto fica longe da parte de baixo, onde entram a legenda e os botões.
+
+**reel-01-coisas-que-so-quem-pinta-entende** (15 s): bom pra estrear, puxa marcação.
+Legenda: Se você pinta, já passou por pelo menos três dessas. Confessa! 😂 Qual faltou? Conta aqui embaixo e marca aquele artista que vive isso.
+Áudio: algo leve e engraçadinho, daqueles de meme.
+
+**reel-02-toda-obra-comeca-num-atelie** (13 s): chama artista.
+Legenda: No quarto, na varanda, na mesa da cozinha, depois do expediente. A gente quer ver todos. 🎨 Do Oiapoque ao Chuí: manda seu portfólio pelo link na bio.
+Áudio: algo calmo, MPB ou lo-fi.
+
+**reel-03-como-comecar-a-colecionar** (17 s): chama colecionador.
+Legenda: Colecionar arte não é coisa de milionário, não! 🖼️ Salva pra lembrar e manda pra aquele amigo que vive dizendo "um dia eu compro um quadro".
+Áudio: algo animado, com batida marcada nos cortes.
+
 ## Hashtags (3 a 5 por post, variando)
 #arteBrasileira #artistaBrasileiro #feitoNoBrasil #arteContemporanea #ateliedeartista #pinturaContemporanea #processoCriativo #arteNaParede #colecionadorDeArte #arteOriginal
 

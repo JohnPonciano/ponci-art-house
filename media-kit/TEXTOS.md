@@ -65,5 +65,15 @@ A PONCI é só por convite. Conte quem você é pelo link na bio: cada pedido é
 ## Destaques
 Crie 5 destaques com as capas `destaque-01-rede` … `destaque-05-duvidas`: A rede, Artistas, Coleção, Convite, Dúvidas.
 
-## Observação
-As obras e cenas das imagens vêm das composições de demonstração da PONCI. Nenhuma peça cita artista. Quando houver artistas reais na rede, troque por fotos das obras e dos ateliês (com autorização de cada artista).
+## Fotos (Unsplash)
+As fotos são do Unsplash, com licença gratuita para uso comercial. O crédito não é obrigatório no Instagram, mas é uma gentileza; no site ele aparece em cada foto.
+
+- **post-02 · porta "Colecionadores" no site:** Jessica Pamp (https://unsplash.com/photos/a-group-of-people-standing-in-front-of-a-painting-JNTSoyb_bbw)
+- **post-04 · porta "Artistas" no site:** Avi Richards (https://unsplash.com/photos/man-in-white-and-blue-crew-neck-t-shirt-wearing-black-sunglasses-PfUH_AuFE_0)
+- **post-05:** Lotus Design N Print (https://unsplash.com/photos/a-living-room-with-a-black-couch-and-a-table-with-a-vase-with-flowers-on-it-Nl1cP1Tr2oU)
+- **post-06 · topo da página inicial:** Steve A Johnson (https://unsplash.com/photos/abstract-art-painting-eVaxJVA2zHI)
+- **story-01 · tela de cadastro:** Vojtech Bruzek (https://unsplash.com/photos/blue-white-and-yellow-abstract-painting-zMl9PjGFPWg)
+- **story-02 · login de artistas:** Muhammad Rahim Ali (https://unsplash.com/photos/a-woman-holding-a-bunch-of-paint-brushes-NRBBze-P0Sc)
+- **story-03 · pedido de convite e login da Comunidade:** Zalfa Imani (https://unsplash.com/photos/woman-standing-in-front-of-paintings-DeTWuVp6prg)
+
+Quando houver artistas reais na rede, prefira fotos das obras e dos ateliês deles, com autorização de cada um.

@@ -29,14 +29,8 @@ const pieces=[];
 const add=(name,w,h,cls,body)=>pieces.push({name,w,h,html:P(w,h,cls,body)});
 
 /* ---------- ÍCONE DE PERFIL (1080, seguro para o recorte redondo) ---------- */
-add('01-icone-perfil-wordmark',1080,1080,'dark',`
- <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:34px">
-  <i style="width:70px;height:70px;background:var(--ocre);display:block"></i>
-  <div class="wm" style="font-size:212px">PONCI</div></div>`);
-add('02-icone-perfil-monograma',1080,1080,'paper',`
- <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center">
-  <div style="position:relative"><div class="wm" style="font-size:640px;line-height:.74">P</div>
-  <i style="position:absolute;right:-86px;bottom:12px;width:120px;height:120px;background:var(--ocre);display:block"></i></div></div>`);
+
+
 
 /* ---------- POSTS DE LANÇAMENTO (1080x1350) ---------- */
 const foot=(c='')=>`<div style="position:absolute;left:84px;right:84px;bottom:70px;display:flex;justify-content:space-between;font:400 24px/1 Mono;letter-spacing:.12em;text-transform:uppercase;${c}"><span>ponci.art</span><span>Rede privada de arte</span></div>`;
@@ -46,7 +40,7 @@ add('post-01-manifesto',1080,1350,'dark',`
   <p class="serif" style="font-size:138px;margin-top:210px">“Entre quem cria e quem coleciona, <span style="color:#B98F6B">nada</span> além da obra.”</p></div>
  ${foot('color:#A39F97')}`);
 add('post-02-chegamos',1080,1350,'paper',`
- <img class="bleed" src="${img('s-galeria')}" style="left:0;top:0;width:1080px;height:800px">
+ <img class="bleed" src="${img('u-galeria')}" style="left:0;top:0;width:1080px;height:800px">
  <div style="position:absolute;left:0;right:0;top:800px;height:6px;background:var(--ink)"></div>
  <div style="position:absolute;left:84px;right:84px;top:860px">
   <div class="wm" style="font-size:236px">PONCI</div>
@@ -59,7 +53,7 @@ add('post-03-como-funciona',1080,1350,'paper',`
    <div style="display:grid;grid-template-columns:110px 1fr;gap:10px;padding:26px 0;border-bottom:2px solid #CDC9C1">
     <span class="mono" style="font-size:30px;color:var(--ocre)">${n}</span><div><b class="cond" style="font-size:52px;display:block">${t}</b><span style="font-size:30px;line-height:1.35;color:#55524D">${d}</span></div></div>`).join('')}</div></div>`);
 add('post-04-para-artistas',1080,1350,'paper',`
- <img class="bleed" src="${img('s-cavalete')}" style="left:0;top:0;width:1080px;height:640px">
+ <img class="bleed" src="${img('u-atelie')}" style="left:0;top:0;width:1080px;height:640px;object-position:center 30%">
  <div style="position:absolute;left:0;right:0;top:640px;bottom:0;background:var(--ink);color:var(--paper);padding:70px 84px">
   <div class="lab"><i></i>Para artistas</div>
   <p class="cond" style="font-size:96px;margin-top:30px">Você define<br>o preço.</p>
@@ -67,13 +61,13 @@ add('post-04-para-artistas',1080,1350,'paper',`
    <div><b class="cond" style="font-size:72px;color:#B98F6B;display:block">0</b>para entrar na rede</div>
    <div><b class="cond" style="font-size:72px;color:#B98F6B;display:block">15%</b>só quando a obra vende</div></div></div>`);
 add('post-05-para-colecionadores',1080,1350,'paper',`
- <img class="bleed" src="${img('s-casa')}" style="left:0;top:0;width:1080px;height:700px">
+ <img class="bleed" src="${img('u-sala')}" style="left:0;top:0;width:1080px;height:700px;object-position:center 40%">
  <div style="position:absolute;left:84px;right:84px;top:760px">
   <div class="lab"><i></i>Para colecionadores</div>
   <p class="serif" style="font-size:84px;margin-top:28px">Obras que não estão em nenhuma outra vitrine.</p>
   <div style="display:flex;flex-wrap:wrap;gap:14px;margin-top:38px">${['Preço visível','Pagamento em custódia','Certificado de procedência','Compra direta do ateliê'].map(t=>`<span style="border:3px solid var(--ink);padding:16px 22px;font:600 26px/1 Grot;text-transform:uppercase;letter-spacing:.06em">${t}</span>`).join('')}</div></div>`);
 add('post-06-peca-seu-convite',1080,1350,'dark',`
- <div class="wall" style="position:absolute;left:84px;right:84px;top:84px;height:640px"><img src="${img('geo')}" style="height:470px"></div>
+ <div class="wall" style="position:absolute;left:84px;right:84px;top:84px;height:640px"><img src="${img('u-abs-azul')}" style="height:500px;max-width:760px"></div>
  <div style="position:absolute;left:84px;right:84px;top:780px">
   <p class="cond" style="font-size:150px">Peça o seu<br><span style="color:#B98F6B">convite.</span></p>
   <p class="mono" style="font-size:28px;letter-spacing:.12em;text-transform:uppercase;margin-top:40px;color:#A39F97">Link na bio · ponci.art</p></div>`);
@@ -81,17 +75,17 @@ add('post-06-peca-seu-convite',1080,1350,'dark',`
 /* ---------- STORIES (1080x1920 — zonas seguras: 250 px no topo, 340 px embaixo) ---------- */
 add('story-01-chegamos',1080,1920,'paper',`
  <div style="position:absolute;left:80px;right:80px;top:250px"><div class="lab"><i></i>Rede privada de arte</div></div>
- <div class="wall" style="position:absolute;left:80px;right:80px;top:340px;height:860px"><img src="${img('ocre')}" style="height:660px"></div>
+ <div class="wall" style="position:absolute;left:80px;right:80px;top:340px;height:860px"><img src="${img('u-abs-escura')}" style="height:680px;max-width:820px"></div>
  <div style="position:absolute;left:80px;right:80px;top:1250px"><div class="wm" style="font-size:222px">PONCI</div>
   <p style="font:400 44px/1.3 Grot;margin-top:30px">Artistas e colecionadores.<br><b style="font-weight:600">Só por convite.</b></p></div>`);
 add('story-02-voce-e-artista',1080,1920,'dark',`
- <img class="bleed" src="${img('s-parede')}" style="left:0;top:0;width:1080px;height:960px;object-position:center 30%">
+ <img class="bleed" src="${img('u-artista')}" style="left:0;top:0;width:1080px;height:960px;object-position:center 30%">
  <div style="position:absolute;left:80px;right:80px;top:1020px">
   <div class="lab"><i></i>Para artistas</div>
   <p class="cond" style="font-size:128px;margin-top:26px">Você é<br>artista?</p>
   <p style="font:400 40px/1.35 Grot;margin-top:26px;color:#D8D4CC">Mostre seu trabalho a quem coleciona. Você define o preço.</p></div>`);
 add('story-03-voce-coleciona',1080,1920,'paper',`
- <img class="bleed" src="${img('s-galeria')}" style="left:0;top:0;width:1080px;height:960px">
+ <img class="bleed" src="${img('u-visita')}" style="left:0;top:0;width:1080px;height:960px;object-position:center 40%">
  <div style="position:absolute;left:80px;right:80px;top:1020px">
   <div class="lab"><i></i>Para colecionadores</div>
   <p class="serif" style="font-size:118px;margin-top:22px">Você coleciona?</p>

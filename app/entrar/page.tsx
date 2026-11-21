@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { PublicShell } from "@/components/Shells";
-import { PageHead, Slab } from "@/components/ui";
+import { PageHead } from "@/components/ui";
+import { Photo } from "@/components/Photo";
 import { LoginForm } from "@/components/forms/LoginForm";
-import { DEMO_ART } from "@/lib/demoArt";
 import { adminByEmail, getMe } from "@/lib/supabase/server";
 import { safeNext, isCommunityHost } from "@/lib/site";
 import { headers } from "next/headers";
@@ -29,7 +29,7 @@ export default async function Entrar({ searchParams }: { searchParams: Promise<{
                    : "O acervo fechado da rede: preços visíveis, propostas diretas às artistas e aquisição em custódia."}
           count={<>Acesso restrito<br />Somente membros</>} />
         <section className="gate" aria-labelledby="gate-t">
-          <div className="gate-art" aria-hidden="true"><Slab a={DEMO_ART[perfil]} label="Na rede" /></div>
+          <div className="gate-art"><Photo k={toCommunity ? "visita" : A ? "artista" : "galeria"} className="gate-photo" alt="" pos="center 35%" /></div>
           <div className="gate-main">
             <p className="lab">Entrar</p>
             <h2 id="gate-t">{toCommunity ? <>Só <em>membros.</em></> : A ? <>Ateliê <em>privado.</em></> : <>Acervo <em>fechado.</em></>}</h2>

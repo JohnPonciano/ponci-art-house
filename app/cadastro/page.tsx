@@ -1,8 +1,8 @@
+import { Photo } from "@/components/Photo";
 import type { Metadata } from "next";
 import { PublicShell } from "@/components/Shells";
-import { PageHead, Slab, Notice } from "@/components/ui";
+import { PageHead, Notice } from "@/components/ui";
 import { SignupForm } from "@/components/forms/SignupForm";
-import { DEMO_ART } from "@/lib/demoArt";
 import { currentDocs, createClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = { title: "Aceitar convite" };
@@ -18,7 +18,7 @@ export default async function Cadastro({ searchParams }: { searchParams: Promise
       <div className="wrap">
         <PageHead title="Convite" label="Novo membro" intro="Recebeu um código da curadoria? Crie aqui a sua conta de membro. O código define se você entra como artista ou colecionador." count={<>Somente<br />por convite</>} />
         <section className="gate" aria-labelledby="cad-t">
-          <div className="gate-art" aria-hidden="true"><Slab a={DEMO_ART.convite} label="Na rede" /></div>
+          <div className="gate-art"><Photo k="abs-escura" className="gate-photo" alt="Pintura abstrata em azul, branco e amarelo" /></div>
           <div className="gate-main">
             <p className="lab">Cadastro</p>
             <h2 id="cad-t">{prefill?.name ? <>Olá, {String(prefill.name).split(" ")[0]}. <em>Falta pouco.</em></> : <>Aceite o seu <em>convite.</em></>}</h2>

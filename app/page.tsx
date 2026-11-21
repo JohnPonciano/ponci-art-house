@@ -1,23 +1,21 @@
 import Link from "next/link";
 import { PublicShell } from "@/components/Shells";
-import { Slab, SecHead, Notice } from "@/components/ui";
+import { SecHead, Notice } from "@/components/ui";
 import { ArtImage } from "@/components/ArtImage";
+import { Photo } from "@/components/Photo";
 import { Rail } from "@/components/GalleryClient";
 import { Fit } from "@/components/Fit";
 import { Icon } from "@/components/Icon";
 import { AccessForm, PickRole } from "@/components/forms/AccessForm";
 import { vitrine, networkStats } from "@/lib/data";
 import { getMe, getAdmin } from "@/lib/supabase/server";
-import { DEMO_ART } from "@/lib/demoArt";
 import { catNo, dims, pad } from "@/lib/format";
 
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
   const [me, works, st] = await Promise.all([getMe(), vitrine(12), networkStats()]);
-  const hero = works.find((w) => w.slug === "gesto-n3") || works[0];
-  const sel = works.filter((w) => w !== hero).slice(0, 10);
-  const doorA = sel[1] || hero, doorB = sel[3] || sel[0] || hero, formArt = sel[4] || hero;
+  const sel = works.slice(0, 10);
   const area = me ? (me.role === "artist" ? "/artista" : "/colecionador") : (await getAdmin()) ? "/admin" : null;
   return (
     <PublicShell me={me}>
@@ -34,7 +32,7 @@ export default async function Home() {
                 <PickRole role="buyer" className="btn ghost">Sou colecionador — solicitar acesso <Icon n="right" /></PickRole></>}
             </div>
           </div>
-          {hero && <div className="hero-art"><a href="#vitrine" aria-label="Ver a vitrine"><Slab a={hero} label="Na rede · Preço para membros" /></a></div>}
+          <div className="hero-art"><Photo k="abs-azul" className="hero-photo" alt="Pintura abstrata em azul e laranja" /></div>
         </div>
       </section>
 
@@ -43,7 +41,7 @@ export default async function Home() {
         <div className="doors">
           <article className="door" id="artistas">
             <div className="door-head"><span>Porta A</span><span>Artistas</span></div>
-            <Slab a={doorA || DEMO_ART.artista} plaque={false} />
+            <Photo k="atelie" className="door-photo" alt="Pintor trabalhando numa tela no ateliê" pos="center 30%" />
             <div className="door-body">
               <h3>Para <em>artistas</em></h3>
               <p>Publique obras para um público pequeno e qualificado. Você define o preço, recebe propostas e decide com quem negociar.</p>
@@ -53,7 +51,7 @@ export default async function Home() {
           </article>
           <article className="door dark" id="colecionadores">
             <div className="door-head"><span>Porta B</span><span>Colecionadores</span></div>
-            <Slab a={doorB || DEMO_ART.colecionador} plaque={false} />
+            <Photo k="galeria" className="door-photo" alt="Visitantes diante de uma pintura numa galeria" />
             <div className="door-body">
               <h3>Para <em>colecionadores</em></h3>
               <p>Acesse obras que não estão em nenhuma outra vitrine, com preço visível, documentação completa e contato direto com quem fez.</p>
@@ -120,7 +118,7 @@ export default async function Home() {
           <div className="acq-aside"><p className="lab">06 — Solicitar acesso</p><h2 id="form-t">Peça o seu convite.</h2>
             <p>Conte quem você é. Cada pedido é lido pessoalmente pela curadoria da PONCI.</p>
             <Notice>Já recebeu um código? <Link href="/cadastro" style={{ textDecoration: "underline" }}>Crie sua conta de membro</Link>.</Notice>
-            <div aria-hidden="true"><Slab a={formArt || DEMO_ART.convite} plaque={false} /></div></div>
+            <Photo k="visita" className="acq-photo" alt="Pessoa olhando quadros numa galeria" pos="center 40%" /></div>
           <div className="acq-main"><AccessForm /></div>
         </section>
       </div>

@@ -15,7 +15,8 @@ export function Fit({ as: Tag = "div", className = "", children, id, ariaHidden 
       const avail = el.clientWidth;
       if (text.length > 12 && /\s/.test(text) && avail < 700) { el.classList.add("nofit"); el.style.fontSize = ""; return; }
       const w = s.getBoundingClientRect().width;
-      if (w > 0 && avail > 0) el.style.fontSize = Math.floor(((100 * avail) / w) * 0.995 * 100) / 100 + "px";
+      const max = parseFloat(getComputedStyle(el).getPropertyValue("--fit-max")) || Infinity;
+      if (w > 0 && avail > 0) el.style.fontSize = Math.min(max, Math.floor(((100 * avail) / w) * 0.995 * 100) / 100) + "px";
     };
     run();
     let t: any;

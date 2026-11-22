@@ -9,7 +9,11 @@ export function InstallHint() {
     try {
       const ios = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
       const standalone = (navigator as any).standalone || matchMedia("(display-mode: standalone)").matches;
-      setShow(ios && !standalone && localStorage.getItem("ponci-install-hint") !== "x");
+      // não disputa espaço com o aviso de cookies e só aparece para quem já voltou algumas vezes
+      const consent = /(?:^|; )ponci-consent=/.test(document.cookie);
+      const n = (+(localStorage.getItem("ponci-visits") || 0)) + (sessionStorage.getItem("ponci-v") ? 0 : 1);
+      localStorage.setItem("ponci-visits", String(n)); sessionStorage.setItem("ponci-v", "1");
+      setShow(ios && !standalone && consent && n >= 3 && localStorage.getItem("ponci-install-hint") !== "x");
     } catch { /* sem armazenamento: não mostra */ }
   }, []);
   if (!show) return null;

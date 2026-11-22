@@ -14,6 +14,7 @@ export default async function Descobrir({ searchParams }: { searchParams: Promis
     Object.entries(v).forEach(([k, x]) => x && u.set(k, x)); const s = u.toString(); return (base || "/") + (s ? "?" + s : ""); };
   return (
     <div className="rn-wrap ig-feed">
+      <h1 className="sr-only">Comunidade PONCI: descobrir</h1>
       {!topic && <Stories base={base} me={me as any} />}
       <nav className="rn-feedtabs" aria-label="Feed">
         <Link href={q({ aba: undefined })} aria-current={!seguindo ? "page" : undefined}>Descobrir</Link>

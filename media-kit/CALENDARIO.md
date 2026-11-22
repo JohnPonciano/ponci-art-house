@@ -1,4 +1,4 @@
-# PONCI · Calendário do Instagram (3 semanas, só posts sem música)
+# PONCI · Calendário do Instagram
 
 São 9 publicações: os 6 posts e os 3 carrosséis do kit. Reels e stories com figurinha ficam de fora, porque vão pelo app (música e enquete só existem lá).
 
@@ -145,3 +145,36 @@ E aí, como é o seu cantinho de criar?
 - **qui 03/12:** story "Mostra teu ateliê" com caixinha de pergunta.
 - **ter 08/12:** reel "Como começar a colecionar" (batida marcada).
 - **qui 10/12:** story "Qual foi a primeira obra que você comprou?" e "Indica um artista".
+
+
+---
+
+# Lote 2 (até o Natal) · já carregado na fila da PONCI
+
+Publicado sozinho pela fila (admin → Instagram). Saíram da fila os 3 que você já tinha postado em 21/11 (Olhe de perto, Como começar a colecionar, Toda obra começa num ateliê).
+
+**Feed (seg/qua/sex)**
+
+| Data | Hora | Peça | Tipo |
+|---|---|---|---|
+| qua 25/11 | 19h30 | Arte pra morar junto | post |
+| sex 27/11 | 19h30 | Coisas que só quem pinta entende | carrossel |
+| seg 30/11 | 12h20 | Como cuidar de uma pintura em casa | carrossel (6) |
+| qua 02/12 | 19h30 | Fotografa tua obra com o celular | carrossel |
+| sex 04/12 | 12h20 | O que a gente procura | post |
+| seg 07/12 | 12h20 | Estamos conhecendo artistas | post |
+| qua 09/12 | 19h30 | Glossário da arte | carrossel (4) |
+| sex 11/12 | 19h30 | Qual vai pra sua parede? 1 ou 2 | post |
+| seg 14/12 | 12h20 | Como escolher a obra certa pra sua parede | carrossel (6) |
+| qua 16/12 | 19h30 | Chegou a Comunidade PONCI | carrossel (4) |
+| sex 18/12 | 12h20 | Por trás da curadoria | carrossel (4) |
+| seg 21/12 | 12h20 | Como dar preço pra sua arte | carrossel (6) |
+| qua 23/12 | 19h30 | Arte de presente | carrossel (4) |
+
+**Stories (sem figurinha, pela fila)**
+- **"Post novo no feed":** 40 minutos depois de cada post acima, chamando pro perfil.
+- **"Você sabia?":** ter 01/12 (tiragem), qui 03/12 (sol), ter 08/12 (fine art) e qui 10/12 (altura), às 12h40.
+
+**Pelo app, com música ou figurinha:** reels nas terças e stories de enquete ou caixinha nas quintas, como na lista acima.
+
+Imagens do lote 2: https://ponci.art/kit/novos/ (por exemplo, https://ponci.art/kit/novos/cuidar-da-pintura-1.jpg).

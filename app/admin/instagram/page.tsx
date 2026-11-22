@@ -54,16 +54,16 @@ export default async function Instagram() {
 function Item({ p }: { p: IgPost }) {
   return (
     <li className={"ig-item" + (p.status === "failed" ? " bad" : "")}>
-      <div className="ig-thumbs sm">{p.media.slice(0, 4).map((u, i) => /* eslint-disable-next-line @next/next/no-img-element */ <img key={i} src={u} alt="" loading="lazy" />)}
+      <div className={"ig-thumbs sm" + (p.kind === "story" ? " story" : "")}>{p.media.slice(0, 4).map((u, i) => /* eslint-disable-next-line @next/next/no-img-element */ <img key={i} src={u} alt="" loading="lazy" />)}
         {p.media.length > 4 && <span className="more">+{p.media.length - 4}</span>}</div>
       <div className="ig-body">
         <p className="ig-meta"><span className={"tag " + STATUS[p.status][1]}>{STATUS[p.status][0]}</span>
           <b>{p.status === "published" && p.published_at ? fmt(p.published_at) : fmt(p.publish_at)}</b>
-          <span>{p.kind === "carousel" ? `Carrossel · ${p.media.length} imagens` : "Post"}</span></p>
+          <span>{p.kind === "carousel" ? `Carrossel · ${p.media.length} imagens` : p.kind === "story" ? "Story" : "Post"}</span></p>
         <h3>{p.label || p.caption.split("\n")[0].slice(0, 60)}</h3>
-        <p className="ig-cap">{p.caption}</p>
+        {p.caption && <p className="ig-cap">{p.caption}</p>}
         {p.error && <p className="sale-alert"><Icon n="info" />{p.error}</p>}
-        <IgItemActions id={p.id} status={p.status} media={p.media} caption={p.caption} publishAt={p.publish_at} permalink={p.permalink} />
+        <IgItemActions id={p.id} status={p.status} media={p.media} caption={p.caption} publishAt={p.publish_at} permalink={p.permalink} story={p.kind === "story"} />
       </div>
     </li>
   );

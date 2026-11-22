@@ -1892,3 +1892,4 @@ html{-webkit-tap-highlight-color:transparent}
 .ig-new{margin:0 0 16px}
 .ig-off summary{cursor:pointer;margin:36px 0 10px}
 @media (max-width:700px){.ig-item{grid-template-columns:1fr}.ig-head{flex-wrap:wrap}}
+.ig-thumbs.story img{aspect-ratio:9/16}

@@ -61,8 +61,8 @@ export async function igConnect(token: string): Promise<Result<{ username: strin
     return r.ok ? { ok: true, data: { username: acc.username, expires: exp } } : r;
   } catch { return { ok: false, error: "Não consegui falar com a Meta agora. Tente de novo em instantes." }; }
 }
-export const igSave = async (id: string | null, media: string[], caption: string, publishAt: string, label = "") =>
-  rpc("admin_ig_save", { p_id: id, p_media: media, p_caption: caption, p_publish_at: publishAt, p_label: label });
+export const igSave = async (id: string | null, media: string[], caption: string, publishAt: string, label = "", story = false) =>
+  rpc("admin_ig_save", { p_id: id, p_media: media, p_caption: caption, p_publish_at: publishAt, p_label: label, p_story: story });
 export const igAction = async (id: string, action: "cancel" | "retry" | "now") => rpc("admin_ig_action", { p_id: id, p_action: action });
 export const curateWork = async (id: string, decision: "aprovada" | "ajustes" | "recusada", note: string) =>
   rpc("admin_curate", { p_work: id, p_decision: decision, p_note: note });

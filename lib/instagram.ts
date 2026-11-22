@@ -3,7 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 
 export type IgSettings = { ig_user_id: string; ig_username: string | null; token_set_at: string | null; token_expires_at: string | null; last_tick_at: string | null; last_message: string | null };
 export type IgPost = {
-  id: string; kind: "image" | "carousel"; media: string[]; caption: string; publish_at: string; label: string;
+  id: string; kind: "image" | "carousel" | "story"; media: string[]; caption: string; publish_at: string; label: string;
   status: "scheduled" | "publishing" | "published" | "failed" | "cancelled"; step: string | null; error: string | null;
   permalink: string | null; published_at: string | null; attempts: number;
 };

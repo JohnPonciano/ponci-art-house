@@ -4,16 +4,17 @@ import { Header, Footer } from "./Chrome";
 import { TabBar } from "./TabBar";
 import { Icon } from "./Icon";
 import { getAdmin } from "@/lib/supabase/server";
-import { counts } from "@/lib/admin";
+import { counts, salesAttention } from "@/lib/admin";
 
 /** Menu do admin, organizado: trabalho do dia (topo), ver como membro e registros (submenu). */
 export async function adminNav(com: string) {
-  const c = await counts();
+  const [c, sales] = await Promise.all([counts(), salesAttention()]);
   const nav = [
     { href: "/admin", label: "Painel" },
     { href: "/admin/pedidos", label: "Pedidos", badge: c.reqs || undefined },
     { href: "/admin/membros", label: "Membros", badge: c.pend || undefined },
     { href: "/admin/curadoria", label: "Curadoria", badge: c.review || undefined },
+    { href: "/admin/vendas", label: "Vendas", badge: sales || undefined },
     { href: "/admin/diario", label: "Moderação" },
   ];
   const view = [{ href: "/colecionador", label: "Acervo" }, { href: com, label: "Comunidade" }];
@@ -41,7 +42,7 @@ export async function AdminViewShell({ children, com }: { children: ReactNode; c
     <>
       <Header nav={[...nav, { href: "/colecionador", label: "Acervo" }]} menuExtra={[...view.slice(1), ...records]} home="/admin" tag="Painel admin" user={{ name: "Admin", role: admin?.email || "" }} band={["Visualizando o acervo como admin · compras e propostas ficam com os membros", admin?.email || ""]} />
       <AdminSubnav view={view} records={records} />
-      <main id="main" tabIndex={-1} className="enter">{children}</main>
+      <main id="main" tabIndex={-1} className="enter area-main">{children}</main>
       <Footer />
       <TabBar nav={[{ href: "/admin", label: "Painel" }, { href: "/admin/membros", label: "Membros" }, { href: "/colecionador", label: "Acervo" }, { href: "/admin/diario", label: "Moderação" }]} />
     </>

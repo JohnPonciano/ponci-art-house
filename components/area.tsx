@@ -77,11 +77,12 @@ export function OrderBlock({ o, side }: { o: Order; side: "artist" | "buyer" }) 
             {side === "artist" && <span>Colecionador: {o.buyer?.full_name || "—"} ({o.buyer?.member_code}) · {o.buyer?.city}</span>}</div>
           <div className="price" style={{ textAlign: "right" }}>{brl(o.amount)}<small>{side === "artist" ? `Líquido para você: ${brl(o.amount * (1 - COMMISSION))}` : o.stage === 0 ? "Aguardando pagamento" : o.stage < 3 ? "Em custódia" : "Concluída"}</small></div>
         </div>
-        <ol className="track">{STAGES.map((s, i) => (
+        {o.cancelled_at && <p className="sale-alert off" style={{ padding: "10px 0" }}><Icon n="info" />Venda cancelada pela PONCI em {dateBR(o.cancelled_at)}{o.cancel_reason ? `: ${o.cancel_reason}` : "."}</p>}
+        <ol className="track" style={o.cancelled_at ? { opacity: 0.45 } : undefined}>{STAGES.map((s, i) => (
           <li key={s[0]} className={`${i < o.stage || o.stage === 3 ? "done" : ""} ${i === o.stage && o.stage < 3 ? "now" : ""}`}><i>{pad(i + 1)}</i><b>{s[0]}</b><span className="hint" style={{ color: "inherit", opacity: 0.8 }}>{s[1]}</span></li>))}</ol>
         <ContractStrip o={o} side={side} />
         {o.stage >= 2 && o.carrier && <ShipInfo o={o} />}
-        {side === "buyer" && <div className="acts">{
+        {!o.cancelled_at && side === "buyer" && <div className="acts">{
           o.stage === 0 ? (!bothSigned(o) ? <span className="hint">O pagamento libera depois que as duas partes assinarem o contrato.</span> : <>
             <ActButton action="advanceOrder" args={[o.id]} ok="Pagamento em custódia confirmado." className="btn sm">Pagar em custódia <Icon n="right" /></ActButton>
             <span className="hint">O valor fica retido pela PONCI e só vai para a artista depois que você receber a obra.</span></>)
@@ -91,15 +92,15 @@ export function OrderBlock({ o, side }: { o: Order; side: "artist" | "buyer" }) 
               confirm={<>Confirma que recebeu <b>{a.title}</b> em bom estado? Se chegou com avaria, não confirme: abra uma solicitação em Minha conta.</>}>Confirmar recebimento <Icon n="check" /></ActButton>
             <span className="hint">Só confirme com a obra em mãos.</span></>
           : <><span className="tag t-accepted">Certificado PNC-CA-{o.ref.slice(4)}</span><span className="hint">Procedência registrada na rede.</span></>}</div>}
-        {side === "artist" && o.stage === 0 && <div className="acts"><span className="hint">{bothSigned(o) ? "Contrato assinado. Aguardando a colecionadora pagar em custódia." : "Aguardando as assinaturas do contrato."}</span></div>}
-        {side === "artist" && o.stage === 1 && <div className="acts" style={{ display: "block" }}><ShipForm orderId={o.id} /></div>}
-        {side === "artist" && o.stage === 2 && <div className="acts"><span className="hint">Aguardando a colecionadora confirmar o recebimento.</span></div>}
+        {!o.cancelled_at && side === "artist" && o.stage === 0 && <div className="acts"><span className="hint">{bothSigned(o) ? "Contrato assinado. Aguardando a colecionadora pagar em custódia." : "Aguardando as assinaturas do contrato."}</span></div>}
+        {!o.cancelled_at && side === "artist" && o.stage === 1 && <div className="acts" style={{ display: "block" }}><ShipForm orderId={o.id} /></div>}
+        {!o.cancelled_at && side === "artist" && o.stage === 2 && <div className="acts"><span className="hint">Aguardando a colecionadora confirmar o recebimento.</span></div>}
         {side === "buyer" && o.stage === 3 && o.delivered_at && withinWithdrawal(o.delivered_at) && <details className="acts" style={{ display: "block" }}>
           <summary className="linkbtn" style={{ display: "inline-block", cursor: "pointer" }}>Desistir da compra (até {dateBR(new Date(o.delivered_at).getTime() + 7 * 864e5)})</summary>
           <div style={{ marginTop: 12 }}><RequestForm orderId={o.id} kinds={["arrependimento", "problema"]} compact /></div></details>}
         {side === "artist" && o.stage === 3 && o.delivered_at && <div className="acts"><span className="hint">{withinWithdrawal(o.delivered_at)
           ? `Prazo de arrependimento do comprador até ${dateBR(new Date(o.delivered_at).getTime() + 7 * 864e5)}. O repasse é liberado depois.`
-          : "Prazo de arrependimento encerrado. Repasse liberado em até 7 dias."}</span></div>}
+          : o.payout_at ? `Repasse feito em ${dateBR(o.payout_at)}.` : "Prazo de arrependimento encerrado. Repasse liberado em até 7 dias."}</span></div>}
       </div>
     </article>
   );

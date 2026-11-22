@@ -24,8 +24,8 @@ export default async function Painel() {
         <Link href="/artista/obras?status=published"><span className="lab">Publicadas</span><b>{pad(c("published"))}</b></Link>
         <Link href="/artista/obras?status=review"><span className="lab">Em curadoria</span><b>{pad(c("review"))}</b></Link>
         <Link href="/artista/propostas"><span className="lab">Propostas abertas</span><b className={open.length ? "ok-c" : ""}>{pad(open.length)}</b></Link>
-        <Link href="/artista/vendas"><span className="lab">Em custódia</span><b className="money">{brl(net(os.filter((o) => o.stage < 3)))}</b></Link>
-        <Link href="/artista/vendas"><span className="lab">Recebido (líquido)</span><b className="money">{brl(net(os.filter((o) => o.stage === 3)))}</b></Link>
+        <Link href="/artista/vendas"><span className="lab">Em custódia</span><b className="money">{brl(net(os.filter((o) => !o.cancelled_at && (o.stage === 1 || o.stage === 2))))}</b></Link>
+        <Link href="/artista/vendas"><span className="lab">Repassado (líquido)</span><b className="money">{brl(net(os.filter((o) => !o.cancelled_at && !!o.payout_at)))}</b></Link>
       </div>
       <OffersToggle initial={!!me.accepts_offers} />
       <section className="sub-sec" aria-labelledby="p-t">

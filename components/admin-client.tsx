@@ -157,3 +157,29 @@ export function CurateActions({ id, title }: { id: string; title: string }) {
     <button type="button" className="btn sm ghost" disabled={pending} onClick={() => setMode("ajustes")}>Pedir ajustes <Icon n="edit" /></button>
     <button type="button" className="linkbtn" disabled={pending} onClick={() => setMode("recusada")}>Recusar</button></>);
 }
+
+/** Vendas: cancelar (antes do envio, com motivo) e registrar repasse à artista. */
+export function SaleActions({ id, code, canCancel, canPayout, net }: { id: string; code: string; canCancel: boolean; canPayout: boolean; net: string }) {
+  const toast = useToast(); const router = useRouter(); const [pending, start] = useTransition();
+  const [mode, setMode] = useState<"" | "cancel" | "payout">(""); const [txt, setTxt] = useState("");
+  const run = (fn: () => Promise<any>, ok: string) => start(async () => { const r = await fn(); toast(r.ok ? ok : r.error); if (r.ok) { setMode(""); setTxt(""); router.refresh(); } });
+  if (mode === "cancel") return (
+    <div className="curate-box">
+      <label className="lab" htmlFor={"cx-" + id}>Motivo do cancelamento de {code}</label>
+      <textarea id={"cx-" + id} rows={2} value={txt} onChange={(e) => setTxt(e.target.value)} autoFocus placeholder="Ex.: pagamento não feito em 48 h. Se já foi pago, anote aqui o estorno." />
+      <span style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+        <button type="button" className="btn sm ocre" disabled={pending || txt.trim().length < 10} onClick={() => run(() => A.cancelOrder(id, txt), "Venda cancelada. A obra voltou para a vitrine.")}>{pending ? "Cancelando…" : "Cancelar venda"}</button>
+        <button type="button" className="linkbtn" onClick={() => setMode("")}>Voltar</button></span>
+    </div>);
+  if (mode === "payout") return (
+    <div className="curate-box">
+      <label className="lab" htmlFor={"px-" + id}>Repasse de {net} à artista (opcional: como foi pago)</label>
+      <input id={"px-" + id} value={txt} onChange={(e) => setTxt(e.target.value)} autoFocus placeholder="Ex.: PIX em 22/11, comprovante 123" maxLength={200} />
+      <span style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+        <button type="button" className="btn sm" disabled={pending} onClick={() => run(() => A.markPayout(id, txt), "Repasse registrado.")}>{pending ? "Registrando…" : <>Registrar repasse <Icon n="check" /></>}</button>
+        <button type="button" className="linkbtn" onClick={() => setMode("")}>Voltar</button></span>
+    </div>);
+  return (<>
+    {canPayout && <button type="button" className="btn sm" onClick={() => setMode("payout")}>Registrar repasse <Icon n="check" /></button>}
+    {canCancel && <button type="button" className="linkbtn" onClick={() => setMode("cancel")}>Cancelar venda</button>}</>);
+}

@@ -37,6 +37,8 @@ export async function resendInvite(id: string): Promise<Result> {
 }
 export const rejectRequest = async (id: string) => rpc("admin_reject_request", { p_request: id });
 export const setMemberStatus = async (id: string, status: "pending" | "active" | "suspended") => rpc("admin_set_member_status", { p_member: id, p_status: status });
+export const cancelOrder = async (id: string, reason: string) => rpc("admin_cancel_order", { p_order: id, p_reason: reason });
+export const markPayout = async (id: string, note: string) => rpc("admin_mark_payout", { p_order: id, p_note: note });
 export const curateWork = async (id: string, decision: "aprovada" | "ajustes" | "recusada", note: string) =>
   rpc("admin_curate", { p_work: id, p_decision: decision, p_note: note });
 export const reviewWork = async (id: string, approve: boolean) => rpc("admin_review_work", { p_work: id, p_approve: approve });

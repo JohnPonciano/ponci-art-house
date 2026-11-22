@@ -20,7 +20,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     <>
       <Header nav={nav} menuExtra={[...view, ...records]} home="/admin" tag="Painel admin" user={{ name: "Admin", role: admin.email }} band={["Painel administrativo · PONCI", admin.email]} />
       <AdminSubnav view={view} records={records} />
-      <main id="main" tabIndex={-1} className="enter">{children}</main>
+      <main id="main" tabIndex={-1} className="enter area-main">{children}</main>
       <Footer />
       <TabBar nav={[nav[0], nav[2], nav[3], nav[4]]} />
     </>

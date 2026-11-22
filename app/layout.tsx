@@ -21,6 +21,8 @@ export const metadata: Metadata = {
   icons: { icon: [{ url: "/icons/icon-192.png", sizes: "192x192", type: "image/png" }], apple: [{ url: "/icons/apple-touch-icon.png", sizes: "180x180" }] },
   appleWebApp: { capable: true, title: "PONCI", statusBarStyle: "black-translucent" },
   formatDetection: { telephone: false, email: false, address: false },
+  // verificação do domínio no Meta (Facebook/Instagram)
+  other: { "facebook-domain-verification": "2vb2pwqyrm97omdi3rm1rvb47pcj1v" },
 };
 export const viewport: Viewport = {
   width: "device-width", initialScale: 1, viewportFit: "cover",

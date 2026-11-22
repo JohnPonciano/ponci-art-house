@@ -17,7 +17,7 @@ const db = () => (dbp ||= new Promise((res) => { try { const r = indexedDB.open(
 async function idbGet(k: string): Promise<string | null> { const d = await db(); if (!d) return null; return new Promise((res) => { try { const q = d.transaction("img").objectStore("img").get(k); q.onsuccess = () => res(q.result || null); q.onerror = () => res(null); } catch { res(null); } }); }
 async function idbSet(k: string, v: string) { const d = await db(); if (!d) return; try { d.transaction("img", "readwrite").objectStore("img").put(v, k); } catch {} }
 export const imageUrl = (path: string) =>
-  `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/works/${path}`;
+  path.startsWith("/") ? path : `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/works/${path}`;
 
 /** Foto enviada pela artista, ou composição generativa desenhada no navegador. */
 export function ArtImage({ a, max = 1000 }: { a: ArtLike; max?: number }) {

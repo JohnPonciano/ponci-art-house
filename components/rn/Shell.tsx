@@ -19,7 +19,8 @@ export function RnNav({ base, main, initials, buyer, area, unseen, code, admin, 
     [home, "grid", "Início", isHome],
     [b ? `${b}?aba=seguindo` : "/?aba=seguindo", "users", "Seguindo", sp.get("aba") === "seguindo"],
     [`${b}/busca`, "search", "Buscar", at("/busca")],
-    ...(admin ? [] as It[] : [[`${b}/atividade`, "heart", "Atividade", at("/atividade"), unseen], [`${b}/novo`, "plus", "Publicar", at("/novo")]] as It[]),
+    ...(admin ? [[`${b}/novo`, "plus", "Publicar como PONCI", at("/novo")]] as It[] : [[`${b}/atividade`, "heart", "Atividade", at("/atividade"), unseen], [`${b}/novo`, "plus", "Publicar", at("/novo")]] as It[]),
+    [`${b}/u/ponci.art`, "book", "Guia da comunidade", path === `${b}/u/ponci.art` || path === `${b}/u/PONCI`],
   ];
   return (
     <>
@@ -52,10 +53,10 @@ export function RnTabs({ base, unseen, initials, buyer, code, admin, avatar }: P
   const home = (path === (b || "/") || path === b + "/") && sp.get("aba") !== "seguindo";
   void unseen;
   return (
-    <nav className="rn-tabs" aria-label="Comunidade" style={admin ? ({ ["--tabs" as any]: 4, gridTemplateColumns: "repeat(4,1fr)" }) : undefined}>
+    <nav className="rn-tabs" aria-label="Comunidade" >
       <Link href={b || "/"} aria-current={home ? "page" : undefined}><Icon n="grid" />Início</Link>
       <Link href={`${b}/busca`} aria-current={at("/busca") ? "page" : undefined}><Icon n="search" />Buscar</Link>
-      {!admin && <Link href={`${b}/novo`} className="rn-plus" aria-label="Publicar"><span><Icon n="plus" /></span></Link>}
+      <Link href={`${b}/novo`} className="rn-plus" aria-label={admin ? "Publicar como PONCI" : "Publicar"}><span><Icon n="plus" /></span></Link>
       <Link href={b ? `${b}?aba=seguindo` : "/?aba=seguindo"} aria-current={sp.get("aba") === "seguindo" ? "page" : undefined}><Icon n="users" />Seguindo</Link>
       <Link href={`${b}/eu`} aria-current={at("/eu") || path === `${b}/u/${code}` ? "page" : undefined} aria-label={admin ? "Moderação" : "Eu"}><span className={"rn-tab-av" + (buyer ? " av-buyer" : "") + (avatar ? " has-img" : "")}>{/* eslint-disable-next-line @next/next/no-img-element */}{avatar ? <img src={avatar} alt="" /> : initials}</span>Eu</Link>
     </nav>

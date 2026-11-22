@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ArtImage } from "../ArtImage";
-import { Avatar as AvatarImg } from "../Avatar";
+import { Avatar as AvatarImg, OfficialBadge } from "../Avatar";
 import { Icon } from "../Icon";
 import { initials, brl, catNo } from "@/lib/format";
 import { TOPICS, personName, personLine, ago, noteTitle, type Post, type Comment } from "@/lib/community";
@@ -26,7 +26,7 @@ export function NoteCard({ p, base, liked }: { p: Post; base: string; liked: boo
         <h3 className="rn-card-title">{noteTitle(p)}</h3>
       </PreviewLink>
       <div className="rn-card-foot">
-        <Link href={`${base}/u/${p.author.member_code}`} prefetch={false} className="rn-author"><Avatar p={p.author} sm /><span>{personName(p.author)}</span></Link>
+        <Link href={`${base}/u/${p.author.member_code}`} prefetch={false} className="rn-author"><Avatar p={p.author} sm /><span>{personName(p.author)}<OfficialBadge p={p.author} /></span></Link>
         <Heart postId={p.id} on={liked} count={p.likes} />
       </div>
     </article>
@@ -48,7 +48,7 @@ export function NoteView({ p, base, viewer, liked, saved, following, interested,
     <article className={"rn-note" + (modal ? " in-modal" : "")}>
       <header className="rn-note-head rn-note-top">
         {modal ? <ModalBack /> : <BackBtn base={base} />}
-        <Link href={`${base}/u/${p.author.member_code}`} className="rn-author lg"><Avatar p={p.author} /><span><b>{personName(p.author)}</b><small>{personLine(p.author)}</small></span></Link>
+        <Link href={`${base}/u/${p.author.member_code}`} className="rn-author lg"><Avatar p={p.author} /><span><b>{personName(p.author)}<OfficialBadge p={p.author} /></b><small>{personLine(p.author)}</small></span></Link>
         {!mine && p.author.role === "artist" && <FollowBtn artistId={p.author.id} on={following} compact />}
       </header>
       <div className="rn-note-media">
@@ -57,7 +57,7 @@ export function NoteView({ p, base, viewer, liked, saved, following, interested,
       </div>
       <div className="rn-note-side">
         <header className="rn-note-head">
-          <Link href={`${base}/u/${p.author.member_code}`} className="rn-author lg"><Avatar p={p.author} /><span><b>{personName(p.author)}</b><small>{personLine(p.author)}</small></span></Link>
+          <Link href={`${base}/u/${p.author.member_code}`} className="rn-author lg"><Avatar p={p.author} /><span><b>{personName(p.author)}<OfficialBadge p={p.author} /></b><small>{personLine(p.author)}</small></span></Link>
           {!mine && viewer.role !== "admin" && p.author.role === "artist" && <FollowBtn artistId={p.author.id} on={following} compact />}
         </header>
         <div className="rn-note-body">

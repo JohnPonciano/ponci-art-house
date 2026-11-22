@@ -5,14 +5,12 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { Field, isEmail } from "./Field";
 import { Icon } from "../Icon";
-import { DEMO, DEMO_PASSWORD } from "@/lib/format";
 import { safeNext, go as goTo } from "@/lib/site";
 
 export function LoginForm({ perfil, next }: { perfil: "artista" | "colecionador"; next?: string }) {
   const router = useRouter();
   const [email, setEmail] = useState(""); const [pass, setPass] = useState("");
   const [err, setErr] = useState<Record<string, string>>({}); const [status, setStatus] = useState(""); const [busy, setBusy] = useState(false);
-  const demo = DEMO[perfil];
 
   async function signIn(e: string, p: string) {
     setBusy(true); setStatus("");
@@ -46,11 +44,6 @@ export function LoginForm({ perfil, next }: { perfil: "artista" | "colecionador"
         <div className="form-actions"><button className="btn" type="submit" disabled={busy}>{busy ? "Entrando…" : <>Entrar <Icon n="right" /></>}</button>
           <span className="auth-links"><Link className="linkbtn" href="/senha">Esqueci a senha</Link><Link className="linkbtn" href={`/cadastro?perfil=${perfil}`}>Tenho um convite</Link><Link className="linkbtn" href="/#acesso">Não tenho convite</Link></span></div>
       </form>
-      <div className="demo-box">
-        <p className="lab" style={{ color: "var(--ink)" }}>Protótipo</p>
-        <p className="hint">Conta de demonstração compartilhada: <code>{demo.email}</code> / <code>{DEMO_PASSWORD}</code>. Os dados ficam no Supabase e são vistos por todos que usam a demo.</p>
-        <button className="btn ghost" type="button" disabled={busy} onClick={() => signIn(demo.email, DEMO_PASSWORD)}>Entrar como {demo.name} <Icon n="right" /></button>
-      </div>
     </>
   );
 }

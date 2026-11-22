@@ -5,8 +5,8 @@ import { memberByCode, postsByAuthor, myLikes, myFollows, likedBy, feed, personN
 import { FollowBtn, ShowNameToggle } from "@/components/diary-client";
 import { ProfileGrid } from "@/components/rn/Notes";
 import { Icon } from "@/components/Icon";
-import { Avatar } from "@/components/Avatar";
-import { handleOf } from "@/lib/community";
+import { Avatar, OfficialBadge } from "@/components/Avatar";
+import { handleOf, isOfficial } from "@/lib/community";
 import { AdminMemberTools } from "@/components/rn/AdminTools";
 
 export async function generateMetadata({ params }: { params: Promise<{ code: string }> }) {
@@ -28,15 +28,16 @@ export default async function Perfil({ params, searchParams }: { params: Promise
       <header className="ig-ph">
         <Avatar p={m} className="ig-pav" />
         <div className="ig-pinfo">
-          <div className="ig-prow"><h1>{name}</h1>
+          <div className="ig-prow"><h1>{name}<OfficialBadge p={m} /></h1>
             {!mine && !isAdmin && m.role === "artist" && <FollowBtn artistId={m.id} on={follows.has(m.id)} compact />}
             {mine && <Link className="btn sm ghost" href={`${base}/ajustes`}>Editar perfil</Link>}
             {mine && <Link className="btn sm ghost" href={`${base}/novo`}>Publicar</Link>}
+            {isAdmin && isOfficial(m) && <Link className="btn sm" href={`${base}/novo`}>Publicar como PONCI</Link>}
           </div>
           {handleOf(m) && <p className="ig-phandle">{handleOf(m)}</p>}
           <dl className="ig-pstats"><div><dd>{m.posts}</dd><dt>{m.posts === 1 ? "nota" : "notas"}</dt></div><div><dd>{m.likes}</dd><dt>curtidas</dt></div></dl>
-          <p className="ig-pline">{personLine(m)} · {m.member_code}</p>
-          {m.role === "artist" && m.bio && <p className="ig-pbio">{m.bio}</p>}
+          <p className="ig-pline">{personLine(m)}{isOfficial(m) ? "" : ` · ${m.member_code}`}</p>
+          {(m.role === "artist" || isOfficial(m)) && m.bio && <p className="ig-pbio">{m.bio}</p>}
           {!mine && m.role === "artist" && me.role === "buyer" && <a className="ig-plink" href={`${main}/colecionador/artistas/${m.member_code}`}><Icon n="grid" />Obras no acervo</a>}
         </div>
       </header>

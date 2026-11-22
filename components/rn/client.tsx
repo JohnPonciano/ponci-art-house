@@ -78,7 +78,7 @@ export function CommentPill() {
 type Shot = { blob: Blob; thumb: Blob; url: string; w: number; h: number };
 const toJpeg = (cv: HTMLCanvasElement, q: number) => new Promise<Blob>((r) => cv.toBlob((b) => r(b!), "image/jpeg", q));
 /** Publicar uma nota: fotos primeiro, depois título, texto e espaço. */
-export function NoteComposer({ userId, role, base, works = [], topic: t0 }: { userId: string; role: "artist" | "buyer"; base: string; works?: { id: string; title: string }[]; topic?: Topic | null }) {
+export function NoteComposer({ userId, role, base, works = [], topic: t0 }: { userId: string; role: "artist" | "buyer" | "admin"; base: string; works?: { id: string; title: string }[]; topic?: Topic | null }) {
   const router = useRouter(); const toast = useToast();
   const [shots, setShots] = useState<Shot[]>([]); const [title, setTitle] = useState(""); const [body, setBody] = useState("");
   const [topic, setTopic] = useState<Topic>(t0 && POSTABLE.includes(t0) ? t0 : role === "artist" ? "processo" : "geral"); const [workId, setWorkId] = useState("");

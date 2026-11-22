@@ -21,12 +21,17 @@ export type Post = {
   work: { id: string; slug: string; title: string; year: number; price: number; status: string; h: number; w: number; gen: any; image_path: string | null; img_w: number | null; img_h: number | null; medium: string; no: number } | null;
 };
 /** Nome público: artistas pelo nome; colecionadores pelo código, salvo se escolheram mostrar o nome. */
+/** Perfil oficial da PONCI na Comunidade (@ponci.art). */
+export const isOfficial = (p?: Partial<Person> | null) => p?.member_code === "PONCI";
+export const OFFICIAL_HANDLE = "ponci.art";
 export function personName(p?: Partial<Person> | null) {
   if (!p) return "Membro";
+  if (isOfficial(p)) return "PONCI";
   return p.role === "artist" || p.show_name ? p.display_name || "Membro" : `Colecionador ${p.member_code}`;
 }
 export function personLine(p?: Partial<Person> | null) {
   if (!p) return "";
+  if (isOfficial(p)) return "Perfil oficial · Curadoria e equipe";
   return p.role === "artist" ? `${p.practice ? p.practice + " · " : ""}${p.city}` : `Colecionador · ${p.city}`;
 }
 
@@ -50,6 +55,7 @@ export function noteTitle(p: Pick<Post, "title" | "body" | "work" | "kind">) {
 
 /** Foto de perfil pública: artistas sempre; colecionadores só se escolheram mostrar o nome. */
 export function avatarUrl(p?: Partial<Person> | null) {
+  if (isOfficial(p)) return "/icons/c-icon-192.png";
   if (!p?.avatar_path || !(p.role === "artist" || p.show_name)) return null;
   return `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/works/${p.avatar_path}`;
 }

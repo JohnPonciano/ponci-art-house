@@ -1860,3 +1860,7 @@ html{-webkit-tap-highlight-color:transparent}
 .kb-acts .curate-box{min-width:0}
 .kb-off{font-size:13.5px;color:var(--muted);margin:8px 0 clamp(72px,10vw,140px)}
 @media (max-width:700px){.kb{grid-auto-columns:82%}.kb-att{margin-left:0;width:100%}}
+
+/* selo do perfil oficial */
+.official{display:inline-flex;vertical-align:-2px;margin-left:5px;color:var(--ocre)}
+.ig-prow h1 .official svg{width:20px;height:20px}

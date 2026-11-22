@@ -111,3 +111,10 @@ export async function activity(): Promise<{ unseen: number; items: Activity[] }>
   const { data } = await sb.rpc("community_activity");
   return (data as any) || { unseen: 0, items: [] };
 }
+
+/** Id do perfil oficial da PONCI (null se a migração ainda não rodou). */
+export async function officialId(): Promise<string | null> {
+  const sb = await createClient();
+  const { data, error } = await sb.rpc("official_id");
+  return error ? null : (data as string) || null;
+}

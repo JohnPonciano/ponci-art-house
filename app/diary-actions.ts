@@ -1,6 +1,6 @@
 "use server";
 import { revalidatePath } from "next/cache";
-import { createClient, getMe } from "@/lib/supabase/server";
+import { createClient, getMe, getAdmin } from "@/lib/supabase/server";
 import { feed, myLikes, type Post, type Topic } from "@/lib/diary";
 import type { Result } from "@/app/actions";
 
@@ -10,11 +10,20 @@ const fail = (e: any): Result<any> => ({ ok: false, error: e?.message || "Algo d
 const TOPIC_OK = ["geral", "processo", "exposicoes", "colecao", "mercado"];
 export async function createPost(body: string, media: { path: string; w: number; h: number }[], workId?: string | null, topic = "geral", title = ""): Promise<Result<string>> {
   const me = await getMe();
-  if (!me) return { ok: false, error: "Entre novamente." };
+  if (!me) {
+    // admin publica pelo perfil oficial da PONCI (o banco confere admin + verificação em duas etapas)
+    if (await getAdmin()) {
+      const sb = await createClient();
+      const { data, error } = await sb.rpc("admin_post_as_ponci", { p_title: title.trim().slice(0, 90), p_body: body.trim().slice(0, 2200), p_topic: topic,
+        p_media: media.map((m) => ({ path: m.path, w: Math.round(m.w), h: Math.round(m.h) })) });
+      return error ? fail(error) : done(data as string);
+    }
+    return { ok: false, error: "Entre novamente." };
+  }
   if (me.status !== "active") return { ok: false, error: "Sua conta ainda não está ativa." };
   const text = body.trim();
   if (!text && !media.length) return { ok: false, error: "Escreva algo ou adicione uma imagem." };
-  if (media.length > 6) return { ok: false, error: "Até 6 imagens por publicação." };
+  if (media.length > 9) return { ok: false, error: "Até 9 imagens por publicação." };
   if (media.some((m) => !m.path.startsWith(me.id + "/diario/"))) return { ok: false, error: "Imagem inválida." };
   if (!TOPIC_OK.includes(topic)) topic = "geral";
   const sb = await createClient();

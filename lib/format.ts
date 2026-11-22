@@ -34,8 +34,3 @@ export const EVENT_LABEL: Record<string, string> = {
   offer: "Proposta", counter: "Contraproposta", decline: "Recusa", accept: "Aceite", close: "Encerrada", withdraw: "Retirada",
 };
 export const COMMISSION = 0.15;
-export const DEMO_PASSWORD = "ponci-demo-2026";
-export const DEMO = {
-  artista: { email: "helena@demo.ponci.art", name: "Helena Vasques" },
-  colecionador: { email: "marina@demo.ponci.art", name: "Marina Alves" },
-};

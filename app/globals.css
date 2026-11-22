@@ -1893,3 +1893,17 @@ html{-webkit-tap-highlight-color:transparent}
 .ig-off summary{cursor:pointer;margin:36px 0 10px}
 @media (max-width:700px){.ig-item{grid-template-columns:1fr}.ig-head{flex-wrap:wrap}}
 .ig-thumbs.story img{aspect-ratio:9/16}
+
+/* página Proteção */
+.prot{display:flex;flex-direction:column;border-top:var(--b)}
+.prot-row{display:grid;grid-template-columns:minmax(0,4fr) minmax(0,8fr);gap:clamp(16px,3vw,48px);padding:clamp(22px,3vw,36px) 0;border-bottom:var(--b)}
+.prot-h{font:800 clamp(1.3rem,2.2vw,1.9rem)/1.05 var(--grot);text-transform:uppercase;letter-spacing:-.01em}
+.prot-txt{display:flex;flex-direction:column;gap:14px;font-size:17px;line-height:1.6;max-width:68ch}
+.prot-quote{font:italic 400 clamp(1.5rem,2.6vw,2.2rem)/1.2 var(--serif,Georgia);color:var(--ocre);padding:6px 0 6px 18px;border-left:3px solid var(--ocre)}
+.prot-list{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 28px}
+.prot-list li{display:grid;grid-template-columns:34px 1fr;gap:10px;padding:14px 0;border-top:1px solid var(--hair)}
+.prot-list li span{font:500 12px/1.6 var(--mono);color:var(--ocre)}
+.prot-list b{font:700 16px/1.3 var(--grot)}
+.prot-list p{font-size:14.5px;line-height:1.5;color:var(--muted);margin-top:4px}
+.prot-acts{display:flex;flex-wrap:wrap;gap:10px;margin-top:6px}
+@media (max-width:760px){.prot-row{grid-template-columns:1fr}.prot-list{grid-template-columns:1fr}}

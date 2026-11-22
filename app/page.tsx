@@ -66,7 +66,7 @@ export default async function Home() {
         <SecHead n="02" eyebrow="Vitrine" title={<>Na rede <em>agora</em></>} id="vit-t" href="/colecionador" linkText="Ver acervo completo" />
         <div className="gallery lp-rail"><Rail>{sel.map((a) => (
           <article className="g-card g-m" key={a.id}><Link className="g-link" href={`/colecionador/obras/${a.slug}`}>
-            <div className="g-wall"><ArtImage a={a} max={560} /></div>
+            <div className="g-wall"><ArtImage a={a} max={560} publicView /></div>
             <div className="g-label"><span className="g-tags"><span className="g-no">{catNo(a.no)} · {a.year}</span><Reprod a={a} /></span><h3 className="g-title">{a.title}</h3><span className="g-artist">{a.artist_name}</span>
               <span className="g-meta">{a.medium} · {dims(a)}</span><span className="g-price locked"><Icon n="lock" /> Preço para membros</span></div>
           </Link></article>))}</Rail></div>
@@ -79,7 +79,7 @@ export default async function Home() {
         <div className="man-grid">
           <ul className="man-terms">{["Curadoria", "Confiança", "Privacidade", "Procedência"].map((w, i) => <li key={w}><span>{pad(i + 1)}</span>{w}</li>)}</ul>
           <div className="man-body">
-            <p>Uma rede pequena, onde cada membro foi convidado e cada obra foi vista antes de chegar à vitrine.</p>
+            <p>Uma rede pequena, onde cada membro foi convidado e cada obra foi vista antes de chegar à vitrine. Fechada também para proteger: <Link href="/protecao" style={{ textDecoration: "underline" }}>as obras daqui não viram alimento de inteligência artificial</Link>.</p>
             <p>Artistas não disputam atenção com milhares de anúncios. Colecionadores não precisam adivinhar preço, procedência ou disponibilidade. A identidade de quem compra só é revelada à artista quando a negociação é concluída.</p>
             <p>A PONCI fica no meio apenas onde é necessário: na curadoria, na custódia do pagamento, no transporte e no certificado.</p>
           </div>
@@ -105,7 +105,8 @@ export default async function Home() {
       <section className="sec wrap" id="perguntas" aria-labelledby="faq-t" style={{ paddingTop: 0 }}>
         <SecHead n="05" eyebrow="Perguntas" title={<>Antes de <em>entrar</em></>} id="faq-t" />
         <div className="faq">{[
-          ["Por que a rede é fechada?", "Porque confiança não escala com anúncios abertos. Uma rede menor permite verificar quem vende, quem compra e o que é vendido, e dá a cada obra atenção real."],
+          ["Por que a rede é fechada?", "Para proteger quem cria. Hoje, robôs de inteligência artificial varrem a internet copiando imagens para treinar máquinas que depois imitam o estilo dos artistas, sem pedir, sem pagar e sem dar crédito. Aqui, as obras completas só aparecem para membros, e o site barra os robôs de IA. É proteção, não elitismo: a porta é fechada para robô, não para gente. E uma rede menor ainda permite verificar quem vende, quem compra e o que é vendido."],
+          ["As obras ficam protegidas de inteligência artificial?", "Fazemos o que está ao nosso alcance: o acervo completo só abre para membros logados, a vitrine pública mostra só miniaturas, os robôs de coleta das empresas de IA são barrados e a PONCI não vende nem licencia obras para treino. Nenhuma proteção na internet é absoluta, mas fechar a porta tira as obras do caminho da coleta em massa. IA é ferramenta para facilitar a vida, não para sobrescrever o trabalho de ninguém."],
           ["Quem pode ser artista na PONCI?", "Artistas com produção consistente, de qualquer estágio de carreira. A curadoria olha o trabalho, não o currículo. O convite é por portfólio."],
           ["Como um colecionador entra?", "Por indicação de um membro ou por verificação direta de identidade. Depois disso, o acervo completo, os preços e as propostas ficam disponíveis."],
           ["A artista sabe quem está fazendo a proposta?", "Durante a negociação, o colecionador aparece por um código verificado (ex.: COL-0105) e pela cidade. O nome é revelado às duas partes quando a venda é fechada."],

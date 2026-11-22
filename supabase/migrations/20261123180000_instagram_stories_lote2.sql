@@ -228,3 +228,31 @@ where not exists(select 1 from public.ig_posts where label = 'Story · Como dar 
 insert into public.ig_posts(kind, media, caption, publish_at, label)
 select 'story', array['https://ponci.art/kit/novos/story-arte-de-presente.jpg'], '', '2026-12-23 20:10:00-03'::timestamptz, 'Story · Arte de presente'
 where not exists(select 1 from public.ig_posts where label = 'Story · Arte de presente');
+
+-- ============ por que a PONCI é fechada (proteção contra coleta por IA) ============
+insert into public.ig_posts(kind, media, caption, publish_at, label)
+select 'carousel', array['https://ponci.art/kit/novos/fechada-1.jpg','https://ponci.art/kit/novos/fechada-2.jpg','https://ponci.art/kit/novos/fechada-3.jpg','https://ponci.art/kit/novos/fechada-4.jpg','https://ponci.art/kit/novos/fechada-5.jpg'], 'Por que a PONCI é fechada? Spoiler: não é frescura. 🔒
+Robôs de inteligência artificial varrem a internet copiando obras pra treinar máquinas que depois imitam o estilo de quem fez. Sem pedir, sem pagar, sem crédito.
+Aqui as obras ficam atrás da porta: acervo só pra membros, robôs de IA barrados e nada de vender obra pra treino.
+IA é ferramenta pra facilitar a vida, não pra passar por cima do trabalho de ninguém. É proteção, não elitismo.
+Explicamos tudo em ponci.art/protecao. Quer entrar? O convite tá no link da bio.
+
+#artistaBrasileiro #arteBrasileira #direitoAutoral #arteFeitaPorGente', '2026-11-26 19:30:00-03'::timestamptz, 'Por que a PONCI é fechada?'
+where not exists(select 1 from public.ig_posts where label = 'Por que a PONCI é fechada?');
+insert into public.ig_posts(kind, media, caption, publish_at, label)
+select 'story', array['https://ponci.art/kit/novos/story-fechada.jpg'], '', '2026-11-26 20:10:00-03'::timestamptz, 'Story · Por que a PONCI é fechada?'
+where not exists(select 1 from public.ig_posts where label = 'Story · Por que a PONCI é fechada?');
+
+-- também na Comunidade, pelo perfil oficial
+do $$
+declare v uuid := public.official_id(); pid uuid; k int;
+begin
+  if v is null or exists(select 1 from public.posts where artist_id = v and title = 'Por que a PONCI é fechada?') then return; end if;
+  insert into public.posts(artist_id, kind, topic, title, body)
+  values (v, 'post', 'geral', 'Por que a PONCI é fechada?',
+    E'Não é frescura, é proteção. 🔒\n\nRobôs de inteligência artificial varrem a internet copiando obras pra treinar máquinas que depois imitam o estilo de quem fez, sem pedir, sem pagar e sem crédito. Por isso, aqui as obras ficam atrás da porta: o acervo completo só abre pra membros, o site barra os robôs de IA e a PONCI não vende nem licencia obras pra treino.\n\nIA é ferramenta pra facilitar a vida, não pra passar por cima do trabalho de ninguém.\n\nA explicação completa está em ponci.art/protecao.')
+  returning id into pid;
+  for k in 1..5 loop
+    insert into public.post_media(post_id, position, path, w, h) values (pid, k - 1, '/kit/novos/fechada-' || k || '.jpg', 1080, 1350);
+  end loop;
+end $$;

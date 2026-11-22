@@ -17,7 +17,7 @@ export function NewWorkForm({ userId }: { userId: string }) {
   const [v, setV] = useState({ title: "", year: "2026", cat: "painting", medium: "", h: "120", w: "100", edition: "", price: "", desc: "", repro: false });
   const [err, setErr] = useState<Record<string, string>>({}); const [status, setStatus] = useState("");
   const [style, setStyle] = useState({ g: "mono", pi: 0, seed: rand() });
-  const [photo, setPhoto] = useState<{ blob: Blob; url: string; w: number; h: number } | null>(null);
+  const [photo, setPhoto] = useState<{ blob: Blob; thumb: Blob; url: string; w: number; h: number } | null>(null);
   const [over, setOver] = useState(false);
   const on = (k: string) => (e: any) => setV({ ...v, [k]: e.target.value });
 
@@ -41,8 +41,13 @@ export function NewWorkForm({ userId }: { userId: string }) {
     const cv = document.createElement("canvas"); cv.width = Math.round(bmp.width * k); cv.height = Math.round(bmp.height * k);
     cv.getContext("2d")!.drawImage(bmp, 0, 0, cv.width, cv.height);
     const blob: Blob = await new Promise((r) => cv.toBlob((b) => r(b!), "image/jpeg", 0.85));
+    // miniatura (560 px): é a única versão que aparece fora da área de membros
+    const kt = Math.min(1, 560 / Math.max(bmp.width, bmp.height));
+    const ct = document.createElement("canvas"); ct.width = Math.round(bmp.width * kt); ct.height = Math.round(bmp.height * kt);
+    ct.getContext("2d")!.drawImage(bmp, 0, 0, ct.width, ct.height);
+    const thumb: Blob = await new Promise((r) => ct.toBlob((b) => r(b!), "image/jpeg", 0.8));
     if (photo) URL.revokeObjectURL(photo.url);
-    setPhoto({ blob, url: URL.createObjectURL(blob), w: cv.width, h: cv.height }); toast("Imagem carregada.");
+    setPhoto({ blob, thumb, url: URL.createObjectURL(blob), w: cv.width, h: cv.height }); toast("Imagem carregada.");
   }
 
   function submit(ev: React.FormEvent) {
@@ -61,8 +66,11 @@ export function NewWorkForm({ userId }: { userId: string }) {
     start(async () => {
       let image_path: string | null = null;
       if (photo) {
-        const path = `${userId}/${crypto.randomUUID()}.jpg`;
-        const { error } = await createClient().storage.from("works").upload(path, photo.blob, { contentType: "image/jpeg" });
+        const id = crypto.randomUUID(), path = `${userId}/${id}.jpg`, sb = createClient();
+        const [{ error }] = await Promise.all([
+          sb.storage.from("works").upload(path, photo.blob, { contentType: "image/jpeg" }),
+          sb.storage.from("works").upload(`${userId}/${id}-t.jpg`, photo.thumb, { contentType: "image/jpeg", cacheControl: "31536000" }),
+        ]);
         if (error) { setStatus("Não foi possível enviar a imagem: " + error.message); return; }
         image_path = path;
       }

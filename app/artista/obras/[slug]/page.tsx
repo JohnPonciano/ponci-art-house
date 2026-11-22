@@ -5,6 +5,7 @@ import { ordersForArtist, proposalsForArtist, workBySlug } from "@/lib/data";
 import { SecHead, Slab, Tag, Notice, Reprod } from "@/components/ui";
 import { ReprodToggle } from "@/components/OffersToggle";
 import { EditWorkForm } from "@/components/forms/EditWorkForm";
+import { FreteDados } from "@/components/Frete";
 import { Ledger, ArtistProposalRow } from "@/components/area";
 import { ActButton, PriceForm } from "@/components/area-client";
 import { Icon } from "@/components/Icon";
@@ -35,6 +36,7 @@ export default async function ObraArtista({ params }: { params: Promise<{ slug: 
             <dt>Edição</dt><dd>{a.edition || (a.reproduction ? "Reprodução" : "Obra única")}</dd><dt>Categoria</dt><dd>{CAT[a.cat]}</dd><dt>Cadastro</dt><dd>{dateBR(a.created_at)}</dd>
           </dl>
           {a.status !== "sold" && <ReprodToggle workId={a.id} initial={!!a.reproduction} />}
+          {a.status !== "sold" && <FreteDados workId={a.id} depth={a.depth_cm} weight={a.weight_kg} />}
           {a.description?.length > 0 && <div className="d-desc">{a.description.map((p, i) => <p key={i}>{p}</p>)}</div>}
           {a.status === "review" && <div className="d-buy">
             <span className="price">{brl(a.price)}<small>Preço proposto</small></span>

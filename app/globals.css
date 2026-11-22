@@ -1907,3 +1907,20 @@ html{-webkit-tap-highlight-color:transparent}
 .prot-list p{font-size:14.5px;line-height:1.5;color:var(--muted);margin-top:4px}
 .prot-acts{display:flex;flex-wrap:wrap;gap:10px;margin-top:6px}
 @media (max-width:760px){.prot-row{grid-template-columns:1fr}.prot-list{grid-template-columns:1fr}}
+
+/* frete */
+.frete{border-top:var(--b);padding-top:14px;margin-top:14px;display:flex;flex-direction:column;gap:10px}
+.frete-form{display:flex;flex-direction:column;gap:8px}
+.frete-form .lab{display:inline-flex;align-items:center;gap:6px;color:var(--ink)}
+.frete-form .lab .ico{width:16px;height:16px}
+.frete-row{display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap}
+.frete-row input{min-height:40px;border:var(--b);background:var(--paper);padding:0 10px;font:inherit;font-size:15px;width:160px}
+.frete-list{list-style:none;margin:0;padding:0;border-top:1px solid var(--hair)}
+.frete-list li{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid var(--hair);font-size:14px}
+.frete-list li img{object-fit:contain}
+.frete-list small{display:block;font:400 12px/1.3 var(--mono);color:var(--muted);margin-top:2px}
+.frete-price{font:700 15px/1 var(--grot);white-space:nowrap}
+.frete .err{color:var(--ocre)}
+.frete-dados{display:flex;flex-direction:column;gap:8px;border:var(--b);padding:14px 16px;margin-top:14px}
+.frete-dados .field{display:flex;flex-direction:column;gap:6px}
+.frete-dados input{min-height:40px;border:var(--b);background:var(--paper);padding:0 10px;font:inherit;font-size:15px;width:150px}

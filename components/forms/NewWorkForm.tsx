@@ -14,7 +14,7 @@ const rand = () => Math.floor(Math.random() * 9000) + 100;
 
 export function NewWorkForm({ userId }: { userId: string }) {
   const router = useRouter(); const toast = useToast(); const [pending, start] = useTransition();
-  const [v, setV] = useState({ title: "", year: "2026", cat: "painting", medium: "", h: "120", w: "100", edition: "", price: "", desc: "", repro: false });
+  const [v, setV] = useState({ title: "", year: "2026", cat: "painting", medium: "", h: "120", w: "100", edition: "", price: "", desc: "", repro: false, depth: "", weight: "" });
   const [err, setErr] = useState<Record<string, string>>({}); const [status, setStatus] = useState("");
   const [style, setStyle] = useState({ g: "mono", pi: 0, seed: rand() });
   const [photo, setPhoto] = useState<{ blob: Blob; thumb: Blob; url: string; w: number; h: number } | null>(null);
@@ -74,7 +74,7 @@ export function NewWorkForm({ userId }: { userId: string }) {
         if (error) { setStatus("Não foi possível enviar a imagem: " + error.message); return; }
         image_path = path;
       }
-      const r = await createWork({ title: v.title, year: +v.year, cat: v.cat, medium: v.medium, h: +v.h, w: +v.w, edition: v.edition, price, description: v.desc, gen, reproduction: v.repro,
+      const r = await createWork({ title: v.title, year: +v.year, cat: v.cat, medium: v.medium, h: +v.h, w: +v.w, edition: v.edition, price, description: v.desc, gen, reproduction: v.repro, depth_cm: +v.depth.replace(/\D/g, "") || null, weight_kg: +v.weight.replace(",", ".") || null,
         image_path, img_w: photo?.w ?? null, img_h: photo?.h ?? null });
       if (!r.ok) { setStatus(r.error); return; }
       toast("Obra enviada para a curadoria."); router.push(`/artista/obras/${r.data!.slug}`);
@@ -98,6 +98,10 @@ export function NewWorkForm({ userId }: { userId: string }) {
             <Field name="h" label="Altura (cm)" type="number" inputMode="decimal" value={v.h} onChange={on("h")} error={err.h} />
             <Field name="w" label="Largura (cm)" type="number" inputMode="decimal" value={v.w} onChange={on("w")} error={err.w} />
             <Field name="edition" label="Edição" placeholder="Obra única" value={v.edition} onChange={on("edition")} />
+          </div>
+          <div className="two">
+            <Field name="depth" label="Profundidade (cm)" inputMode="numeric" placeholder="Ex.: 4" value={v.depth} onChange={on("depth")} />
+            <Field name="weight" label="Peso embalada (kg)" inputMode="decimal" placeholder="Ex.: 3,5" value={v.weight} onChange={on("weight")} />
           </div>
           <label className="check"><input type="checkbox" checked={v.repro} onChange={(e) => setV({ ...v, repro: e.target.checked })} />
             <span><b>É uma reprodução</b> (impressão, fine art, pôster). A obra ganha a etiqueta REPROD pra ninguém confundir com o original.</span></label>

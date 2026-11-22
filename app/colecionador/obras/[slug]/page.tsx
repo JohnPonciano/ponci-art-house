@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { requireMember, isAdminView } from "@/lib/supabase/server";
+import { requireMember, isAdminView, myKyc } from "@/lib/supabase/server";
+import { FreteQuote } from "@/components/Frete";
 import { catalogue, favoriteIds, ordersForBuyer, proposalsForBuyer, workBySlug } from "@/lib/data";
 import { Slab, Notice, Reprod } from "@/components/ui";
 import { GalleryCard, Room } from "@/components/Gallery";
@@ -62,6 +63,7 @@ export default async function ObraColecionador({ params }: { params: Promise<{ s
                 <p className="hint">A artista vê seu código de membro ({me.member_code}) e sua cidade. Seu nome só é revelado se a venda for fechada.</p></>
                   : <p className="hint">A artista passou a trabalhar com preço fixo. Novas propostas não são aceitas.</p>}
               </div> : null}
+              <FreteQuote workId={a.id} cep={(await myKyc())?.cep || ""} />
             </>}
             <ul className="ob-trust">
               <li><Icon n="lock" /><span><b>Pagamento em custódia</b>O valor só é repassado à artista depois da entrega.</span></li>

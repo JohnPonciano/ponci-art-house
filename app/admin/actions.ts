@@ -39,6 +39,31 @@ export const rejectRequest = async (id: string) => rpc("admin_reject_request", {
 export const setMemberStatus = async (id: string, status: "pending" | "active" | "suspended") => rpc("admin_set_member_status", { p_member: id, p_status: status });
 export const cancelOrder = async (id: string, reason: string) => rpc("admin_cancel_order", { p_order: id, p_reason: reason });
 export const markPayout = async (id: string, note: string) => rpc("admin_mark_payout", { p_order: id, p_note: note });
+/* ---------- Instagram ---------- */
+const GRAPH = "https://graph.facebook.com/v21.0";
+/** Valida o token com a Meta (conta certa e permissão de publicar) e guarda no cofre do Supabase. */
+export async function igConnect(token: string): Promise<Result<{ username: string; expires: string | null }>> {
+  const t = token.trim();
+  if (t.length < 20 || /\s/.test(t)) return { ok: false, error: "Cole o token inteiro, sem espaços." };
+  if (t.includes("|")) return { ok: false, error: "Esse é o token do app (ID|chave secreta). Use o token de usuário, que começa com EAA." };
+  const sb = await createClient();
+  const { data: st } = await sb.from("ig_settings").select("ig_user_id").eq("id", 1).maybeSingle();
+  const ig = (st as any)?.ig_user_id || "17841438995605886";
+  const h = { Authorization: `Bearer ${t}` };
+  try {
+    const acc = await (await fetch(`${GRAPH}/${ig}?fields=username`, { headers: h, cache: "no-store" })).json();
+    if (!acc?.username) return { ok: false, error: "A Meta não deixou este token ver a conta @ponci.art. Gere o token com instagram_basic e instagram_content_publish, marcando a página e a conta." };
+    const dbg = await (await fetch(`${GRAPH}/debug_token?input_token=${encodeURIComponent(t)}`, { headers: h, cache: "no-store" })).json();
+    const scopes: string[] = dbg?.data?.scopes || [];
+    if (scopes.length && !scopes.includes("instagram_content_publish")) return { ok: false, error: "Falta a permissão instagram_content_publish no token." };
+    const exp = dbg?.data?.expires_at ? new Date(dbg.data.expires_at * 1000).toISOString() : null;
+    const r = await rpc("admin_ig_set_token", { p_token: t, p_expires_at: exp, p_username: acc.username });
+    return r.ok ? { ok: true, data: { username: acc.username, expires: exp } } : r;
+  } catch { return { ok: false, error: "Não consegui falar com a Meta agora. Tente de novo em instantes." }; }
+}
+export const igSave = async (id: string | null, media: string[], caption: string, publishAt: string, label = "") =>
+  rpc("admin_ig_save", { p_id: id, p_media: media, p_caption: caption, p_publish_at: publishAt, p_label: label });
+export const igAction = async (id: string, action: "cancel" | "retry" | "now") => rpc("admin_ig_action", { p_id: id, p_action: action });
 export const curateWork = async (id: string, decision: "aprovada" | "ajustes" | "recusada", note: string) =>
   rpc("admin_curate", { p_work: id, p_decision: decision, p_note: note });
 export const reviewWork = async (id: string, approve: boolean) => rpc("admin_review_work", { p_work: id, p_approve: approve });

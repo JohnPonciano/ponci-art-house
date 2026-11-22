@@ -1864,3 +1864,31 @@ html{-webkit-tap-highlight-color:transparent}
 /* selo do perfil oficial */
 .official{display:inline-flex;vertical-align:-2px;margin-left:5px;color:var(--ocre)}
 .ig-prow h1 .official svg{width:20px;height:20px}
+
+/* admin · instagram */
+.ig-status{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;border:var(--b);padding:16px 18px;margin:clamp(20px,3vw,32px) 0;background:var(--slab-lt)}
+.ig-status p{font-size:15px;line-height:1.5}
+.ig-status .warn,.ig-status p .warn{color:var(--ocre);font-weight:600}
+.ig-connect{display:flex;flex-direction:column;gap:8px;min-width:min(100%,380px);flex:1;max-width:520px}
+.ig-connect input,.ig-editor input,.ig-editor textarea{border:var(--b);background:var(--paper);padding:10px;font:inherit;font-size:14.5px;width:100%}
+.ig-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:10px}
+.ig-h{margin:36px 0 10px}
+.ig-list{list-style:none;margin:0;padding:0;border-top:var(--b)}
+.ig-item{display:grid;grid-template-columns:200px 1fr;gap:clamp(12px,2vw,22px);padding:16px 0;border-bottom:var(--b)}
+.ig-item.bad{box-shadow:inset 4px 0 0 var(--ocre);padding-left:12px}
+.ig-thumbs{display:flex;gap:6px;flex-wrap:wrap;align-items:flex-start}
+.ig-thumbs img{width:76px;aspect-ratio:4/5;object-fit:cover;border:1px solid var(--hair);background:var(--slab-lt)}
+.ig-thumbs.sm img{width:44px}
+.ig-thumbs .more{font:500 12px/1 var(--mono);color:var(--muted);align-self:center}
+.ig-body{display:flex;flex-direction:column;gap:8px;min-width:0}
+.ig-meta{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center;font-size:13.5px}
+.ig-meta span:not(.tag){color:var(--muted);font:400 12px/1.3 var(--mono)}
+.ig-body h3{font:800 18px/1.2 var(--grot);text-transform:uppercase}
+.ig-cap{font-size:14px;line-height:1.45;color:var(--muted);white-space:pre-line;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.ig-acts{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center}
+.ig-editor{display:flex;flex-direction:column;gap:12px;border:var(--b);padding:14px;background:var(--paper)}
+.ig-editor .field{display:flex;flex-direction:column;gap:6px}
+.ig-editor .lab small{font:inherit;color:var(--muted);margin-left:8px}
+.ig-new{margin:0 0 16px}
+.ig-off summary{cursor:pointer;margin:36px 0 10px}
+@media (max-width:700px){.ig-item{grid-template-columns:1fr}.ig-head{flex-wrap:wrap}}

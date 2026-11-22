@@ -5,7 +5,7 @@ import { Icon } from "./Icon";
 import { Slab, Tag, Empty, Reprod } from "./ui";
 import { brl, catNo, dateBR, dims, pad, STAGES, COMMISSION } from "@/lib/format";
 import type { Order, Proposal, Work } from "@/lib/data";
-import { ActButton, ArtistProposalActions, BuyerProposalActions, FavButton, SignButton } from "./area-client";
+import { ActButton, ArtistProposalActions, BuyerProposalActions, CopyCode, FavButton, ShipForm, SignButton } from "./area-client";
 import { RequestForm } from "./forms/RequestForm";
 
 export function WorkCard({ a, href, foot, sub, fav }: { a: Work; href: string; foot: ReactNode; sub?: string; fav?: boolean | null }) {
@@ -18,7 +18,7 @@ export function WorkCard({ a, href, foot, sub, fav }: { a: Work; href: string; f
         {sub && <p className="card-en">{sub}</p>}
         <p className="card-meta first">{a.medium}</p>
         <p className="card-meta">{dims(a)}{a.edition ? " · " + a.edition : ""}</p>
-        <Reprod a={a} />{(fav === undefined || a.status !== "published") && <Tag s={a.status} />}
+        <Reprod a={a} />{a.changes_requested_at ? <span className="tag t-countered">Ajustes pedidos</span> : (fav === undefined || a.status !== "published") && <Tag s={a.status} />}
       </div>
       <div className="card-foot">{foot}</div>
     </Link>{fav != null && <FavButton workId={a.id} on={fav} title={a.title} />}</article>
@@ -80,11 +80,20 @@ export function OrderBlock({ o, side }: { o: Order; side: "artist" | "buyer" }) 
         <ol className="track">{STAGES.map((s, i) => (
           <li key={s[0]} className={`${i < o.stage || o.stage === 3 ? "done" : ""} ${i === o.stage && o.stage < 3 ? "now" : ""}`}><i>{pad(i + 1)}</i><b>{s[0]}</b><span className="hint" style={{ color: "inherit", opacity: 0.8 }}>{s[1]}</span></li>))}</ol>
         <ContractStrip o={o} side={side} />
-        {side === "buyer" && <div className="acts">{o.stage < 3 ? <>
-          {o.stage === 0 && !bothSigned(o) ? <span className="hint">O pagamento libera depois que as duas partes assinarem o contrato.</span> : <>
-          <ActButton action="advanceOrder" args={[o.id]} ok="Etapa atualizada." className="btn sm">{["Pagar em custódia", "Confirmar envio", "Confirmar recebimento"][o.stage]} <Icon n="right" /></ActButton>
-          <span className="hint">Confirme aqui depois de concluir esta etapa com a PONCI.</span></>}</>
+        {o.stage >= 2 && o.carrier && <ShipInfo o={o} />}
+        {side === "buyer" && <div className="acts">{
+          o.stage === 0 ? (!bothSigned(o) ? <span className="hint">O pagamento libera depois que as duas partes assinarem o contrato.</span> : <>
+            <ActButton action="advanceOrder" args={[o.id]} ok="Pagamento em custódia confirmado." className="btn sm">Pagar em custódia <Icon n="right" /></ActButton>
+            <span className="hint">O valor fica retido pela PONCI e só vai para a artista depois que você receber a obra.</span></>)
+          : o.stage === 1 ? <span className="hint">Pagamento em custódia. Agora a artista embala e despacha a obra; o rastreio aparece aqui.</span>
+          : o.stage === 2 ? <>
+            <ActButton action="advanceOrder" args={[o.id]} ok="Recebimento confirmado. Certificado emitido." className="btn sm"
+              confirm={<>Confirma que recebeu <b>{a.title}</b> em bom estado? Se chegou com avaria, não confirme: abra uma solicitação em Minha conta.</>}>Confirmar recebimento <Icon n="check" /></ActButton>
+            <span className="hint">Só confirme com a obra em mãos.</span></>
           : <><span className="tag t-accepted">Certificado PNC-CA-{o.ref.slice(4)}</span><span className="hint">Procedência registrada na rede.</span></>}</div>}
+        {side === "artist" && o.stage === 0 && <div className="acts"><span className="hint">{bothSigned(o) ? "Contrato assinado. Aguardando a colecionadora pagar em custódia." : "Aguardando as assinaturas do contrato."}</span></div>}
+        {side === "artist" && o.stage === 1 && <div className="acts" style={{ display: "block" }}><ShipForm orderId={o.id} /></div>}
+        {side === "artist" && o.stage === 2 && <div className="acts"><span className="hint">Aguardando a colecionadora confirmar o recebimento.</span></div>}
         {side === "buyer" && o.stage === 3 && o.delivered_at && withinWithdrawal(o.delivered_at) && <details className="acts" style={{ display: "block" }}>
           <summary className="linkbtn" style={{ display: "inline-block", cursor: "pointer" }}>Desistir da compra (até {dateBR(new Date(o.delivered_at).getTime() + 7 * 864e5)})</summary>
           <div style={{ marginTop: 12 }}><RequestForm orderId={o.id} kinds={["arrependimento", "problema"]} compact /></div></details>}
@@ -93,6 +102,13 @@ export function OrderBlock({ o, side }: { o: Order; side: "artist" | "buyer" }) 
           : "Prazo de arrependimento encerrado. Repasse liberado em até 7 dias."}</span></div>}
       </div>
     </article>
+  );
+}
+
+function ShipInfo({ o }: { o: Order }) {
+  return (
+    <div className="ship-info"><Icon n="truck" /><span>{o.carrier === "Entrega em mãos" ? "Entrega em mãos" : <>Enviada por <b>{o.carrier}</b></>}{o.shipped_at ? ` em ${dateBR(o.shipped_at)}` : ""}</span>
+      {o.tracking_code && <CopyCode code={o.tracking_code} />}</div>
   );
 }
 

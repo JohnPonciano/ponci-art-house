@@ -35,6 +35,7 @@ export async function reserveWork(workId: string) {
   const m = await reqMeta();
   return rpc("reserve_work", { p_work: workId, p_ip: m.ip, p_ua: m.ua });
 }
+export const shipOrder = async (orderId: string, carrier: string, tracking: string) => rpc("ship_order", { p_order: orderId, p_carrier: carrier, p_tracking: tracking });
 export const advanceOrder = async (orderId: string) => rpc("advance_order", { p_order: orderId });
 export async function toggleFavorite(workId: string, on: boolean): Promise<Result> {
   const me = await getMe(); if (!me) return { ok: false, error: "Entre novamente." };
@@ -90,6 +91,14 @@ export async function updateProfile(v: { display_name?: string; city: string; pr
   return b.error ? fail(b.error) : done();
 }
 
+export async function updateWorkReview(workId: string, v: {
+  title: string; year: number; medium: string; h: number; w: number; edition: string; price: number; description: string; reproduction: boolean;
+}): Promise<Result> {
+  if (!v.title.trim() || !v.medium.trim()) return { ok: false, error: "Preencha título e técnica." };
+  if (!(v.price >= 500)) return { ok: false, error: "Preço mínimo de R$ 500." };
+  if (v.description.trim().length < 40) return { ok: false, error: "A descrição precisa de pelo menos 40 caracteres." };
+  return rpc("update_work_review", { p_work: workId, p: { ...v, h: Math.round(v.h), w: Math.round(v.w), price: Math.round(v.price) } });
+}
 export const setWorkReproduction = async (workId: string, on: boolean) => rpc("set_work_reproduction", { p_work: workId, p_on: on });
 
 export async function setAcceptsOffers(on: boolean): Promise<Result> {

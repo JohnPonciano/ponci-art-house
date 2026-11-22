@@ -131,3 +131,29 @@ export function PublishDocForm({ slug, title, summary, body }: { slug: string; t
     </form>
   );
 }
+
+/** Curadoria: aprovar, pedir ajustes (com recado) ou recusar (com motivo). */
+export function CurateActions({ id, title }: { id: string; title: string }) {
+  const toast = useToast(); const router = useRouter(); const [pending, start] = useTransition();
+  const [mode, setMode] = useState<"" | "ajustes" | "recusada">(""); const [note, setNote] = useState("");
+  const go = (d: "aprovada" | "ajustes" | "recusada") => start(async () => {
+    const r = await A.curateWork(id, d, note);
+    toast(r.ok ? (d === "aprovada" ? "Obra aprovada e publicada." : d === "ajustes" ? "Pedido de ajustes enviado à artista." : "Obra recusada. A artista vê o motivo.") : r.error);
+    if (r.ok) { setMode(""); setNote(""); router.refresh(); }
+  });
+  if (mode) return (
+    <div className="curate-box">
+      <label className="lab" htmlFor={"cn-" + id}>{mode === "ajustes" ? "O que a artista precisa ajustar?" : "Motivo da recusa (a artista vai ler)"}</label>
+      <textarea id={"cn-" + id} rows={3} value={note} onChange={(e) => setNote(e.target.value)} maxLength={2000} autoFocus
+        placeholder={mode === "ajustes" ? "Ex.: a foto está com reflexo; envie uma com luz natural e informe a técnica completa." : "Ex.: a obra não segue a linha da curadoria deste ciclo."} />
+      <span style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center" }}>
+        <button type="button" className={"btn sm" + (mode === "recusada" ? " ocre" : "")} disabled={pending || note.trim().length < 10} onClick={() => go(mode)}>
+          {pending ? "Enviando…" : mode === "ajustes" ? "Enviar pedido de ajustes" : `Recusar “${title}”`}</button>
+        <button type="button" className="linkbtn" onClick={() => { setMode(""); setNote(""); }}>Cancelar</button>
+      </span>
+    </div>);
+  return (<>
+    <button type="button" className="btn sm" disabled={pending} onClick={() => go("aprovada")}>{pending ? "Aguarde…" : <>Aprovar e publicar <Icon n="check" /></>}</button>
+    <button type="button" className="btn sm ghost" disabled={pending} onClick={() => setMode("ajustes")}>Pedir ajustes <Icon n="edit" /></button>
+    <button type="button" className="linkbtn" disabled={pending} onClick={() => setMode("recusada")}>Recusar</button></>);
+}

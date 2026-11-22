@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ArtImage } from "./ArtImage";
 import { Icon } from "./Icon";
-import { AdminButton, InviteShare } from "./admin-client";
+import { AdminButton, CurateActions, InviteShare } from "./admin-client";
 import { brl, CAT, dateBR, dims } from "@/lib/format";
 import type { Req, Member, Invite } from "@/lib/admin";
 import type { Work } from "@/lib/data";
@@ -55,16 +55,16 @@ export function MemberRow({ m, kyc }: { m: Member; kyc?: { done: boolean; pep: b
 export function WorkReviewRow({ w }: { w: Work }) {
   return (
     <div className="arow thumb">
-      <span>{dateBR(w.created_at)}<small>{w.slug}</small><span className="tag t-rev">Em curadoria</span></span>
+      <span>{dateBR(w.created_at)}<small>{w.slug}</small>{w.changes_requested_at ? <span className="tag t-countered">Aguardando ajustes</span> : <span className="tag t-rev">Em curadoria</span>}</span>
       <span className="l-thumb"><ArtImage a={w} /></span>
       <span className="det">
         <span className="who-b"><b>{w.title}</b><span>{w.artist?.display_name} · {w.year} · {CAT[w.cat]}</span><span>{w.medium} · {dims(w)}{w.edition ? " · " + w.edition : ""}{w.reproduction ? " · REPROD" : ""}</span></span>
         {w.description?.[0] && <q>{w.description.join(" ")}</q>}
+        {w.changes_requested_at && w.curation_note && <span className="curate-note">Ajustes pedidos em {dateBR(w.changes_requested_at)}: “{w.curation_note}”</span>}
         <span>Preço pedido: <b style={{ color: "var(--ink)" }}>{brl(w.price)}</b>{w.image_path ? " · com fotografia" : " · sem fotografia (composição gerada)"}</span>
       </span>
       <span className="act">
-        <AdminButton action="reviewWork" args={[w.id, true]} ok="Obra aprovada e publicada.">Aprovar e publicar <Icon n="check" /></AdminButton>
-        <AdminButton action="reviewWork" args={[w.id, false]} ok="Obra recusada." className="linkbtn" confirm={`Recusar “${w.title}”? O envio é apagado.`}>Recusar</AdminButton>
+        <CurateActions id={w.id} title={w.title} />
       </span>
     </div>
   );

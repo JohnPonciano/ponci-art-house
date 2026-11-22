@@ -4,6 +4,7 @@ import { requireMember } from "@/lib/supabase/server";
 import { ordersForArtist, proposalsForArtist, workBySlug } from "@/lib/data";
 import { SecHead, Slab, Tag, Notice, Reprod } from "@/components/ui";
 import { ReprodToggle } from "@/components/OffersToggle";
+import { EditWorkForm } from "@/components/forms/EditWorkForm";
 import { Ledger, ArtistProposalRow } from "@/components/area";
 import { ActButton, PriceForm } from "@/components/area-client";
 import { Icon } from "@/components/Icon";
@@ -26,7 +27,7 @@ export default async function ObraArtista({ params }: { params: Promise<{ slug: 
       <article className="detail">
         <div className="detail-media"><Zoomable a={a}><Slab a={a} label={STATUS[a.status][0]} /></Zoomable></div>
         <div className="detail-info">
-          <div className="d-no"><span>{catNo(a.no)}</span><span className="g-tags"><Reprod a={a} /><Tag s={a.status} /></span></div>
+          <div className="d-no"><span>{catNo(a.no)}</span><span className="g-tags"><Reprod a={a} />{a.changes_requested_at ? <span className="tag t-countered">Ajustes pedidos</span> : <Tag s={a.status} />}</span></div>
           <div><h1 className="d-title">{a.title}</h1></div>
           <dl className="spec">
             <dt>Ano</dt><dd>{a.year}</dd><dt>Técnica</dt><dd>{a.medium}</dd>
@@ -37,7 +38,10 @@ export default async function ObraArtista({ params }: { params: Promise<{ slug: 
           {a.description?.length > 0 && <div className="d-desc">{a.description.map((p, i) => <p key={i}>{p}</p>)}</div>}
           {a.status === "review" && <div className="d-buy">
             <span className="price">{brl(a.price)}<small>Preço proposto</small></span>
-            <Notice>A curadoria revisa documentação e imagem em até 3 dias úteis. Até lá, a obra não aparece para colecionadores.</Notice>
+            {a.changes_requested_at
+              ? <div className="curate-ask"><p className="lab">A curadoria pediu ajustes · {dateBR(a.changes_requested_at)}</p><p>“{a.curation_note}”</p></div>
+              : <Notice>A curadoria revisa documentação e imagem em até 3 dias úteis. Até lá, a obra não aparece para colecionadores.</Notice>}
+            <EditWorkForm a={a} open={!!a.changes_requested_at} />
             {me.email.endsWith("@demo.ponci.art") && <ActButton action="approveWorkDemo" args={[a.id]} ok="Obra aprovada e publicada na vitrine.">Simular aprovação da curadoria <Icon n="check" /></ActButton>}
             <ActButton action="withdrawWork" args={[a.id]} ok="Envio retirado." className="linkbtn" go="/artista/obras" confirm="Retirar o envio? A obra será apagada.">Retirar envio</ActButton>
           </div>}

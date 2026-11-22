@@ -128,3 +128,30 @@ export function SignButton({ contractId, label = "Assinar contrato" }: { contrac
     <button className="linkbtn" type="button" onClick={() => setAsk(false)}>Cancelar</button></span>);
   return <button className="btn sm" type="button" onClick={() => setAsk(true)}>{label} <Icon n="check" /></button>;
 }
+
+/* Artista: despachar a obra (transportadora + rastreio) */
+export const CARRIERS = ["Correios", "Jadlog", "Loggi", "Transportadora de arte", "Entrega em mãos"];
+export function ShipForm({ orderId }: { orderId: string }) {
+  const { run, pending } = useAct(); const [c, setC] = useState(""); const [code, setCode] = useState(""); const [err, setErr] = useState("");
+  const hand = c === "Entrega em mãos";
+  return (
+    <form className="ship-form" onSubmit={(e) => { e.preventDefault(); setErr("");
+      if (!c) return setErr("Escolha a forma de envio.");
+      if (!hand && code.trim().length < 6) return setErr("Informe o código de rastreio.");
+      run(() => A.shipOrder(orderId, c, hand ? "" : code), "Envio registrado. A colecionadora já vê o rastreio."); }}>
+      <p className="ship-t"><b>Hora de despachar.</b> O pagamento está em custódia. Embale bem a obra, envie com seguro e registre aqui.</p>
+      <div className="ship-row">
+        <label className="field"><span className="lab">Forma de envio</span>
+          <select value={c} onChange={(e) => setC(e.target.value)} required><option value="">Escolha…</option>{CARRIERS.map((x) => <option key={x}>{x}</option>)}</select></label>
+        {!hand && <label className="field"><span className="lab">Código de rastreio</span>
+          <input value={code} onChange={(e) => setCode(e.target.value.toUpperCase())} placeholder="Ex.: AB123456789BR" maxLength={60} autoCapitalize="characters" spellCheck={false} /></label>}
+        <button className="btn sm" type="submit" disabled={pending}>{pending ? "Registrando…" : <>Confirmar envio <Icon n="right" /></>}</button>
+      </div>
+      {err && <p className="err" role="alert">{err}</p>}
+    </form>
+  );
+}
+export function CopyCode({ code }: { code: string }) {
+  const toast = useToast();
+  return <button type="button" className="ship-code" title="Copiar código" onClick={() => { navigator.clipboard?.writeText(code).then(() => toast("Código copiado.")).catch(() => {}); }}>{code} <Icon n="copy" /></button>;
+}

@@ -26,7 +26,9 @@ export async function invites(): Promise<Invite[]> {
 export async function reviewWorks(): Promise<Work[]> {
   const sb = await createClient();
   const { data } = await sb.from("works").select(`${WORK_COLS},artist:profiles!works_artist_id_fkey(id,display_name,city,practice,bio)`).eq("status", "review").order("created_at");
-  return ((data as any) || []).map((w: any) => ({ ...w, artist: one(w.artist) }));
+  // quem está esperando ajustes da artista vai para o fim da fila
+  return ((data as any) || []).map((w: any) => ({ ...w, artist: one(w.artist) }))
+    .sort((a: any, b: any) => Number(!!a.changes_requested_at) - Number(!!b.changes_requested_at));
 }
 export async function counts() {
   const sb = await createClient();

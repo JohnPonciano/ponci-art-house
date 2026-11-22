@@ -9,6 +9,7 @@ export type Work = {
   id: string; slug: string; no: number; title: string; year: number; cat: string; medium: string; h: number; w: number;
   edition: string | null; price: number; description: string[]; status: string; gen: any; image_path: string | null;
   img_w: number | null; img_h: number | null; created_at: string; artist_id: string; reproduction?: boolean;
+  curation_note?: string | null; changes_requested_at?: string | null;
   artist?: { id: string; display_name: string; city: string; practice: string; bio: string; member_code?: string; accepts_offers?: boolean };
 };
 export type PEvent = { id: number; actor: string; kind: string; amount: number | null; msg: string; created_at: string };
@@ -20,6 +21,7 @@ export type Signature = { party: string; name: string; signed_at: string; method
 export type OrderContract = { id: string; ref: string; sha256: string; signatures: Signature[] };
 export type Order = {
   id: string; ref: string; amount: number; via: string; stage: number; created_at: string; delivered_at: string | null; work: Work;
+  paid_at?: string | null; shipped_at?: string | null; carrier?: string | null; tracking_code?: string | null;
   contract?: OrderContract | null;
   buyer?: { member_code: string; city: string; full_name?: string };
 };
@@ -69,7 +71,7 @@ export async function proposalsForBuyer(buyerId: string): Promise<Proposal[]> {
 }
 
 const O_SEL = (extraWork = "") =>
-  `id,ref,amount,via,stage,created_at,delivered_at,work:works!inner(${WORK_COLS}${extraWork}),buyer:profiles!orders_buyer_id_fkey(member_code,city,private:profile_private(full_name)),contract:contracts(id,ref,sha256,signatures:contract_signatures(party,name,signed_at,method))`;
+  `*,work:works!inner(${WORK_COLS}${extraWork}),buyer:profiles!orders_buyer_id_fkey(member_code,city,private:profile_private(full_name)),contract:contracts(id,ref,sha256,signatures:contract_signatures(party,name,signed_at,method))`;
 function normOrder(o: any): Order {
   const work = one(o.work); if (work) work.artist = one(work.artist);
   const b = one(o.buyer);
@@ -101,4 +103,12 @@ export async function networkStats(): Promise<{ artists: number; buyers: number;
   const sb = await createClient();
   const { data } = await sb.rpc("network_stats");
   return (data as any) || { artists: 0, buyers: 0, published: 0 };
+}
+
+/** Histórico da curadoria da artista (decisões e recados). Vazio se a tabela ainda não existir. */
+export type CurationEntry = { id: number; work_id: string | null; title: string; decision: "aprovada" | "ajustes" | "recusada" | "reenviada"; note: string; created_at: string };
+export async function curationLog(artistId: string, limit = 20): Promise<CurationEntry[]> {
+  const sb = await createClient();
+  const { data, error } = await sb.from("curation_log").select("id,work_id,title,decision,note,created_at").eq("artist_id", artistId).order("created_at", { ascending: false }).limit(limit);
+  return error ? [] : ((data as any) || []);
 }

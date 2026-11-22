@@ -36,7 +36,7 @@ export function ArtistProposalRow({ p }: { p: Proposal }) {
     <div className="lrow">
       <span className="l-ref">{p.ref}<small>{dateBR(p.created_at)}</small></span>
       <Link className="l-thumb" href={`/artista/obras/${a.slug}`} aria-hidden="true" tabIndex={-1}><ArtImage a={a} max={240} /></Link>
-      <span className="l-main"><Link href={`/artista/obras/${a.slug}`}><b>{a.title}</b></Link><span>{p.buyer?.member_code} · {p.buyer?.city}</span><span>{p.last?.actor === "artist" ? "Você respondeu" : p.last?.actor === "system" ? "Sistema" : "Colecionador"} · {dateBR(p.last?.created_at)}</span></span>
+      <span className="l-main"><Link href={`/artista/obras/${a.slug}`}><b>{a.title}</b></Link>{a.reproduction && <Reprod a={a} />}<span>{p.buyer?.member_code} · {p.buyer?.city}</span><span>{p.last?.actor === "artist" ? "Você respondeu" : p.last?.actor === "system" ? "Sistema" : "Colecionador"} · {dateBR(p.last?.created_at)}</span></span>
       <span className="l-msg">{p.last?.msg ? `“${p.last.msg}”` : ""}</span>
       <span className="l-val">{brl(p.current)}<small>{p.last?.actor === "artist" ? "Sua contraproposta" : "Oferta"}</small><small>{diff >= 0 ? "+" : ""}{diff}% do preço ({brl(a.price)})</small></span>
       <span className="l-act">{p.status === "open" ? <ArtistProposalActions id={p.id} current={p.current} price={a.price} /> : <>
@@ -52,7 +52,7 @@ export function BuyerProposalRow({ p }: { p: Proposal }) {
     <div className="lrow">
       <span className="l-ref">{p.ref}<small>{dateBR(p.created_at)}</small></span>
       <Link className="l-thumb" href={`/colecionador/obras/${a.slug}`} aria-hidden="true" tabIndex={-1}><ArtImage a={a} max={240} /></Link>
-      <span className="l-main"><Link href={`/colecionador/obras/${a.slug}`}><b>{a.title}</b></Link><span>{a.artist?.display_name}</span><span>{p.last?.actor === "artist" ? "Artista respondeu" : p.last?.actor === "system" ? "Sistema" : "Você"} · {dateBR(p.last?.created_at)}</span></span>
+      <span className="l-main"><Link href={`/colecionador/obras/${a.slug}`}><b>{a.title}</b></Link>{a.reproduction && <Reprod a={a} />}<span>{a.artist?.display_name}</span><span>{p.last?.actor === "artist" ? "Artista respondeu" : p.last?.actor === "system" ? "Sistema" : "Você"} · {dateBR(p.last?.created_at)}</span></span>
       <span className="l-msg">{p.last?.msg ? `“${p.last.msg}”` : ""}</span>
       <span className="l-val">{brl(p.current)}<small>{p.last?.actor === "artist" ? "Contraproposta" : "Sua oferta"}</small><small>Preço: {brl(a.price)}</small></span>
       <span className="l-act">
@@ -71,7 +71,7 @@ export function OrderBlock({ o, side }: { o: Order; side: "artist" | "buyer" }) 
       <div className="order-art"><Slab a={a} plaque={false} /></div>
       <div className="order-info">
         <div className="top">
-          <div><b>{a.title}</b>
+          <div><b>{a.title}</b>{a.reproduction && <> <Reprod a={a} /></>}
             {side === "buyer" && <span>{a.artist?.display_name} · {a.year} · {dims(a)}</span>}
             <span>{o.ref} · {dateBR(o.created_at)} · {o.via === "direct" ? "Compra pelo preço" : "Proposta aceita"}</span>
             {side === "artist" && <span>Colecionador: {o.buyer?.full_name || "—"} ({o.buyer?.member_code}) · {o.buyer?.city}</span>}</div>

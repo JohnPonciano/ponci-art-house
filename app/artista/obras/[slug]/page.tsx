@@ -36,7 +36,7 @@ export default async function ObraArtista({ params }: { params: Promise<{ slug: 
             <dt>Edição</dt><dd>{a.edition || (a.reproduction ? "Reprodução" : "Obra única")}</dd><dt>Categoria</dt><dd>{CAT[a.cat]}</dd><dt>Cadastro</dt><dd>{dateBR(a.created_at)}</dd>
           </dl>
           {a.status !== "sold" && <ReprodToggle workId={a.id} initial={!!a.reproduction} />}
-          {a.status !== "sold" && <FreteDados workId={a.id} depth={a.depth_cm} weight={a.weight_kg} />}
+          {a.status !== "sold" && <FreteDados workId={a.id} depth={a.depth_cm} weight={a.weight_kg} included={a.ship_included} />}
           {a.description?.length > 0 && <div className="d-desc">{a.description.map((p, i) => <p key={i}>{p}</p>)}</div>}
           {a.status === "review" && <div className="d-buy">
             <span className="price">{brl(a.price)}<small>Preço proposto</small></span>

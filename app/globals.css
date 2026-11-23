@@ -1924,3 +1924,4 @@ html{-webkit-tap-highlight-color:transparent}
 .frete-dados{display:flex;flex-direction:column;gap:8px;border:var(--b);padding:14px 16px;margin-top:14px}
 .frete-dados .field{display:flex;flex-direction:column;gap:6px}
 .frete-dados input{min-height:40px;border:var(--b);background:var(--paper);padding:0 10px;font:inherit;font-size:15px;width:150px}
+p.frete.hint{display:flex;gap:8px;align-items:flex-start;font-size:14px}p.frete.hint .ico{width:16px;height:16px;flex:none;margin-top:2px}

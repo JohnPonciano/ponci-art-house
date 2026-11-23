@@ -34,16 +34,20 @@ export function FreteQuote({ workId, cep: cep0 = "" }: { workId: string; cep?: s
 }
 
 /** Artista: medidas de envio (profundidade e peso já embalada). */
-export function FreteDados({ workId, depth, weight }: { workId: string; depth?: number | null; weight?: number | null }) {
+export function FreteDados({ workId, depth, weight, included }: { workId: string; depth?: number | null; weight?: number | null; included?: boolean }) {
   const toast = useToast(); const router = useRouter(); const [pending, start] = useTransition();
+  const [inc, setInc] = useState(!!included);
   const [d, setD] = useState(depth ? String(depth) : ""); const [w, setW] = useState(weight ? String(weight).replace(".", ",") : "");
   const save = (e: React.FormEvent) => { e.preventDefault(); start(async () => {
-    const r = await setWorkShipping(workId, d ? +d : null, w ? +w.replace(",", ".") : null);
+    const r = await setWorkShipping(workId, d ? +d : null, w ? +w.replace(",", ".") : null, inc);
     toast(r.ok ? "Dados de envio salvos." : r.error); if (r.ok) router.refresh(); }); };
   return (
     <form className="frete-dados" onSubmit={save}>
-      <p className="lab">Dados de envio</p>
-      <p className="hint">Usados para calcular o frete para a colecionadora. Sem eles, a PONCI estima pelo tamanho da obra.</p>
+      <p className="lab">Envio</p>
+      <p className="hint">Você embala e despacha com seguro, em até 5 dias úteis depois do pagamento. <a href="/guia-de-envio" target="_blank" style={{ textDecoration: "underline" }}>Guia de embalagem</a></p>
+      <label className="check"><input type="checkbox" checked={inc} onChange={(e) => setInc(e.target.checked)} />
+        <span><b>Frete incluso no preço</b>: você paga o envio. Desmarcado, a colecionadora paga o frete, calculado antes do pagamento.</span></label>
+      <p className="hint">Medidas da obra embalada (ajudam a calcular o frete; sem elas, a PONCI estima pelo tamanho):</p>
       <span className="frete-row">
         <label className="field"><span className="lab">Profundidade (cm)</span><input inputMode="numeric" value={d} onChange={(e) => setD(e.target.value.replace(/\D/g, ""))} placeholder="Ex.: 4" /></label>
         <label className="field"><span className="lab">Peso embalada (kg)</span><input inputMode="decimal" value={w} onChange={(e) => setW(e.target.value.replace(/[^\d,.]/g, ""))} placeholder="Ex.: 3,5" /></label>

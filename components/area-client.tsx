@@ -139,7 +139,7 @@ export function ShipForm({ orderId }: { orderId: string }) {
       if (!c) return setErr("Escolha a forma de envio.");
       if (!hand && code.trim().length < 6) return setErr("Informe o código de rastreio.");
       run(() => A.shipOrder(orderId, c, hand ? "" : code), "Envio registrado. A colecionadora já vê o rastreio."); }}>
-      <p className="ship-t"><b>Hora de despachar.</b> O pagamento está em custódia. Embale bem a obra, envie com seguro e registre aqui.</p>
+      <p className="ship-t"><b>Hora de despachar.</b> O pagamento está em custódia. Embale bem a obra, envie com seguro pelo valor da obra e registre aqui. <a href="/guia-de-envio" target="_blank" style={{ textDecoration: "underline" }}>Guia de embalagem</a></p>
       <div className="ship-row">
         <label className="field"><span className="lab">Forma de envio</span>
           <select value={c} onChange={(e) => setC(e.target.value)} required><option value="">Escolha…</option>{CARRIERS.map((x) => <option key={x}>{x}</option>)}</select></label>

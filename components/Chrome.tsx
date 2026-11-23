@@ -64,7 +64,7 @@ export function Footer() {
       <div className="foot-grid">
         <div className="c1"><p className="lab">PONCI</p><p className="ftag">Rede privada de artistas e colecionadores. Brasil, fund. 2026.</p><span className="domain">ponci.art</span></div>
         <nav className="c2" aria-label="Índice"><p className="lab">Índice</p><ul><li><Link href="/">A rede</Link></li><li><Link href="/artista">Área do artista</Link></li><li><Link href="/colecionador">Área do colecionador</Link></li><li><Link href="/#acesso">Solicitar acesso</Link></li></ul></nav>
-        <nav className="c3" aria-label="Documentos"><p className="lab">Documentos</p><ul><li><Link href="/termos">Termos de Uso</Link></li><li><Link href="/privacidade">Privacidade</Link></li><li><Link href="/cookies">Cookies</Link></li><li><Link href="/protecao">Proteção das obras</Link></li><li><Link href="/contratos/artista">Contrato · Artista</Link></li><li><Link href="/contratos/colecionador">Condições de compra</Link></li></ul></nav>
+        <nav className="c3" aria-label="Documentos"><p className="lab">Documentos</p><ul><li><Link href="/termos">Termos de Uso</Link></li><li><Link href="/privacidade">Privacidade</Link></li><li><Link href="/cookies">Cookies</Link></li><li><Link href="/protecao">Proteção das obras</Link></li><li><Link href="/guia-de-envio">Guia de envio</Link></li><li><Link href="/contratos/artista">Contrato · Artista</Link></li><li><Link href="/contratos/colecionador">Condições de compra</Link></li></ul></nav>
         <p className="c4 note">Acesso restrito a membros convidados. Obras, preços e negociações são confidenciais entre as partes e a PONCI.</p>
       </div>
       <FootMega />

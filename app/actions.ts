@@ -60,7 +60,7 @@ export const approveWorkDemo = async (workId: string) => rpc("demo_approve_work"
 export async function createWork(v: {
   title: string; year: number; cat: string; medium: string; h: number; w: number; edition?: string; price: number;
   description: string; gen: any; image_path?: string | null; img_w?: number | null; img_h?: number | null; reproduction?: boolean;
-  depth_cm?: number | null; weight_kg?: number | null;
+  depth_cm?: number | null; weight_kg?: number | null; ship_included?: boolean;
 }): Promise<Result<{ slug: string }>> {
   const me = await getMe();
   if (!me || me.role !== "artist") return { ok: false, error: "Somente artistas cadastram obras." };
@@ -77,6 +77,7 @@ export async function createWork(v: {
       ...(v.reproduction ? { reproduction: true } : {}),
       ...(v.depth_cm && v.depth_cm >= 1 && v.depth_cm <= 300 ? { depth_cm: Math.round(v.depth_cm) } : {}),
       ...(v.weight_kg && v.weight_kg > 0 && v.weight_kg <= 300 ? { weight_kg: v.weight_kg } : {}),
+      ...(v.ship_included ? { ship_included: true } : {}),
     });
     if (!error) return done({ slug }) as any;
     if (error.code !== "23505") return fail(error) as any;
@@ -166,10 +167,11 @@ export async function quoteShipping(workId: string, cep: string): Promise<import
     sb.from("works").select("*").eq("id", workId).maybeSingle(),
   ]);
   if (!w) return { ok: false, error: "Obra não encontrada." };
+  if ((w as any).ship_included) return { ok: false, big: true, error: "Frete incluso no preço: a artista embala e envia com seguro, sem custo extra pra você." };
   if (oe) return { ok: false, error: "O cálculo de frete ainda não foi ligado. A PONCI informa o frete antes do pagamento." };
   if (!from) return { ok: false, error: "A artista ainda não completou o endereço de envio. A PONCI informa o frete antes do pagamento." };
   return quoteFrete(from as string, to, w as any);
 }
-export async function setWorkShipping(workId: string, depth: number | null, weight: number | null): Promise<Result> {
-  return rpc("set_work_shipping", { p_work: workId, p_depth: depth ? Math.round(depth) : null, p_weight: weight || null });
+export async function setWorkShipping(workId: string, depth: number | null, weight: number | null, included?: boolean): Promise<Result> {
+  return rpc("set_work_shipping", { p_work: workId, p_depth: depth ? Math.round(depth) : null, p_weight: weight || null, p_included: included ?? null });
 }

@@ -28,7 +28,7 @@ export const PSTATUS: Record<string, [string, string]> = {
 };
 export const STAGES: [string, string][] = [
   ["Reservada", "Obra retirada da vitrine"], ["Pagamento em custódia", "Valor retido pela PONCI"],
-  ["Em transporte", "Embalagem e seguro"], ["Entregue", "Certificado emitido"],
+  ["Em transporte", "Despachada pela artista, com seguro"], ["Entregue", "Certificado emitido"],
 ];
 export const EVENT_LABEL: Record<string, string> = {
   offer: "Proposta", counter: "Contraproposta", decline: "Recusa", accept: "Aceite", close: "Encerrada", withdraw: "Retirada",

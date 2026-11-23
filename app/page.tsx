@@ -81,7 +81,7 @@ export default async function Home() {
           <div className="man-body">
             <p>Uma rede pequena, onde cada membro foi convidado e cada obra foi vista antes de chegar à vitrine. Fechada também para proteger: <Link href="/protecao" style={{ textDecoration: "underline" }}>as obras daqui não viram alimento de inteligência artificial</Link>.</p>
             <p>Artistas não disputam atenção com milhares de anúncios. Colecionadores não precisam adivinhar preço, procedência ou disponibilidade. A identidade de quem compra só é revelada à artista quando a negociação é concluída.</p>
-            <p>A PONCI fica no meio apenas onde é necessário: na curadoria, na custódia do pagamento, no transporte e no certificado.</p>
+            <p>A PONCI fica no meio apenas onde é necessário: na curadoria, na custódia do pagamento, no acompanhamento da entrega e no certificado.</p>
           </div>
         </div>
       </div></section>
@@ -92,7 +92,7 @@ export default async function Home() {
           ["Convite", "Artistas enviam portfólio; colecionadores entram por indicação ou verificação. Todo membro é aprovado pela PONCI."],
           ["Curadoria", "A artista cadastra a obra com preço. A curadoria revisa documentação e imagens antes de publicar."],
           ["Negociação privada", "O colecionador reserva pelo preço ou envia uma proposta. A artista aceita, recusa ou faz contraproposta."],
-          ["Custódia e entrega", "O pagamento fica retido até a entrega. A obra viaja com seguro e chega com certificado de autenticidade."],
+          ["Custódia e entrega", "O pagamento fica retido até a entrega. A artista embala e despacha com seguro, você acompanha pelo rastreio e a obra chega com certificado de autenticidade."],
         ].map((s, i) => <li key={s[0]}><span className="n">{i + 1}</span><h3>{s[0]}</h3><p>{s[1]}</p></li>)}</ol>
         <div className="rules" style={{ marginTop: "clamp(36px,5vw,64px)", borderTop: "var(--b)" }}>
           <div><b>15<small>%</small></b><h3>Comissão única</h3><p>Cobrada da venda concluída. Sem mensalidade para artistas.</p></div>

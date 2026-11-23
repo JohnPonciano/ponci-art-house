@@ -51,7 +51,7 @@ export default async function ObraColecionador({ params }: { params: Promise<{ s
             : <>
               <StickyBuy price={brl(a.price)} />
               <div className="d-buy" id="comprar">
-                <p className="ob-price">{brl(a.price)}<small>Preço definido pela artista{ar.accepts_offers ? " · aceita propostas" : " · preço fixo"}</small></p>
+                <p className="ob-price">{brl(a.price)}<small>Preço definido pela artista{ar.accepts_offers ? " · aceita propostas" : " · preço fixo"}{a.ship_included ? " · frete incluso" : ""}</small></p>
                 <ActButton action="reserveWork" args={[a.id]} ok="Obra reservada para você." go="/colecionador/aquisicoes"
                   confirm={<>Reservar <b>{a.title}</b> por {brl(a.price)}? A obra sai da vitrine e você tem 48 h para concluir o pagamento em custódia.</>}>Reservar pelo preço <Icon n="right" /></ActButton>
               </div>
@@ -63,7 +63,7 @@ export default async function ObraColecionador({ params }: { params: Promise<{ s
                 <p className="hint">A artista vê seu código de membro ({me.member_code}) e sua cidade. Seu nome só é revelado se a venda for fechada.</p></>
                   : <p className="hint">A artista passou a trabalhar com preço fixo. Novas propostas não são aceitas.</p>}
               </div> : null}
-              <FreteQuote workId={a.id} cep={(await myKyc())?.cep || ""} />
+              {a.ship_included ? <p className="frete hint"><Icon n="truck" /> <span><b>Frete incluso no preço.</b> A artista embala e envia com seguro, sem custo extra pra você.</span></p> : <FreteQuote workId={a.id} cep={(await myKyc())?.cep || ""} />}
             </>}
             <ul className="ob-trust">
               <li><Icon n="lock" /><span><b>Pagamento em custódia</b>O valor só é repassado à artista depois da entrega.</span></li>

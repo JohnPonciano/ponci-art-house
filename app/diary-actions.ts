@@ -117,3 +117,9 @@ export async function loadNotes(mode: "tudo" | "seguindo", topic: Topic | null, 
   const [f, likes] = await Promise.all([feed(me.id, mode, topic, before, undefined, 20), myLikes(me.id)]);
   return { ok: true, data: { posts: f.posts, more: f.more, liked: f.posts.filter((p) => likes.has(p.id)).map((p) => p.id) } };
 }
+
+export async function setCollectionItem(orderId: string, visible: boolean, note = ""): Promise<Result> {
+  const sb = await createClient();
+  const { error } = await sb.rpc("set_collection_item", { p_order: orderId, p_visible: visible, p_note: note.slice(0, 280) });
+  return error ? fail(error) : done();
+}

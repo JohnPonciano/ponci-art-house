@@ -118,3 +118,30 @@ export async function officialId(): Promise<string | null> {
   const { data, error } = await sb.rpc("official_id");
   return error ? null : (data as string) || null;
 }
+
+/* ---------- Coleção ---------- */
+export type CollectionItem = {
+  order_id: string; work_id: string; title: string; year: number; medium: string; h: number; w: number; cat: string; gen: any;
+  image_path: string | null; img_w: number | null; img_h: number | null; reproduction: boolean; note: string; acquired: string;
+  artist_name: string; artist_code: string; artist_handle: string | null;
+};
+/** Obras que o membro escolheu mostrar (vazio se a migração ainda não rodou). */
+export async function collectionOf(memberId: string): Promise<CollectionItem[]> {
+  const sb = await createClient();
+  const { data, error } = await sb.rpc("collection_of", { p_member: memberId });
+  return error ? [] : ((data as any[]) || []);
+}
+/** Para o próprio colecionador: todas as obras recebidas, com a escolha de mostrar ou não. */
+export async function myCollection(meId: string) {
+  const sb = await createClient();
+  const [{ data: os }, { data: ci }] = await Promise.all([
+    sb.from("orders").select("id,stage,cancelled_at,delivered_at,work:works!inner(id,title,year,medium,h,w,cat,gen,image_path,img_w,img_h,reproduction,artist:profiles!works_artist_id_fkey(display_name,member_code))")
+      .eq("buyer_id", meId).eq("stage", 3).order("delivered_at", { ascending: false }),
+    sb.from("collection_items").select("order_id,visible,note").eq("buyer_id", meId),
+  ]);
+  const by = Object.fromEntries(((ci as any[]) || []).map((c) => [c.order_id, c]));
+  const one = (x: any) => (Array.isArray(x) ? x[0] : x);
+  return ((os as any[]) || []).filter((o) => !o.cancelled_at).map((o) => {
+    const w = one(o.work); return { order_id: o.id as string, delivered_at: o.delivered_at as string | null, work: { ...w, artist: one(w.artist) }, visible: !!by[o.id]?.visible, note: (by[o.id]?.note as string) || "" };
+  });
+}

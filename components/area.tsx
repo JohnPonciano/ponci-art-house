@@ -91,7 +91,7 @@ export function OrderBlock({ o, side }: { o: Order; side: "artist" | "buyer" }) 
             <ActButton action="advanceOrder" args={[o.id]} ok="Recebimento confirmado. Certificado emitido." className="btn sm"
               confirm={<>Confirma que recebeu <b>{a.title}</b> em bom estado? Se chegou com avaria, não confirme: abra uma solicitação em Minha conta.</>}>Confirmar recebimento <Icon n="check" /></ActButton>
             <span className="hint">Só confirme com a obra em mãos.</span></>
-          : <><span className="tag t-accepted">Certificado PNC-CA-{o.ref.slice(4)}</span><span className="hint">Procedência registrada na rede.</span></>}</div>}
+          : <><span className="tag t-accepted">Certificado PNC-CA-{o.ref.slice(4)}</span><span className="hint">Procedência registrada na rede. Quer mostrar no seu perfil? Veja a aba Coleção na Comunidade.</span></>}</div>}
         {!o.cancelled_at && side === "artist" && o.stage === 0 && <div className="acts"><span className="hint">{bothSigned(o) ? "Contrato assinado. Aguardando a colecionadora pagar em custódia." : "Aguardando as assinaturas do contrato."}</span></div>}
         {!o.cancelled_at && side === "artist" && o.stage === 1 && <div className="acts" style={{ display: "block" }}><ShipForm orderId={o.id} /></div>}
         {!o.cancelled_at && side === "artist" && o.stage === 2 && <div className="acts"><span className="hint">Aguardando a colecionadora confirmar o recebimento.</span></div>}

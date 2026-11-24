@@ -49,7 +49,8 @@ export function ArtistPrints({ workId, userId, products, sizes, rulesReady, save
   }, [pick, ed.signed]);
 
   if (!rulesReady || !products.length || !sizes.length) return (
-    <p className="hint">A PONCI ainda está homologando gráficas, papéis e custos de impressão. Quando estiver pronto, você poderá liberar prints desta obra aqui.</p>);
+    <div className="pr-intro"><p>Em breve você poderá liberar reproduções impressas desta obra. O original continua como está, e os prints seguem à venda mesmo depois que ele for vendido.</p>
+      <p className="hint">A PONCI está homologando gráficas, papéis e custos de impressão.</p></div>);
 
   async function upload(f: File) {
     if (!/^image\/(jpeg|png|tiff)$/.test(f.type)) { toast("Use JPEG, PNG ou TIFF."); return; }

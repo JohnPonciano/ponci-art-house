@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requireMember } from "@/lib/supabase/server";
-import { ordersForArtist, proposalsForArtist, workBySlug } from "@/lib/data";
+import { ordersForArtist, proposalsForArtist, workBySlug, currentCommissionPct } from "@/lib/data";
 import { SecHead, Slab, Tag, Notice, Reprod } from "@/components/ui";
 import { ReprodToggle } from "@/components/OffersToggle";
 import { EditWorkForm } from "@/components/forms/EditWorkForm";
@@ -20,7 +20,7 @@ export default async function ObraArtista({ params }: { params: Promise<{ slug: 
   const me = await requireMember("artist");
   const a = await workBySlug((await params).slug);
   if (!a || a.artist_id !== me.id) notFound();
-  const [ps, os] = await Promise.all([proposalsForArtist(me.id), ordersForArtist(me.id)]);
+  const [ps, os, pct] = await Promise.all([proposalsForArtist(me.id), ordersForArtist(me.id), currentCommissionPct()]);
   const props = ps.filter((p) => p.work.id === a.id), o = os.find((x) => x.work.id === a.id);
   return (
     <div className="wrap">
@@ -47,7 +47,7 @@ export default async function ObraArtista({ params }: { params: Promise<{ slug: 
             {me.email.endsWith("@demo.ponci.art") && <ActButton action="approveWorkDemo" args={[a.id]} ok="Obra aprovada e publicada na vitrine.">Simular aprovação da curadoria <Icon n="check" /></ActButton>}
             <ActButton action="withdrawWork" args={[a.id]} ok="Envio retirado." className="linkbtn" go="/artista/obras" confirm="Retirar o envio? A obra será apagada.">Retirar envio</ActButton>
           </div>}
-          {a.status === "published" && <PriceForm workId={a.id} price={a.price} />}
+          {a.status === "published" && <PriceForm workId={a.id} price={a.price} pct={pct} />}
           {(a.status === "reserved" || a.status === "sold") && <div className="d-buy">
             <span className="price">{brl(o ? o.amount : a.price)}<small>{STATUS[a.status][0]}{o ? " · " + o.ref : ""}</small></span>
             {o && <Link className="btn ghost" href="/artista/vendas">Acompanhar venda <Icon n="right" /></Link>}</div>}

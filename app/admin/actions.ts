@@ -73,3 +73,7 @@ export const revokeInvite = async (code: string) => rpc("admin_revoke_invite", {
 export const updateRequest = async (id: string, status: string, response: string) => rpc("admin_update_request", { p_id: id, p_status: status, p_response: response });
 export const publishDocument = async (slug: string, title: string, summary: string, body: string) =>
   rpc("admin_publish_document", { p_slug: slug, p_title: title, p_summary: summary, p_body: body });
+
+/** Nova versão das regras comerciais (as anteriores ficam no histórico). Campos vazios = ainda não definidos. */
+export const setCommerce = async (v: { original: number; print: number | null; fee: number | null; tax: number | null; note: string }) =>
+  rpc("admin_set_commerce", { p_original: v.original, p_print: v.print, p_payment_fee: v.fee, p_tax: v.tax, p_note: v.note });

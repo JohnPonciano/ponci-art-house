@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import { ArtImage } from "./ArtImage";
 import { Icon } from "./Icon";
 import { Slab, Tag, Empty, Reprod } from "./ui";
-import { brl, catNo, dateBR, dims, pad, STAGES, COMMISSION } from "@/lib/format";
+import { brl, catNo, dateBR, dims, pad, STAGES, netOf } from "@/lib/format";
 import type { Order, Proposal, Work } from "@/lib/data";
 import { ActButton, ArtistProposalActions, BuyerProposalActions, CopyCode, FavButton, ShipForm, SignButton } from "./area-client";
 import { RequestForm } from "./forms/RequestForm";
@@ -75,7 +75,7 @@ export function OrderBlock({ o, side }: { o: Order; side: "artist" | "buyer" }) 
             {side === "buyer" && <span>{a.artist?.display_name} · {a.year} · {dims(a)}</span>}
             <span>{o.ref} · {dateBR(o.created_at)} · {o.via === "direct" ? "Compra pelo preço" : "Proposta aceita"}</span>
             {side === "artist" && <span>Colecionador: {o.buyer?.full_name || "—"} ({o.buyer?.member_code}) · {o.buyer?.city}</span>}</div>
-          <div className="price" style={{ textAlign: "right" }}>{brl(o.amount)}<small>{side === "artist" ? `Líquido para você: ${brl(o.amount * (1 - COMMISSION))}` : o.stage === 0 ? "Aguardando pagamento" : o.stage < 3 ? "Em custódia" : "Concluída"}</small></div>
+          <div className="price" style={{ textAlign: "right" }}>{brl(o.amount)}<small>{side === "artist" ? `Líquido para você: ${brl(netOf(o))}` : o.stage === 0 ? "Aguardando pagamento" : o.stage < 3 ? "Em custódia" : "Concluída"}</small></div>
         </div>
         {o.cancelled_at && <p className="sale-alert off" style={{ padding: "10px 0" }}><Icon n="info" />Venda cancelada pela PONCI em {dateBR(o.cancelled_at)}{o.cancel_reason ? `: ${o.cancel_reason}` : "."}</p>}
         <ol className="track" style={o.cancelled_at ? { opacity: 0.45 } : undefined}>{STAGES.map((s, i) => (

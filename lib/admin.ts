@@ -91,7 +91,7 @@ export type SaleReq = { id: string; ref: string; kind: string; status: string; d
 export type Sale = {
   id: string; ref: string; amount: number; via: string; stage: number; created_at: string;
   paid_at?: string | null; shipped_at?: string | null; delivered_at?: string | null; carrier?: string | null; tracking_code?: string | null;
-  cancelled_at?: string | null; cancel_reason?: string | null; payout_at?: string | null; payout_note?: string | null;
+  cancelled_at?: string | null; cancel_reason?: string | null; payout_at?: string | null; payout_note?: string | null; commission_pct?: number | string | null;
   work: Work & { artist?: { id: string; display_name: string; member_code: string; city: string } };
   buyer?: { member_code: string; city: string; name?: string; email?: string };
   contract?: { id: string; ref: string; signatures: { party: string; signed_at: string }[] } | null;

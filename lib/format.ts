@@ -33,4 +33,13 @@ export const STAGES: [string, string][] = [
 export const EVENT_LABEL: Record<string, string> = {
   offer: "Proposta", counter: "Contraproposta", decline: "Recusa", accept: "Aceite", close: "Encerrada", withdraw: "Retirada",
 };
-export const COMMISSION = 0.15;
+/* Comissão: cada venda guarda o percentual do momento (orders.commission_pct, ver regras comerciais).
+   Vendas lidas antes dessa migração não trazem a coluna; todas elas foram feitas com 15%. */
+type WithPct = { amount: number; commission_pct?: number | string | null };
+export const orderPct = (o: { commission_pct?: number | string | null }) => (o.commission_pct == null ? 15 : Number(o.commission_pct));
+/** Comissão em reais, arredondada como no contrato. */
+export const commissionOf = (o: WithPct) => Math.round((o.amount * orderPct(o)) / 100);
+/** Valor líquido do artista. */
+export const netOf = (o: WithPct) => o.amount - commissionOf(o);
+/** 15 -> "15", 12.5 -> "12,5" */
+export const fmtPct = (p: number) => String(Math.round(p * 100) / 100).replace(".", ",");

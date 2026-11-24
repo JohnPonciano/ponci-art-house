@@ -1,22 +1,22 @@
 import { requireMember } from "@/lib/supabase/server";
-import { ordersForArtist } from "@/lib/data";
+import { ordersForArtist, currentCommissionPct } from "@/lib/data";
 import { PageHead, Empty } from "@/components/ui";
 import { OrderBlock } from "@/components/area";
-import { brl, COMMISSION } from "@/lib/format";
+import { brl, commissionOf, netOf, fmtPct } from "@/lib/format";
 
 export const metadata = { title: "Vendas" };
 
 export default async function Vendas() {
   const me = await requireMember("artist");
-  const os = await ordersForArtist(me.id);
+  const [os, pct] = await Promise.all([ordersForArtist(me.id), currentCommissionPct()]);
   const gross = os.filter((o) => !o.cancelled_at).reduce((s, o) => s + o.amount, 0);
-  const net = (l: typeof os) => l.reduce((s, o) => s + o.amount * (1 - COMMISSION), 0);
+  const net = (l: typeof os) => l.reduce((s, o) => s + netOf(o), 0);
   return (
     <div className="wrap">
-      <PageHead title="Vendas" label="Custódia e repasse" intro="O pagamento do colecionador fica retido pela PONCI até a entrega. O repasse, já descontada a comissão de 15%, é liberado depois dos 7 dias de arrependimento do comprador." count={`${os.length} ${os.length === 1 ? "venda" : "vendas"}`} />
+      <PageHead title="Vendas" label="Custódia e repasse" intro={`O pagamento do colecionador fica retido pela PONCI até a entrega. O repasse, já descontada a comissão (hoje ${fmtPct(pct)}%; cada venda guarda a do dia em que foi feita), é liberado depois dos 7 dias de arrependimento do comprador.`} count={`${os.length} ${os.length === 1 ? "venda" : "vendas"}`} />
       <div className="stats" style={{ ["--n" as any]: 5 }}>
         <div><span className="lab">Vendido (bruto)</span><b className="money">{brl(gross)}</b></div>
-        <div><span className="lab">Comissão PONCI</span><b className="money">{brl(gross * COMMISSION)}</b></div>
+        <div><span className="lab">Comissão PONCI</span><b className="money">{brl(os.filter((o) => !o.cancelled_at).reduce((s, o) => s + commissionOf(o), 0))}</b></div>
         <div><span className="lab">Em custódia</span><b className="money ok-c">{brl(net(os.filter((o) => !o.cancelled_at && (o.stage === 1 || o.stage === 2))))}</b></div>
         <div><span className="lab">A receber</span><b className="money">{brl(net(os.filter((o) => !o.cancelled_at && o.stage === 3 && !o.payout_at)))}</b></div>
         <div><span className="lab">Repassado</span><b className="money">{brl(net(os.filter((o) => !o.cancelled_at && !!o.payout_at)))}</b></div>

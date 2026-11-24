@@ -10,7 +10,9 @@
     "typecheck": "tsc --noEmit",
     "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
     "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
-    "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts"
+    "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
+    "test": "node --test \"tests/unit/*.test.ts\"",
+    "test:db": "tests/db/run.sh"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",

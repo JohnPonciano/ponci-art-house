@@ -7,14 +7,14 @@ import { Rail } from "@/components/GalleryClient";
 import { Fit } from "@/components/Fit";
 import { Icon } from "@/components/Icon";
 import { AccessForm, PickRole } from "@/components/forms/AccessForm";
-import { vitrine, networkStats } from "@/lib/data";
+import { vitrine, networkStats, currentCommissionPct } from "@/lib/data";
 import { getMe, getAdmin } from "@/lib/supabase/server";
-import { catNo, dims, pad } from "@/lib/format";
+import { catNo, dims, pad, fmtPct } from "@/lib/format";
 
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
-  const [me, works, st] = await Promise.all([getMe(), vitrine(12), networkStats()]);
+  const [me, works, st, pct] = await Promise.all([getMe(), vitrine(12), networkStats(), currentCommissionPct()]);
   const sel = works.slice(0, 10);
   const area = me ? (me.role === "artist" ? "/artista" : "/colecionador") : (await getAdmin()) ? "/admin" : null;
   return (
@@ -95,7 +95,7 @@ export default async function Home() {
           ["Custódia e entrega", "O pagamento fica retido até a entrega. A artista embala e despacha com seguro, você acompanha pelo rastreio e a obra chega com certificado de autenticidade."],
         ].map((s, i) => <li key={s[0]}><span className="n">{i + 1}</span><h3>{s[0]}</h3><p>{s[1]}</p></li>)}</ol>
         <div className="rules" style={{ marginTop: "clamp(36px,5vw,64px)", borderTop: "var(--b)" }}>
-          <div><b>15<small>%</small></b><h3>Comissão única</h3><p>Cobrada da venda concluída. Sem mensalidade para artistas.</p></div>
+          <div><b>{fmtPct(pct)}<small>%</small></b><h3>Comissão única</h3><p>Cobrada da venda concluída. Sem mensalidade para artistas.</p></div>
           <div><b>0</b><h3>Taxa de entrada</h3><p>Ser membro não custa nada. A rede só ganha quando a obra é vendida.</p></div>
           <div><b>7<small>d</small></b><h3>Liberação</h3><p>Repasse à artista até 7 dias após a confirmação de entrega.</p></div>
           <div><b>1:1</b><h3>Certificado</h3><p>Cada obra vendida recebe um certificado numerado com procedência.</p></div>

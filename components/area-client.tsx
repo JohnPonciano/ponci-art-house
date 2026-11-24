@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Icon } from "./Icon";
 import { useToast } from "./Toast";
-import { brl, parseMoney } from "@/lib/format";
+import { brl, parseMoney, fmtPct } from "@/lib/format";
 import * as A from "@/app/actions";
 
 function useAct() {
@@ -80,7 +80,7 @@ export function FavButton({ workId, on, title, variant = "card" }: { workId: str
 }
 
 /* Preço (artista) */
-export function PriceForm({ workId, price }: { workId: string; price: number }) {
+export function PriceForm({ workId, price, pct }: { workId: string; price: number; pct: number }) {
   const { run, pending } = useAct(); const [v, setV] = useState(brl(price)); const [err, setErr] = useState("");
   const n = parseMoney(v);
   return (
@@ -90,7 +90,7 @@ export function PriceForm({ workId, price }: { workId: string; price: number }) 
           <input id="i-price" inputMode="numeric" value={v} onChange={(e) => setV(e.target.value)} onBlur={() => n && setV(brl(n))} aria-describedby="e-price" /><p className="err" id="e-price">{err}</p></div>
         <button className="btn" type="submit" disabled={pending}>Salvar</button>
       </div>
-      <p className="hint">Comissão PONCI de 15%. Você recebe {brl(n * 0.85)} por este preço.</p>
+      <p className="hint">Comissão PONCI de {fmtPct(pct)}%. Você recebe {brl(n - Math.round((n * pct) / 100))} por este preço.</p>
       <ActButton action="withdrawWork" args={[workId]} ok="Obra retirada." className="linkbtn" go="/artista/obras" confirm="Retirar a obra da vitrine? As propostas abertas serão encerradas.">Retirar da vitrine</ActButton>
     </form>
   );

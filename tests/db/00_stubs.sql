@@ -1,0 +1,26 @@
+-- Imitação mínima do que o Supabase oferece (auth, storage, net, vault, cron), só para rodar as migrações num Postgres comum.
+do $$ begin create role anon nologin; exception when duplicate_object then null; end $$; do $$ begin create role authenticated nologin; exception when duplicate_object then null; end $$; do $$ begin create role service_role nologin bypassrls; exception when duplicate_object then null; end $$;
+create schema auth; create schema extensions; create extension pgcrypto with schema extensions;
+create table auth.users(id uuid primary key default gen_random_uuid(), email text, raw_user_meta_data jsonb default '{}'::jsonb, created_at timestamptz default now());
+create function auth.uid() returns uuid language sql stable as $$ select nullif(current_setting('request.jwt.claim.sub', true),'')::uuid $$;
+create function auth.jwt() returns jsonb language sql stable as $$ select coalesce(nullif(current_setting('request.jwt.claims', true),''),'{}')::jsonb $$;
+grant usage on schema auth, extensions to anon, authenticated; grant execute on all functions in schema auth to anon, authenticated;
+create schema storage; create table storage.buckets(id text primary key, name text, public boolean, file_size_limit bigint, allowed_mime_types text[]);
+create table storage.objects(id uuid primary key default gen_random_uuid(), bucket_id text, name text, owner uuid);
+alter table storage.objects enable row level security;
+create function storage.foldername(name text) returns text[] language sql immutable as $$ select string_to_array(name,'/') $$;
+grant usage on schema public to anon, authenticated; alter default privileges in schema public grant all on tables to anon, authenticated;
+alter default privileges in schema public grant all on sequences to anon, authenticated;
+create function public.rls_auto_enable() returns void language sql as 'select';
+alter default privileges in schema public grant execute on functions to anon, authenticated, service_role; alter default privileges in schema public grant all on tables to service_role;
+alter table auth.users add column if not exists instance_id uuid, add column if not exists aud text, add column if not exists role text, add column if not exists encrypted_password text, add column if not exists email_confirmed_at timestamptz, add column if not exists raw_app_meta_data jsonb, add column if not exists updated_at timestamptz, add column if not exists confirmation_token text, add column if not exists email_change text, add column if not exists email_change_token_new text, add column if not exists recovery_token text;
+create schema if not exists net; create schema if not exists vault; create schema if not exists cron;
+create table if not exists net._http_response(id bigint primary key, status_code int, content_type text, headers jsonb, content text, timed_out bool default false, error_msg text, created timestamptz default now());
+create table if not exists net.reqs(id bigserial primary key, method text, url text, body jsonb, params jsonb, headers jsonb);
+create or replace function net.http_post(url text, body jsonb default '{}', params jsonb default '{}', headers jsonb default '{}', timeout_milliseconds int default 5000) returns bigint language sql as $$ insert into net.reqs(method,url,body,params,headers) values('POST',url,body,params,headers) returning id $$;
+create or replace function net.http_get(url text, params jsonb default '{}', headers jsonb default '{}', timeout_milliseconds int default 5000) returns bigint language sql as $$ insert into net.reqs(method,url,params,headers) values('GET',url,params,headers) returning id $$;
+create table if not exists vault.secrets(id uuid primary key default gen_random_uuid(), name text unique, secret text, description text);
+create or replace view vault.decrypted_secrets as select id, name, secret as decrypted_secret from vault.secrets;
+create or replace function vault.create_secret(new_secret text, new_name text, new_description text default '') returns uuid language sql as $$ insert into vault.secrets(name,secret,description) values(new_name,new_secret,new_description) returning id $$;
+create or replace function vault.update_secret(secret_id uuid, new_secret text) returns void language sql as $$ update vault.secrets set secret=new_secret where id=secret_id $$;
+create or replace function cron.schedule(job_name text, schedule text, command text) returns bigint language sql as $$ select 1::bigint $$;

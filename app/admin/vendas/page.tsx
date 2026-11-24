@@ -5,7 +5,7 @@ import { Chips } from "@/components/admin";
 import { SaleActions } from "@/components/admin-client";
 import { ArtImage } from "@/components/ArtImage";
 import { Icon } from "@/components/Icon";
-import { brl, dateBR, COMMISSION } from "@/lib/format";
+import { brl, dateBR, commissionOf, netOf, fmtPct, orderPct } from "@/lib/format";
 
 export const metadata = { title: "Vendas" };
 
@@ -45,10 +45,10 @@ export default async function Vendas({ searchParams }: { searchParams: Promise<{
         count={`${live.length} ${live.length === 1 ? "venda" : "vendas"}${att.length ? ` · ${att.length} com alerta` : ""}`} />
       <div className="stats" style={{ ["--n" as any]: 5 }}>
         <div><span className="lab">Vendido (bruto)</span><b className="money">{brl(sum(live))}</b></div>
-        <div><span className="lab">Comissão PONCI</span><b className="money">{brl(sum(live.filter((o) => o.stage === 3)) * COMMISSION)}</b></div>
+        <div><span className="lab">Comissão PONCI</span><b className="money">{brl(live.filter((o) => o.stage === 3).reduce((s, o) => s + commissionOf(o), 0))}</b></div>
         <div><span className="lab">Em custódia</span><b className="money ok-c">{brl(sum(live.filter((o) => o.stage === 1 || o.stage === 2)))}</b></div>
         <div><span className="lab">Aguardando pagamento</span><b className="money">{brl(sum(live.filter((o) => o.stage === 0)))}</b></div>
-        <div><span className="lab">Repasses pendentes</span><b className="money">{brl(sum(live.filter((o) => o.stage === 3 && !o.payout_at)) * (1 - COMMISSION))}</b></div>
+        <div><span className="lab">Repasses pendentes</span><b className="money">{brl(live.filter((o) => o.stage === 3 && !o.payout_at).reduce((s, o) => s + netOf(o), 0))}</b></div>
       </div>
       <div className="kb-switch" role="group" aria-label="Visualização">
         <Link className="chip" href="/admin/vendas" aria-current={board ? "true" : undefined} scroll={false}><Icon n="grid" /> Quadro</Link>
@@ -83,7 +83,7 @@ function Board({ all }: { all: SaleSt[] }) {
   </>);
 }
 function KbCard({ o, col }: { o: SaleSt; col: string }) {
-  const a = o.work; const net = o.amount * (1 - COMMISSION);
+  const a = o.work; const net = netOf(o);
   return (
     <article className={"kb-card" + (o.st.alert ? " alert" : "")}>
       <Link href={`/admin/vendas?v=lista#${o.ref}`} className="kb-link">
@@ -104,7 +104,7 @@ function KbCard({ o, col }: { o: SaleSt; col: string }) {
 }
 
 function SaleRow({ o, st }: { o: Sale; st: ReturnType<typeof saleState> }) {
-  const a = o.work; const net = o.amount * (1 - COMMISSION);
+  const a = o.work; const net = netOf(o);
   const signed = (p: string) => o.contract?.signatures?.some((s) => s.party === p);
   const steps: [string, string | null | undefined][] = [["Reserva", o.created_at], ["Pagamento", o.paid_at], ["Envio", o.shipped_at], ["Entrega", o.delivered_at], ["Repasse", o.payout_at]];
   const canPayout = o.stage === 3 && !o.payout_at && !o.cancelled_at && st.label === "Repasse liberado";
@@ -119,7 +119,7 @@ function SaleRow({ o, st }: { o: Sale; st: ReturnType<typeof saleState> }) {
             <p className="sale-who"><span>Artista: <b>{a.artist?.display_name}</b> ({a.artist?.member_code})</span>
               <span>Colecionador: <b>{o.buyer?.name || "—"}</b> ({o.buyer?.member_code}) · {o.buyer?.city}</span></p>
           </div>
-          <div className="sale-money"><b>{brl(o.amount)}</b><small>Comissão {brl(o.amount * COMMISSION)} · Artista {brl(net)}</small>
+          <div className="sale-money"><b>{brl(o.amount)}</b><small>Comissão {fmtPct(orderPct(o))}% {brl(commissionOf(o))} · Artista {brl(net)}</small>
             <span className={"tag " + ({ cancelled: "t-declined", awaiting: "t-rev", toship: "t-countered", transit: "t-open", payout: "t-res", done: "t-pub" } as Record<string, string>)[st.key]}>{st.label}</span></div>
         </div>
         {st.alert && <p className="sale-alert" role="note"><Icon n="info" />{st.alert}</p>}

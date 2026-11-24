@@ -5,6 +5,13 @@ import { createClient } from "@/lib/supabase/server";
 export const WORK_COLS = "*";
 const ARTIST = "artist:profiles!works_artist_id_fkey(id,display_name,city,practice,bio,member_code,accepts_offers)";
 
+/** Comissão vigente do original, em %. Sem a migração de regras comerciais, vale a regra antiga (15%). */
+export async function currentCommissionPct(): Promise<number> {
+  const sb = await createClient();
+  const { data, error } = await sb.rpc("original_commission_pct");
+  return error || data == null ? 15 : Number(data);
+}
+
 export type Work = {
   id: string; slug: string; no: number; title: string; year: number; cat: string; medium: string; h: number; w: number;
   edition: string | null; price: number; description: string[]; status: string; gen: any; image_path: string | null;
@@ -22,7 +29,7 @@ export type OrderContract = { id: string; ref: string; sha256: string; signature
 export type Order = {
   id: string; ref: string; amount: number; via: string; stage: number; created_at: string; delivered_at: string | null; work: Work;
   paid_at?: string | null; shipped_at?: string | null; carrier?: string | null; tracking_code?: string | null;
-  cancelled_at?: string | null; cancel_reason?: string | null; payout_at?: string | null;
+  cancelled_at?: string | null; cancel_reason?: string | null; payout_at?: string | null; commission_pct?: number | string | null;
   contract?: OrderContract | null;
   buyer?: { member_code: string; city: string; full_name?: string };
 };

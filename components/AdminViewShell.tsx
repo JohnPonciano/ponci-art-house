@@ -21,7 +21,7 @@ export async function adminNav(com: string) {
   const view = [{ href: "/colecionador", label: "Acervo" }, { href: com, label: "Comunidade" }];
   const records = [
     { href: "/admin/solicitacoes", label: "LGPD", badge: c.sol || undefined }, { href: "/admin/compliance", label: "Compliance" },
-    { href: "/admin/convites", label: "Convites" }, { href: "/admin/documentos", label: "Documentos" }, { href: "/admin/auditoria", label: "Auditoria" },
+    { href: "/admin/convites", label: "Convites" }, { href: "/admin/regras", label: "Regras comerciais" }, { href: "/admin/documentos", label: "Documentos" }, { href: "/admin/auditoria", label: "Auditoria" },
     { href: "/seguranca", label: "Segurança" }, { href: "/admin/conta", label: "Senha" },
   ];
   return { nav, view, records };

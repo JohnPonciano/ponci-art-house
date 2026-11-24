@@ -5,7 +5,7 @@ import { PageHead, SecHead, Empty } from "@/components/ui";
 import { Ledger, ArtistProposalRow, WorkCard } from "@/components/area";
 import { Icon } from "@/components/Icon";
 import { OffersToggle } from "@/components/OffersToggle";
-import { brl, pad, firstName, COMMISSION } from "@/lib/format";
+import { brl, pad, firstName, netOf } from "@/lib/format";
 
 export const metadata = { title: "Ateliê" };
 
@@ -13,7 +13,7 @@ export default async function Painel() {
   const me = await requireMember("artist");
   const [ws, ps, os] = await Promise.all([worksByArtist(me.id), proposalsForArtist(me.id), ordersForArtist(me.id)]);
   const open = ps.filter((p) => p.status === "open");
-  const net = (list: typeof os) => list.reduce((s, o) => s + o.amount * (1 - COMMISSION), 0);
+  const net = (list: typeof os) => list.reduce((s, o) => s + netOf(o), 0);
   const c = (k: string) => ws.filter((a) => a.status === k).length;
   return (
     <div className="wrap">

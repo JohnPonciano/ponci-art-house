@@ -8,11 +8,11 @@ import { Slab } from "../ui";
 import { useToast } from "../Toast";
 import { createWork } from "@/app/actions";
 import { PALETTES, STYLE_NAMES } from "@/lib/gen";
-import { brl, CAT, parseMoney, COMMISSION } from "@/lib/format";
+import { brl, CAT, parseMoney } from "@/lib/format";
 
 const rand = () => Math.floor(Math.random() * 9000) + 100;
 
-export function NewWorkForm({ userId }: { userId: string }) {
+export function NewWorkForm({ userId, pct }: { userId: string; pct: number }) {
   const router = useRouter(); const toast = useToast(); const [pending, start] = useTransition();
   const [v, setV] = useState({ title: "", year: "2026", cat: "painting", medium: "", h: "120", w: "100", edition: "", price: "", desc: "", repro: false, depth: "", weight: "", inc: false });
   const [err, setErr] = useState<Record<string, string>>({}); const [status, setStatus] = useState("");
@@ -107,7 +107,7 @@ export function NewWorkForm({ userId }: { userId: string }) {
           </div>
           <label className="check"><input type="checkbox" checked={v.repro} onChange={(e) => setV({ ...v, repro: e.target.checked })} />
             <span><b>É uma reprodução</b> (impressão, fine art, pôster). A obra ganha a etiqueta REPROD pra ninguém confundir com o original.</span></label>
-          <Field name="price" label="Preço" placeholder="R$ 0" inputMode="numeric" aside={price ? `Você recebe ${brl(price * (1 - COMMISSION))}` : "Você recebe —"}
+          <Field name="price" label="Preço" placeholder="R$ 0" inputMode="numeric" aside={price ? `Você recebe ${brl(price - Math.round((price * pct) / 100))}` : "Você recebe —"}
             value={v.price} onChange={on("price")} onBlur={() => price && setV({ ...v, price: brl(price) })} error={err.price} />
           <Field as="textarea" name="desc" rows={4} label="Descrição" aside={`${v.desc.trim().length} / 40+`} placeholder="O que a obra investiga, como foi feita, como se comporta na luz…" value={v.desc} onChange={on("desc")} error={err.desc} />
           <div className="field"><span className="lab">Imagem</span>

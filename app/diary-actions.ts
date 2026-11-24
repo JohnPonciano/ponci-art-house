@@ -123,3 +123,40 @@ export async function setCollectionItem(orderId: string, visible: boolean, note 
   const { error } = await sb.rpc("set_collection_item", { p_order: orderId, p_visible: visible, p_note: note.slice(0, 280) });
   return error ? fail(error) : done();
 }
+
+/* ---------- Stories (24 h) ---------- */
+export async function createStory(path: string, w: number, h: number, caption = ""): Promise<Result<string>> {
+  const sb = await createClient();
+  const me = await getMe();
+  if (!me) {
+    if (await getAdmin()) {
+      const { data, error } = await sb.rpc("admin_story_as_ponci", { p_path: path, p_w: Math.round(w), p_h: Math.round(h), p_caption: caption.slice(0, 140) });
+      return error ? fail(error) : done(data as string);
+    }
+    return { ok: false, error: "Entre novamente." };
+  }
+  if (me.status !== "active") return { ok: false, error: "Sua conta ainda não está ativa." };
+  if (!path.startsWith(me.id + "/stories/")) return { ok: false, error: "Imagem inválida." };
+  const { data, error } = await sb.from("stories").insert({ author_id: me.id, path, w: Math.round(w), h: Math.round(h), caption: caption.trim().slice(0, 140) }).select("id").single();
+  return error ? fail(error) : done(data.id as string);
+}
+export async function markStorySeen(id: string): Promise<Result> {
+  const me = await getMe(); if (!me) return { ok: true };
+  const sb = await createClient();
+  const { error } = await sb.from("story_views").insert({ story_id: id, viewer_id: me.id });
+  return error && error.code !== "23505" ? fail(error) : { ok: true };
+}
+export async function deleteStory(id: string): Promise<Result> {
+  const sb = await createClient();
+  if (!(await getMe()) && (await getAdmin())) {
+    const { error } = await sb.rpc("admin_remove_story", { p_story: id, p_reason: "Removido pela moderação." });
+    return error ? fail(error) : done();
+  }
+  const { error } = await sb.from("stories").delete().eq("id", id);
+  return error ? fail(error) : done();
+}
+export async function removeStoryAdmin(id: string, reason: string): Promise<Result> {
+  const sb = await createClient();
+  const { error } = await sb.rpc("admin_remove_story", { p_story: id, p_reason: reason });
+  return error ? fail(error) : done();
+}

@@ -35,8 +35,10 @@ export async function feed(meId: string, mode: FeedMode, topic?: Topic | null, b
 /** Perfil público na comunidade (por código de membro) com números que não expõem seguidores. */
 export async function memberByCode(code: string) {
   const sb = await createClient();
-  const { data } = await sb.from("profiles").select("id,role,display_name,city,practice,bio,member_code,show_name,created_at,status,handle,avatar_path")
-    .or(`member_code.eq.${code.replace(/[^A-Za-z0-9-]/g, "")},handle.eq.${code.replace(/^@/, "").toLowerCase().replace(/[^a-z0-9._]/g, "")}`).maybeSingle();
+  // código de membro tem prioridade; só depois o @ (um @ pode coincidir com o código de outra pessoa, ex.: "PONCI" e @ponci)
+  const cols = "id,role,display_name,city,practice,bio,member_code,show_name,created_at,status,handle,avatar_path";
+  const byCode = await sb.from("profiles").select(cols).eq("member_code", code.replace(/[^A-Za-z0-9-]/g, "").toUpperCase()).maybeSingle();
+  const data = byCode.data || (await sb.from("profiles").select(cols).eq("handle", code.replace(/^@/, "").toLowerCase().replace(/[^a-z0-9._]/g, "")).maybeSingle()).data;
   if (!data) return null;
   const { data: ps } = await sb.from("posts").select("id,likes:post_likes(count)").eq("artist_id", data.id).is("removed_at", null);
   const likes = ((ps as any[]) || []).reduce((s, p) => s + cnt(p.likes), 0);

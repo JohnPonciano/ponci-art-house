@@ -1,24 +1,36 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { Avatar } from "../Avatar";
+import { storyGroups } from "@/lib/stories";
+import { personName, isOfficial } from "@/lib/community";
 
-/** Fileira de "stories" (como no Instagram): artistas da rede; anel ocre para quem publicou nos últimos 3 dias. */
-export async function Stories({ base, me }: { base: string; me: { member_code: string; role: string; display_name: string; show_name?: boolean; avatar_path?: string | null } }) {
+/** Fileira de stories: quem tem story no ar (24 h) vem primeiro, com anel ocre se você ainda não viu;
+    depois os artistas da rede (atalho para o perfil). */
+export async function Stories({ base, me }: { base: string; me: { id?: string; member_code: string; role: string; display_name: string; show_name?: boolean; avatar_path?: string | null } }) {
   const sb = await createClient();
-  const since = new Date(Date.now() - 3 * 86400e3).toISOString();
-  const [{ data: arts }, { data: fresh }] = await Promise.all([
-    sb.from("profiles").select("id,display_name,member_code,avatar_path,role").eq("role", "artist").eq("status", "active"),
-    sb.from("posts").select("artist_id,created_at").is("removed_at", null).gte("created_at", since).order("created_at", { ascending: false }),
+  const [groups, { data: arts }] = await Promise.all([
+    me.id ? storyGroups(me.id) : Promise.resolve([]),
+    sb.from("profiles").select("id,display_name,member_code,avatar_path,role").eq("role", "artist").eq("status", "active").order("display_name"),
   ]);
-  const last = new Map<string, string>(); for (const p of (fresh as any[]) || []) if (!last.has(p.artist_id)) last.set(p.artist_id, p.created_at);
-  const list = ((arts as any[]) || []).filter((a) => a.member_code !== me.member_code)
-    .sort((x, y) => (last.get(y.id) || "").localeCompare(last.get(x.id) || "") || x.display_name.localeCompare(y.display_name));
+  const withStory = new Set(groups.map((g) => g.author.id));
+  const mine = groups.find((g) => g.mine);
+  const others = groups.filter((g) => !g.mine);
+  const rest = ((arts as any[]) || []).filter((a) => a.member_code !== me.member_code && !withStory.has(a.id));
   const first = (n: string) => n.split(" ")[0];
   return (
-    <nav className="ig-stories" aria-label="Artistas da rede">
-      {me.role !== "admin" && <Link href={`${base}/novo`} className="ig-story me"><span className="ig-ring"><span className="ig-st-wrap"><Avatar p={me} className="ig-st-av" /><i>+</i></span></span><span className="ig-st-n">Publicar</span></Link>}
-      {list.map((a) => (
-        <Link key={a.id} href={`${base}/u/${a.member_code}`} className={"ig-story" + (last.has(a.id) ? " fresh" : "")} aria-label={`${a.display_name}${last.has(a.id) ? " (publicou recentemente)" : ""}`}>
+    <nav className="ig-stories" aria-label="Stories">
+      <span className="ig-story me">
+        <Link href={mine ? `${base}/s/${me.member_code}` : `${base}/s/novo`} className={"ig-ring" + (mine ? " live seen" : "")} aria-label={mine ? "Ver seu story" : "Publicar story"}>
+          <span className="ig-st-wrap"><Avatar p={me} className="ig-st-av" /></span></Link>
+        <Link href={`${base}/s/novo`} className="ig-st-add" aria-label="Novo story">+</Link>
+        <span className="ig-st-n">{me.role === "admin" ? "PONCI" : "Seu story"}</span>
+      </span>
+      {others.map((g) => (
+        <Link key={g.author.id} href={`${base}/s/${g.author.member_code}`} className="ig-story" aria-label={`Story de ${personName(g.author)}${g.unseen ? " (novo)" : ""}`}>
+          <span className={"ig-ring live" + (g.unseen ? "" : " seen")}><Avatar p={g.author} className="ig-st-av" /></span>
+          <span className="ig-st-n">{isOfficial(g.author) ? "PONCI" : first(personName(g.author))}</span></Link>))}
+      {rest.map((a) => (
+        <Link key={a.id} href={`${base}/u/${a.member_code}`} className="ig-story" aria-label={a.display_name}>
           <span className="ig-ring"><Avatar p={a} className="ig-st-av" /></span><span className="ig-st-n">{first(a.display_name)}</span></Link>))}
     </nav>
   );

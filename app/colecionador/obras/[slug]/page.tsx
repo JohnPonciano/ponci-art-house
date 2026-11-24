@@ -13,6 +13,8 @@ import { ActButton, FavButton, OfferForm } from "@/components/area-client";
 import { Icon } from "@/components/Icon";
 import { Zoomable } from "@/components/Lightbox";
 import { SwipeNav, StickyBuy } from "@/components/Explore";
+import { BuyerPrints } from "@/components/prints/BuyerPrints";
+import { printOptions } from "@/lib/prints";
 import { brl, catNo, CAT, dateBR, dims, dimsIn, EVENT_LABEL, firstName, PSTATUS, STATUS } from "@/lib/format";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
@@ -23,7 +25,7 @@ export default async function ObraColecionador({ params }: { params: Promise<{ s
   const me = await requireMember("buyer");
   const a = await workBySlug((await params).slug);
   if (!a || a.status === "review") notFound();
-  const [ps, os, favs, cat, follows] = await Promise.all([proposalsForBuyer(me.id), ordersForBuyer(me.id), favoriteIds(me.id), catalogue(), myFollows(me.id)]);
+  const [ps, os, favs, cat, follows, prints] = await Promise.all([proposalsForBuyer(me.id), ordersForBuyer(me.id), favoriteIds(me.id), catalogue(), myFollows(me.id), printOptions(a.id)]);
   const mine = ps.find((p) => p.work.id === a.id && (p.status === "open" || p.status === "countered"));
   const myOrder = os.find((o) => o.work.id === a.id);
   const ar = a.artist!; const adm = isAdminView(me);
@@ -71,6 +73,7 @@ export default async function ObraColecionador({ params }: { params: Promise<{ s
               <li><Icon n="swap" /><span><b>7 dias para desistir</b>Depois de receber a obra, conforme o CDC.</span></li>
             </ul>
           </section>
+          {prints.length > 0 && <BuyerPrints options={prints} artist={ar.display_name} />}
           {a.description?.length > 0 && <div className="d-desc">{a.description.map((p, k) => <p key={k}>{p}</p>)}</div>}
           <section className="ob-label" aria-label="Ficha técnica">
             <p className="lab">Ficha técnica</p>

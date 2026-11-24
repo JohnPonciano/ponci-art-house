@@ -154,3 +154,13 @@ Cada fase termina testada e no ar antes da próxima.
   - Tela `/admin/regras`.
   - Front sem 15% fixo.
   - Testes: `npm test` (unidade) e `npm run test:db` (banco).
+- **Fase 1, cancelada por decisão de produto.** O original fica exatamente como está, e o artista só ganha a opção de liberar prints.
+- **Fase 2a, concluída.** Migração `20261127120000_prints.sql`:
+  - catálogo do admin: gráficas, papéis com DPI mínimo, tamanhos e custos imutáveis com vigência;
+  - oferta de print por obra: edição aberta ou limitada, assinatura e numeração, remuneração por tamanho;
+  - arquivo-mestre em bucket privado, com resolução conferida por papel;
+  - autorização de reprodução com texto, SHA-256 e IP, imutável;
+  - preço congelado na publicação e pausa do admin com motivo.
+  
+  Telas: `/admin/prints`, seção "Prints" na obra do artista, "Também em print" na obra para o colecionador e etiqueta PRINT no acervo. Obras com original vendido e prints ativos continuam no acervo.
+- **Próximo, Fase 2b: compra do print.** Pedido, confirmação manual de pagamento com número da edição alocado nesse momento, produção, envio (gráfica direto, ou via artista se assinado), entrega e repasse.

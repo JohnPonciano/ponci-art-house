@@ -43,3 +43,21 @@ export const commissionOf = (o: WithPct) => Math.round((o.amount * orderPct(o)) 
 export const netOf = (o: WithPct) => o.amount - commissionOf(o);
 /** 15 -> "15", 12.5 -> "12,5" */
 export const fmtPct = (p: number) => String(Math.round(p * 100) / 100).replace(".", ",");
+
+/* ---------- prints (valores em centavos) ---------- */
+/** 21695 -> "R$ 216,95" */
+export const brlCents = (c: number) => "R$ " + ((c || 0) / 100).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+/** "R$ 1.234,5" / "1234,50" / "60" -> centavos (null se vazio ou inválido) */
+export const parseCents = (v: unknown): number | null => {
+  const s = String(v ?? "").replace(/[^\d,.]/g, "");
+  if (!s) return null;
+  const norm = s.includes(",") ? s.replace(/\./g, "").replace(",", ".") : /\.\d{1,2}$/.test(s) ? s : s.replace(/\./g, "");
+  const n = Number(norm);
+  return Number.isFinite(n) ? Math.round(n * 100) : null;
+};
+/** Pixels mínimos do arquivo-mestre para um papel (lado maior, lado menor), como o banco confere. */
+export const masterPxNeeded = (wCm: number, hCm: number, dpi: number): [number, number] => {
+  const px = dpi / 2.54; return [Math.ceil(Math.max(wCm, hCm) * px), Math.ceil(Math.min(wCm, hCm) * px)];
+};
+export const masterFits = (w: number, h: number, need: [number, number]) => Math.max(w, h) >= need[0] && Math.min(w, h) >= need[1];
+export const cm = (n: number) => String(Math.round(n * 10) / 10).replace(".", ",");

@@ -10,6 +10,8 @@ import { Ledger, ArtistProposalRow } from "@/components/area";
 import { ActButton, PriceForm } from "@/components/area-client";
 import { Icon } from "@/components/Icon";
 import { Zoomable } from "@/components/Lightbox";
+import { ArtistPrints } from "@/components/prints/ArtistPrints";
+import { printCatalog, myPrintOffer } from "@/lib/prints";
 import { brl, catNo, CAT, dateBR, dims, dimsIn, STATUS } from "@/lib/format";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
@@ -20,7 +22,7 @@ export default async function ObraArtista({ params }: { params: Promise<{ slug: 
   const me = await requireMember("artist");
   const a = await workBySlug((await params).slug);
   if (!a || a.artist_id !== me.id) notFound();
-  const [ps, os, pct] = await Promise.all([proposalsForArtist(me.id), ordersForArtist(me.id), currentCommissionPct()]);
+  const [ps, os, pct, cat, pr] = await Promise.all([proposalsForArtist(me.id), ordersForArtist(me.id), currentCommissionPct(), printCatalog(), myPrintOffer(a.id)]);
   const props = ps.filter((p) => p.work.id === a.id), o = os.find((x) => x.work.id === a.id);
   return (
     <div className="wrap">
@@ -53,6 +55,10 @@ export default async function ObraArtista({ params }: { params: Promise<{ slug: 
             {o && <Link className="btn ghost" href="/artista/vendas">Acompanhar venda <Icon n="right" /></Link>}</div>}
         </div>
       </article>
+      {a.status !== "review" && !a.reproduction && cat.ready && <section className="sub-sec" aria-labelledby="pr-t">
+        <SecHead n="—" eyebrow="Reproduções autorizadas" title={<>Prints <em>{pr?.offer.status === "active" ? "à venda" : "sob demanda"}</em></>} id="pr-t" />
+        <ArtistPrints workId={a.id} userId={me.id} products={cat.products} sizes={cat.sizes} rulesReady={cat.rulesReady} saved={pr} />
+      </section>}
       <section className="sub-sec" aria-labelledby="op-t">
         <SecHead n="—" eyebrow="Propostas para esta obra" title={props.length ? `${props.length} ${props.length === 1 ? "proposta" : "propostas"}` : <>Nenhuma <em>ainda</em></>} id="op-t" href="/artista/propostas" linkText="Todas as propostas" />
         {props.length > 0 && <Ledger empty={["", ""]}>{props.map((p) => <ArtistProposalRow key={p.id} p={p} />)}</Ledger>}

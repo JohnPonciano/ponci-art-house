@@ -1979,3 +1979,64 @@ p.frete.hint{display:flex;gap:8px;align-items:flex-start;font-size:14px}p.frete.
 .sc-pick small{color:var(--muted);font-size:13px}
 .sc-cap{position:absolute;left:12px;right:12px;bottom:18px;color:#fff;text-align:center;font-size:15px;text-shadow:0 1px 6px rgba(0,0,0,.8)}
 .sc-text{min-height:44px;border:var(--b);background:var(--paper);padding:0 12px;font:inherit;font-size:15px}
+
+/* ---------- Prints ---------- */
+.tag.t-print{color:var(--ink);border-style:dotted}
+/* artista */
+.pr-intro{display:flex;flex-wrap:wrap;gap:16px 28px;align-items:center;justify-content:space-between;border-top:var(--b);padding:20px 0}
+.pr-intro p{max-width:62ch}
+.pr{display:flex;flex-direction:column;gap:20px;border-top:var(--b);padding-top:20px}
+.pr-state{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;font-size:14px}
+.pr-box{border:0;border-top:1px solid var(--hair);padding:16px 0 0;margin:0;display:flex;flex-direction:column;gap:12px;min-width:0}
+.pr-box legend{padding:0 0 10px;color:var(--ink)}
+.pr-row{display:flex;flex-wrap:wrap;gap:12px 32px}
+.pr-prod{border-left:2px solid var(--ink);padding-left:14px;display:flex;flex-direction:column;gap:8px}
+.pr-pname{display:flex;flex-direction:column;font-size:14px;color:var(--muted)}
+.pr-pname b{font:700 15px/1.3 var(--grot);color:var(--ink)}
+.pr-pname small{font-size:13px}
+.pr-sizes{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.pr-sizes li{display:grid;grid-template-columns:minmax(180px,1.2fr) minmax(150px,1fr) minmax(170px,1fr);gap:8px 20px;align-items:start;padding:10px 0;border-bottom:1px solid var(--hair)}
+.pr-sizes li:not(.on){grid-template-columns:1fr}
+.pr-sizes .check{padding-top:6px}
+.pr-fee{padding-block:0}
+.pr-fee input{max-width:160px}
+.pr-quote{display:flex;flex-direction:column;gap:2px;font-size:14px}
+.pr-quote b{font:900 22px/1.1 var(--grot);font-variant-numeric:tabular-nums}
+.pr-quote details{margin-top:4px}
+.pr-quote summary{cursor:pointer;width:max-content}
+.pr-bd{display:grid;grid-template-columns:1fr auto;gap:2px 16px;margin:8px 0 0;font-size:13px;font-variant-numeric:tabular-nums}
+.pr-bd dd{margin:0;text-align:right}
+.pr-res{grid-column:1/-1;margin:0}
+.pr-res.bad{color:var(--error);font-weight:600}
+.pr-up{width:max-content;cursor:pointer}
+.pr-acts{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:center}
+.pr-auth{border:var(--b);padding:clamp(16px,2.4vw,28px);display:flex;flex-direction:column;gap:14px;background:var(--field)}
+.pr-auth-doc{max-height:420px;overflow:auto;border-bottom:1px solid var(--hair);padding-bottom:12px}
+@media (max-width:720px){
+  .pr-sizes li{grid-template-columns:1fr}
+}
+/* comprador */
+.ob-prints{display:flex;flex-direction:column;gap:12px}
+.ob-prints > .lab{color:var(--ink)}
+.obp-ed{display:flex;flex-direction:column;font-size:14px;color:var(--muted)}
+.obp-ed b{color:var(--ink);font:700 15px/1.3 var(--grot)}
+.obp-list{list-style:none;margin:0;padding:0;border-top:var(--b)}
+.obp-opt{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--hair);cursor:pointer;font-size:14.5px}
+.obp-opt input{width:18px;height:18px;accent-color:var(--ink);margin:0}
+.obp-opt small{display:block;color:var(--muted);font-size:13px}
+.obp-opt.on{box-shadow:inset 4px 0 0 var(--ocre);padding-left:10px}
+.obp-price{font:700 15px/1 var(--grot);font-variant-numeric:tabular-nums}
+/* admin */
+.pa-sec{margin-top:clamp(28px,4vw,48px)}
+.pa-form{display:flex;flex-direction:column;gap:4px;max-width:880px}
+.pa-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:0 20px}
+.pa-grid select{width:100%}
+.pa-acts{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center}
+.pa-new{border-top:1px solid var(--hair);padding-top:12px;margin-top:12px}
+.pa-list{list-style:none;margin:0;padding:0;border-top:var(--b)}
+.pa-list li{padding:12px 0;border-bottom:1px solid var(--hair);display:flex;flex-direction:column;gap:4px}
+.pa-list .tag{margin-left:8px}
+.pa-table{overflow-x:auto;border-top:var(--b)}
+.pa-table table{border-collapse:collapse;width:100%;font-size:13.5px;font-variant-numeric:tabular-nums}
+.pa-table th{font:500 11px/1.2 var(--mono);letter-spacing:.08em;text-transform:uppercase;text-align:left;padding:10px 12px 8px 0;border-bottom:1px solid var(--ink);white-space:nowrap}
+.pa-table td{padding:10px 12px 10px 0;border-bottom:1px solid var(--hair);vertical-align:top;white-space:nowrap}

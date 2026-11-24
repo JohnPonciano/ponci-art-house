@@ -36,6 +36,9 @@ export function PageHead({ title, label, intro, count }: { title: string; label:
 /** Aviso de reprodução (impressão, fine art, pôster): não é a obra original. */
 export const Reprod = ({ a }: { a: { reproduction?: boolean | null } }) =>
   a.reproduction ? <span className="tag t-repro" title="Reprodução: não é a obra original">Reprod</span> : null;
+/** A obra tem prints autorizados à venda. */
+export const PrintTag = ({ a }: { a: { prints?: boolean } }) =>
+  a.prints ? <span className="tag t-print" title="Reproduções autorizadas pela artista à venda">Print</span> : null;
 export const Tag = ({ s, kind = "work" }: { s: string; kind?: "work" | "proposal" }) => {
   const m = (kind === "work" ? STATUS : PSTATUS)[s];
   return m ? <span className={"tag " + m[1]}>{m[0]}</span> : null;

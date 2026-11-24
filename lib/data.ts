@@ -16,7 +16,7 @@ export type Work = {
   id: string; slug: string; no: number; title: string; year: number; cat: string; medium: string; h: number; w: number;
   edition: string | null; price: number; description: string[]; status: string; gen: any; image_path: string | null;
   img_w: number | null; img_h: number | null; created_at: string; artist_id: string; reproduction?: boolean;
-  curation_note?: string | null; changes_requested_at?: string | null; depth_cm?: number | null; weight_kg?: number | null; ship_included?: boolean;
+  curation_note?: string | null; changes_requested_at?: string | null; depth_cm?: number | null; weight_kg?: number | null; ship_included?: boolean; prints?: boolean;
   artist?: { id: string; display_name: string; city: string; practice: string; bio: string; member_code?: string; accepts_offers?: boolean };
 };
 export type PEvent = { id: number; actor: string; kind: string; amount: number | null; msg: string; created_at: string };
@@ -55,8 +55,13 @@ export async function workBySlug(slug: string): Promise<Work | null> {
 }
 export async function catalogue(): Promise<Work[]> {
   const sb = await createClient();
-  const { data } = await sb.from("works").select(`${WORK_COLS},${ARTIST}`).in("status", ["published", "reserved"]).order("created_at", { ascending: false });
-  return ((data as any) || []).map((w: any) => ({ ...w, artist: one(w.artist) }));
+  // obras com prints à venda continuam no acervo mesmo com o original vendido (sem a migração de prints: lista vazia)
+  const po = await sb.from("print_offers").select("work_id").eq("status", "active");
+  const withPrints = new Set(((po.data as any[]) || []).map((r) => r.work_id as string));
+  let q = sb.from("works").select(`${WORK_COLS},${ARTIST}`).order("created_at", { ascending: false });
+  q = withPrints.size ? q.or(`status.in.(published,reserved),and(status.eq.sold,id.in.(${[...withPrints].join(",")}))`) : q.in("status", ["published", "reserved"]);
+  const { data } = await q;
+  return ((data as any) || []).map((w: any) => ({ ...w, artist: one(w.artist), prints: withPrints.has(w.id) }));
 }
 export async function artists() {
   const sb = await createClient();

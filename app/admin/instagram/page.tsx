@@ -25,7 +25,7 @@ export default async function Instagram() {
   const off = posts.filter((p) => p.status === "cancelled");
   return (
     <div className="wrap">
-      <PageHead title="Instagram" label="Publicações @ponci.art" intro="Fila de posts e carrosséis programados. Um disparador no banco confere a fila a cada minuto e publica na hora marcada. Reels e stories com música ou figurinha continuam pelo app."
+      <PageHead title="Instagram" label="Publicações @ponci.art" intro="Fila de posts, carrosséis, stories e reels programados. Um disparador no banco confere a fila a cada minuto e publica na hora marcada. Música da biblioteca do Instagram e figurinhas continuam pelo app."
         count={`${next.length} na fila${bad.length ? ` · ${bad.length} com erro` : ""}`} />
 
       <section className="ig-status" aria-label="Conexão">

@@ -36,18 +36,21 @@ export function IgConnect({ connected }: { connected: boolean }) {
 }
 
 /** Formulário de publicação: nova ou edição. */
-export function IgEditor({ id, media = [], caption = "", publishAt, label = "", story: story0 = false, onDone }: { id?: string; media?: string[]; caption?: string; publishAt?: string; label?: string; story?: boolean; onDone?: () => void }) {
+export function IgEditor({ id, media = [], caption = "", publishAt, label = "", story: story0 = false, reel: reel0 = false, cover: cover0 = "", onDone }: { id?: string; media?: string[]; caption?: string; publishAt?: string; label?: string; story?: boolean; reel?: boolean; cover?: string; onDone?: () => void }) {
   const { run, pending } = useRun();
-  const [v, setV] = useState({ label, media: media.join("\n"), caption, when: publishAt ? toLocalInput(publishAt) : "", story: story0 });
+  const [v, setV] = useState({ label, media: media.join("\n"), caption, when: publishAt ? toLocalInput(publishAt) : "", story: story0, reel: reel0, cover: cover0 });
   const urls = v.media.split(/\s+/).map((s) => s.trim()).filter(Boolean);
   const tags = (v.caption.match(/#[\p{L}\p{N}_]+/gu) || []).length;
   return (
-    <form className="ig-editor" onSubmit={(e) => { e.preventDefault(); run(() => A.igSave(id || null, urls, v.caption, fromLocalInput(v.when), v.label, v.story), id ? "Publicação atualizada." : "Publicação programada.", onDone); }}>
+    <form className="ig-editor" onSubmit={(e) => { e.preventDefault(); run(() => A.igSave(id || null, urls, v.caption, fromLocalInput(v.when), v.label, v.story, v.reel, v.cover), id ? "Publicação atualizada." : "Publicação programada.", onDone); }}>
       {!id && <label className="field"><span className="lab">Nome (só para você)</span><input value={v.label} onChange={(e) => setV({ ...v, label: e.target.value })} placeholder="Ex.: Aviso de dezembro" /></label>}
       <label className="field"><span className="lab">Imagens JPEG (um link por linha, até 10, na ordem do carrossel)</span>
         <textarea rows={Math.min(8, Math.max(2, urls.length + 1))} value={v.media} onChange={(e) => setV({ ...v, media: e.target.value })} placeholder="https://ponci.art/kit/post-01-toda-obra-comeca-num-atelie.jpg" spellCheck={false} /></label>
-      {urls.length > 0 && <div className="ig-thumbs">{urls.map((u, i) => /* eslint-disable-next-line @next/next/no-img-element */ <img key={i} src={u} alt="" />)}</div>}
-      <label className="check"><input type="checkbox" checked={v.story} onChange={(e) => setV({ ...v, story: e.target.checked })} />
+      {urls.length > 0 && !v.reel && <div className="ig-thumbs">{urls.map((u, i) => /* eslint-disable-next-line @next/next/no-img-element */ <img key={i} src={u} alt="" />)}</div>}
+      <label className="check"><input type="checkbox" checked={v.reel} onChange={(e) => setV({ ...v, reel: e.target.checked, story: false })} />
+        <span><b>É reel</b>: um link de vídeo MP4 vertical (9:16). A música vai dentro do vídeo e aparece como “áudio original”.</span></label>
+      {v.reel && <label className="field"><span className="lab">Capa do reel (link JPEG, opcional)</span><input value={v.cover} onChange={(e) => setV({ ...v, cover: e.target.value })} placeholder="https://ponci.art/kit/reels/…-capa.jpg" /></label>}
+      <label className="check"><input type="checkbox" checked={v.story} onChange={(e) => setV({ ...v, story: e.target.checked, reel: false })} />
         <span><b>É story</b>: uma imagem vertical (1080×1920), sem legenda. Figurinha (enquete, link) só pelo app.</span></label>
       {!v.story && <label className="field"><span className="lab">Legenda <small>{v.caption.length}/2200 · {tags}/30 hashtags</small></span>
         <textarea rows={6} value={v.caption} onChange={(e) => setV({ ...v, caption: e.target.value })} maxLength={2200} /></label>}
@@ -61,9 +64,9 @@ export function IgEditor({ id, media = [], caption = "", publishAt, label = "", 
 }
 
 /** Ações de cada item da fila. */
-export function IgItemActions({ id, status, media, caption, publishAt, permalink, story }: { id: string; status: string; media: string[]; caption: string; publishAt: string; permalink: string | null; story?: boolean }) {
+export function IgItemActions({ id, status, media, caption, publishAt, permalink, story, reel, cover }: { id: string; status: string; media: string[]; caption: string; publishAt: string; permalink: string | null; story?: boolean; reel?: boolean; cover?: string | null }) {
   const { run, pending } = useRun(); const [edit, setEdit] = useState(false); const [ask, setAsk] = useState<"" | "now" | "cancel">("");
-  if (edit) return <IgEditor id={id} media={media} caption={caption} publishAt={publishAt} story={story} onDone={() => setEdit(false)} />;
+  if (edit) return <IgEditor id={id} media={media} caption={caption} publishAt={publishAt} story={story} reel={reel} cover={cover || ""} onDone={() => setEdit(false)} />;
   if (ask) return (
     <span className="ig-acts">
       <span className="hint">{ask === "now" ? "Publicar no Instagram no próximo minuto?" : "Tirar da fila?"}</span>

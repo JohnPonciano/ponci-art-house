@@ -60,6 +60,12 @@ export function SignupForm({ perfil, code = "", docIds, prefill }: { perfil: "ar
       return;
     }
     const home = A ? "/artista" : "/colecionador";
+    // e-mail já cadastrado: o Supabase responde sem erro (para não revelar contas), mas não cria nada nem manda e-mail
+    if (data.user && !data.session && (data.user.identities?.length ?? 0) === 0) {
+      setBusy(false); setStep("dados");
+      setStatus("Este e-mail já tem conta na PONCI. Entre com sua senha ou use “Esqueci minha senha”. O código de convite não foi usado.");
+      return;
+    }
     if (data.session) { router.replace(home); router.refresh(); return; }
     // e-mail do convite já comprovado: entra direto
     const r = await sb.auth.signInWithPassword({ email, password: v.password });

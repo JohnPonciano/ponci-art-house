@@ -8,7 +8,7 @@ import { brlCents, cm, dateBR } from "@/lib/format";
 import * as P from "@/app/print-actions";
 import type { PrintOrder } from "@/lib/prints";
 
-const STEPS: [string, string][] = [["Pedido feito", "Exemplar guardado"], ["Pagamento", "Confirmado pela PONCI"], ["Em produção", "Na gráfica"], ["A caminho", "Com rastreio"], ["Recebido", "Na sua parede"]];
+const STEPS: [string, string][] = [["Pedido feito", "Aguardando pagamento"], ["Pagamento", "Confirmado pela PONCI"], ["Em produção", "Na gráfica"], ["A caminho", "Com rastreio"], ["Recebido", "Na sua parede"]];
 const stepOf = (o: PrintOrder) => (o.status === "awaiting_payment" ? 0 : o.status === "in_production" ? 2 : o.status === "shipped" ? 3 : o.status === "delivered" ? 5 : 0);
 const CARRIERS = ["Correios", "Jadlog", "Loggi", "Azul Cargo", "Transportadora", "Outra"];
 

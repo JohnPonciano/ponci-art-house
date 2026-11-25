@@ -1,5 +1,16 @@
 # WePrint! Fine Art: custos de impressão por tamanho
 
+> **Catálogo ativo (25/11/2026):** 2 papéis × 4 tamanhos, os mais usados por artistas.
+>
+> | Tamanho | Canson Rag Photographique 310 | Photo Lustre Premium 310 |
+> |---|---|---|
+> | A4 (21 × 29,7) | R$ 50,68 | R$ 33,25 |
+> | A3 (29,7 × 42) | R$ 101,35 | R$ 66,49 |
+> | A2 (42 × 59,4) | R$ 202,69 | R$ 132,98 |
+> | 50 × 70 | R$ 284,35 | R$ 186,55 |
+>
+> Os demais papéis e tamanhos abaixo ficaram cadastrados como inativos (Admin → Prints) e podem ser religados.
+
 Fonte: tabela pública da calculadora da WePrint (`calc.weprint.com.br`, preço de venda por m²), consultada em 25/11/2026.
 Conferido com três orçamentos da própria calculadora (21 × 29,7 Matte; 15 × 20 e 42 × 59,4 Rag): preço = área × preço por m², ao centavo.
 

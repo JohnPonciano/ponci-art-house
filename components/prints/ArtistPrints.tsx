@@ -117,6 +117,10 @@ export function ArtistPrints({ workId, userId, products, sizes, rulesReady, save
         {products.map((p) => (
           <div key={p.id} className="pr-prod">
             <p className="pr-pname"><b>{p.name}</b>{[p.paper, p.finish].filter(Boolean).join(" · ")}{p.description && <small>{p.description}</small>}</p>
+            {sizes.some((z) => !(key(p.id, z.id) in pick)) && <button type="button" className="linkbtn pr-all" onClick={() => {
+              const n = { ...pick }; const first = sizes.map((z) => n[key(p.id, z.id)]).find(Boolean) || "";
+              sizes.forEach((z) => { if (!(key(p.id, z.id) in n)) n[key(p.id, z.id)] = first; }); setPick(n);
+            }}>Marcar todos os tamanhos deste papel</button>}
             <ul className="pr-sizes">{sizes.map((z) => {
               const k = key(p.id, z.id), on = k in pick, q = quotes[k], need = masterPxNeeded(z.w_cm, z.h_cm, dpi[p.id]);
               return (

@@ -124,3 +124,10 @@ export async function adminPrintOrders() {
   return rows as (PrintOrder & { master_url?: string | null; supplier: { name: string; contact: string } | null; offer: { master_w: number; master_h: number } | null;
     artist: { display_name: string; member_code: string; email: string; address: Record<string, string> | null }; buyer: { member_code: string; name: string; email: string } })[];
 }
+
+/** A obra é de um artista de demonstração? (print só de exemplo para contas reais) */
+export async function workIsDemo(workId: string): Promise<boolean> {
+  const sb = await createClient();
+  const { data, error } = await sb.rpc("work_is_demo", { p_work: workId });
+  return !error && !!data;
+}

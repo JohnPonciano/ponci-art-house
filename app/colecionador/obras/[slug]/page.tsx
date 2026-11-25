@@ -16,7 +16,7 @@ import { SwipeNav, StickyBuy } from "@/components/Explore";
 import { BuyerPrints } from "@/components/prints/BuyerPrints";
 import { BuyModes } from "@/components/prints/BuyModes";
 import { brlCents } from "@/lib/format";
-import { printOptions } from "@/lib/prints";
+import { printOptions, workIsDemo } from "@/lib/prints";
 import { brl, catNo, CAT, dateBR, dims, dimsIn, EVENT_LABEL, firstName, PSTATUS, STATUS } from "@/lib/format";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
@@ -35,6 +35,8 @@ export default async function ObraColecionador({ params }: { params: Promise<{ s
   const prev = i >= 0 && cat.length > 1 ? cat[(i - 1 + cat.length) % cat.length] : null, next = i >= 0 && cat.length > 1 ? cat[(i + 1) % cat.length] : null;
   const rel = [...cat.filter((x) => x.artist_id === a.artist_id && x.id !== a.id), ...cat.filter((x) => x.artist_id !== a.artist_id && x.cat === a.cat && x.id !== a.id)].slice(0, 8);
   const kyc = prints.length ? await myKyc() : null;
+  const demoWork = prints.length ? await workIsDemo(a.id) : false;
+  const canBuyPrint = !demoWork || me.email.endsWith("@demo.ponci.art");
   const shipTo = kyc?.completed_at && kyc.street && kyc.cep ? `${kyc.street}, ${kyc.number || "s/n"}${kyc.complement ? ` · ${kyc.complement}` : ""} · ${kyc.city}/${kyc.uf} · CEP ${kyc.cep}` : null;
   const originalBuy = (<>
           {adm ? <div className="d-buy"><p className="ob-price">{brl(a.price)}<small>{STATUS[a.status][0]} · {ar.accepts_offers ? "aceita propostas" : "preço fixo"}</small></p><Notice icon="shield">Você está vendo como admin. Reserva, propostas e favoritos ficam com os membros.</Notice><a className="btn ghost" href={`/admin/curadoria`}>Abrir na curadoria <Icon n="right" /></a></div>
@@ -73,7 +75,7 @@ export default async function ObraColecionador({ params }: { params: Promise<{ s
             <p className="ob-line">{a.medium} · {dims(a)}</p>
           </header>
           <section className="ob-buy" aria-label="Aquisição">
-          {prints.length > 0 && !adm ? <BuyModes original={originalBuy} print={<BuyerPrints options={prints} artist={ar.display_name} shipTo={shipTo} />}
+          {prints.length > 0 && !adm ? <BuyModes original={originalBuy} print={<BuyerPrints options={prints} artist={ar.display_name} shipTo={shipTo} demo={demoWork} canBuy={canBuyPrint} />}
             initial={a.status === "published" || myOrder ? "original" : "print"}
             originalLabel={myOrder ? "Reservada para você" : a.status === "published" ? `Peça única · ${brl(a.price)}` : a.status === "sold" ? "Vendida" : "Reservada"}
             printLabel={`A partir de ${brlCents(Math.min(...prints.map((x) => x.price_cents)))}`} /> : originalBuy}

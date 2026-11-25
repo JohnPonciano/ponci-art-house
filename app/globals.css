@@ -2080,3 +2080,4 @@ p.frete.hint{display:flex;gap:8px;align-items:flex-start;font-size:14px}p.frete.
 @media (max-width:720px){ .po-track{grid-template-columns:1fr} .po-track li{border-left:0;border-top:1px solid var(--hair);padding-left:0} }
 .pa-ordem{display:flex;flex-direction:column;gap:10px;width:100%}
 .pa-ordem pre{white-space:pre-wrap;font:400 13px/1.5 var(--mono);background:var(--field);border:1px solid var(--hair);padding:12px;margin:0;max-width:720px;overflow-wrap:anywhere}
+.obp-demo{font-size:14px;border-left:3px solid var(--ocre);padding:8px 0 8px 12px}

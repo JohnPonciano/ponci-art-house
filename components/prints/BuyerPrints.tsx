@@ -9,7 +9,7 @@ import { brlCents, cm } from "@/lib/format";
 import type { PrintOption } from "@/lib/prints";
 
 /** Escolha de print pelo comprador: cada papel e tamanho com o seu preço, mais edição e assinatura. */
-export function BuyerPrints({ options, artist, shipTo, canBuy = true }: { options: PrintOption[]; artist: string; shipTo: string | null; canBuy?: boolean }) {
+export function BuyerPrints({ options, artist, shipTo, canBuy = true, demo = false }: { options: PrintOption[]; artist: string; shipTo: string | null; canBuy?: boolean; demo?: boolean }) {
   const [sel, setSel] = useState(0); const [ask, setAsk] = useState(false);
   const toast = useToast(); const router = useRouter(); const [pending, start] = useTransition();
   const buy = () => start(async () => {
@@ -32,6 +32,7 @@ export function BuyerPrints({ options, artist, shipTo, canBuy = true }: { option
           <span className="obp-price">{brlCents(x.price_cents)}</span></label></li>))}</ul>
       <p className="ob-price">{brlCents(cur.price_cents)}<small>{cur.label} · {cur.product_name} · produzido sob demanda</small></p>
       <p className="hint">Impressa por gráfica homologada pela PONCI depois do pagamento confirmado. Envio com rastreio.</p>
+      {demo && !canBuy && <p className="obp-demo"><b>Exemplo.</b> Esta obra é de um artista de demonstração: o print mostra como a compra funciona, mas não pode ser comprado.</p>}
       {!canBuy ? null : !shipTo ? <p className="hint">Para comprar, <Link href="/conta">complete seu cadastro com o endereço de entrega</Link>.</p>
         : !ask ? <button type="button" className="btn" onClick={() => setAsk(true)}>Comprar print · {brlCents(cur.price_cents)} <Icon n="right" /></button>
         : <div className="obp-confirm">

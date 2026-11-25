@@ -2041,3 +2041,24 @@ p.frete.hint{display:flex;gap:8px;align-items:flex-start;font-size:14px}p.frete.
 .pa-table th{font:500 11px/1.2 var(--mono);letter-spacing:.08em;text-transform:uppercase;text-align:left;padding:10px 12px 8px 0;border-bottom:1px solid var(--ink);white-space:nowrap}
 .pa-table td{padding:10px 12px 10px 0;border-bottom:1px solid var(--hair);vertical-align:top;white-space:nowrap}
 .pr-all{align-self:flex-start;font-size:13px}
+/* original × print: etiquetas fortes, uma escura (peça única) e uma ocre (print) */
+.tag.t-orig{color:var(--paper);background:var(--ink);border-color:var(--ink)}
+.tag.t-orig::before{background:var(--paper)}
+.tag.t-print{color:var(--paper);background:var(--ocre);border-color:var(--ocre);border-style:solid}
+.tag.t-print::before{background:var(--paper)}
+/* escolha original × print na obra */
+.bm{display:flex;flex-direction:column;gap:16px}
+.bm-tabs{display:grid;grid-template-columns:1fr 1fr;border:var(--b)}
+.bm-tab{display:flex;flex-direction:column;align-items:flex-start;gap:6px;padding:14px 14px 16px;background:transparent;border:0;cursor:pointer;text-align:left;color:var(--ink);font:inherit}
+.bm-tab + .bm-tab{border-left:var(--b)}
+.bm-tab b{font:800 17px/1.15 var(--grot);letter-spacing:-.01em}
+.bm-tab small{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.bm-tab.on{background:var(--ink);color:var(--paper)}
+.bm-tab.on small{color:var(--on-ink-muted)}
+.bm-tab.on .tag.t-orig{background:var(--paper);color:var(--ink);border-color:var(--paper)}
+.bm-tab.on .tag.t-orig::before{background:var(--ink)}
+.bm-tab:focus-visible{outline:3px solid var(--ocre);outline-offset:-3px}
+.obp-what{font:700 15px/1.35 var(--grot)}
+.pr-main-fee input{max-width:220px;font-size:20px}
+.pr-you{display:flex;flex-direction:column;gap:2px;font:700 15px/1.2 var(--grot);font-variant-numeric:tabular-nums;padding-top:6px}
+.pr-more summary{cursor:pointer;color:var(--ink)}

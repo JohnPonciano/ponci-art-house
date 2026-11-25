@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { PublicShell } from "@/components/Shells";
-import { SecHead, Notice, Reprod } from "@/components/ui";
+import { SecHead, Notice, KindBadges } from "@/components/ui";
 import { ArtImage } from "@/components/ArtImage";
 import { Photo } from "@/components/Photo";
 import { Rail } from "@/components/GalleryClient";
@@ -67,7 +67,7 @@ export default async function Home() {
         <div className="gallery lp-rail"><Rail>{sel.map((a) => (
           <article className="g-card g-m" key={a.id}><Link className="g-link" href={`/colecionador/obras/${a.slug}`}>
             <div className="g-wall"><ArtImage a={a} max={560} publicView /></div>
-            <div className="g-label"><span className="g-tags"><span className="g-no">{catNo(a.no)} · {a.year}</span><Reprod a={a} /></span><h3 className="g-title">{a.title}</h3><span className="g-artist">{a.artist_name}</span>
+            <div className="g-label"><span className="g-tags"><span className="g-no">{catNo(a.no)} · {a.year}</span><KindBadges a={{ ...a, status: "published" }} /></span><h3 className="g-title">{a.title}</h3><span className="g-artist">{a.artist_name}</span>
               <span className="g-meta">{a.medium} · {dims(a)}</span><span className="g-price locked"><Icon n="lock" /> Preço para membros</span></div>
           </Link></article>))}</Rail></div>
         <div style={{ marginTop: 16 }}><Notice icon="lock">Preços, disponibilidade e propostas ficam visíveis apenas para membros.</Notice></div>

@@ -38,7 +38,10 @@ export const Reprod = ({ a }: { a: { reproduction?: boolean | null } }) =>
   a.reproduction ? <span className="tag t-repro" title="Reprodução: não é a obra original">Reprod</span> : null;
 /** A obra tem prints autorizados à venda. */
 export const PrintTag = ({ a }: { a: { prints?: boolean } }) =>
-  a.prints ? <span className="tag t-print" title="Reproduções autorizadas pela artista à venda">Print</span> : null;
+  a.prints ? <span className="tag t-print" title="Prints autorizados pela artista à venda">+ Print</span> : null;
+/** O que é a peça: original (e se ainda está disponível) ou reprodução, e se tem print à venda. */
+export const KindBadges = ({ a }: { a: { reproduction?: boolean | null; status?: string; prints?: boolean } }) => a.reproduction ? <Reprod a={a} /> : (
+  <><span className="tag t-orig" title="Obra original, peça única">{a.status === "sold" ? "Original vendido" : a.status === "reserved" ? "Original reservado" : "Original"}</span><PrintTag a={a} /></>);
 export const Tag = ({ s, kind = "work" }: { s: string; kind?: "work" | "proposal" }) => {
   const m = (kind === "work" ? STATUS : PSTATUS)[s];
   return m ? <span className={"tag " + m[1]}>{m[0]}</span> : null;

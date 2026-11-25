@@ -11,8 +11,8 @@ export function BuyerPrints({ options, artist }: { options: PrintOption[]; artis
     ? `Edição limitada de ${o.edition_max}${o.remaining != null ? ` · ${o.remaining === 1 ? "resta 1" : `restam ${o.remaining}`}` : ""}`
     : "Edição aberta";
   return (
-    <section className="ob-prints" aria-labelledby="obp-t">
-      <p className="lab" id="obp-t">Também em print</p>
+    <section className="ob-prints" aria-label="Print fine art">
+      <p className="obp-what">Reprodução impressa, autorizada por {artist}. Não é a obra original.</p>
       <p className="obp-ed"><b>{edition}</b>{o.signed ? (o.numbered ? `Assinado e numerado por ${artist}` : `Assinado por ${artist}`) : "Sem assinatura"}</p>
       <ul className="obp-list" role="radiogroup" aria-label="Papel e tamanho">{options.map((x, i) => (
         <li key={x.product_id + x.size_id}><label className={"obp-opt" + (i === sel ? " on" : "")}>
@@ -20,7 +20,7 @@ export function BuyerPrints({ options, artist }: { options: PrintOption[]; artis
           <span><b>{x.label}</b> {cm(x.w_cm)} × {cm(x.h_cm)} cm<small>{x.product_name}{x.finish ? ` · ${x.finish}` : ""}</small></span>
           <span className="obp-price">{brlCents(x.price_cents)}</span></label></li>))}</ul>
       <p className="ob-price">{brlCents(cur.price_cents)}<small>{cur.label} · {cur.product_name} · produzido sob demanda</small></p>
-      <p className="hint">Reprodução autorizada por {artist}, impressa por gráfica homologada pela PONCI depois do pagamento confirmado. Não é a obra original.</p>
+      <p className="hint">Impressa por gráfica homologada pela PONCI depois do pagamento confirmado. Envio com rastreio.</p>
       <button type="button" className="btn ghost" disabled>Compra de prints abre em breve</button>
     </section>
   );

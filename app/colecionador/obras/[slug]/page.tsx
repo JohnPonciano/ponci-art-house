@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { requireMember, isAdminView, myKyc } from "@/lib/supabase/server";
 import { FreteQuote } from "@/components/Frete";
 import { catalogue, favoriteIds, ordersForBuyer, proposalsForBuyer, workBySlug } from "@/lib/data";
-import { Slab, Notice, Reprod } from "@/components/ui";
+import { Slab, Notice, KindBadges } from "@/components/ui";
 import { GalleryCard, Room } from "@/components/Gallery";
 import { Scale } from "@/components/Scale";
 import { FollowBtn } from "@/components/diary-client";
@@ -14,6 +14,8 @@ import { Icon } from "@/components/Icon";
 import { Zoomable } from "@/components/Lightbox";
 import { SwipeNav, StickyBuy } from "@/components/Explore";
 import { BuyerPrints } from "@/components/prints/BuyerPrints";
+import { BuyModes } from "@/components/prints/BuyModes";
+import { brlCents } from "@/lib/format";
 import { printOptions } from "@/lib/prints";
 import { brl, catNo, CAT, dateBR, dims, dimsIn, EVENT_LABEL, firstName, PSTATUS, STATUS } from "@/lib/format";
 
@@ -32,21 +34,7 @@ export default async function ObraColecionador({ params }: { params: Promise<{ s
   const i = cat.findIndex((x) => x.id === a.id);
   const prev = i >= 0 && cat.length > 1 ? cat[(i - 1 + cat.length) % cat.length] : null, next = i >= 0 && cat.length > 1 ? cat[(i + 1) % cat.length] : null;
   const rel = [...cat.filter((x) => x.artist_id === a.artist_id && x.id !== a.id), ...cat.filter((x) => x.artist_id !== a.artist_id && x.cat === a.cat && x.id !== a.id)].slice(0, 8);
-  return (
-    <div className="wrap gallery">
-      <Link className="backlink" href="/colecionador"><Icon n="left" />Acervo</Link>
-      <nav className="crumbs" aria-label="Trilha"><Link href="/colecionador">Acervo</Link><span aria-hidden="true">/</span><Link href={`/colecionador/artistas/${ar.member_code}`}>{ar.display_name}</Link><span aria-hidden="true">/</span><span aria-current="page">{a.title}</span></nav>
-      <article className="detail">
-        <div className="detail-media"><SwipeNav prev={prev ? `/colecionador/obras/${prev.slug}` : undefined} next={next ? `/colecionador/obras/${next.slug}` : undefined}>
-          <Zoomable a={a} caption={`${a.title} · ${ar.display_name} · ${a.year}`}><Slab a={a} label={a.status === "published" ? "Disponível na rede" : STATUS[a.status][0]} /></Zoomable></SwipeNav></div>
-        <div className="detail-info ob">
-          <div className="d-no"><span className="g-tags"><span>{catNo(a.no)} · {CAT[a.cat]}</span><Reprod a={a} /></span>{!adm && <FavButton variant="link" workId={a.id} on={favs.includes(a.id)} title={a.title} />}</div>
-          <header className="ob-head">
-            <h1 className="d-title">{a.title}</h1>
-            <p className="ob-by"><Link href={`/colecionador/artistas/${ar.member_code}`}>{ar.display_name}</Link>, {a.year}</p>
-            <p className="ob-line">{a.medium} · {dims(a)}</p>
-          </header>
-          <section className="ob-buy" aria-label="Aquisição">
+  const originalBuy = (<>
           {adm ? <div className="d-buy"><p className="ob-price">{brl(a.price)}<small>{STATUS[a.status][0]} · {ar.accepts_offers ? "aceita propostas" : "preço fixo"}</small></p><Notice icon="shield">Você está vendo como admin. Reserva, propostas e favoritos ficam com os membros.</Notice><a className="btn ghost" href={`/admin/curadoria`}>Abrir na curadoria <Icon n="right" /></a></div>
             : myOrder ? <div className="d-buy"><span className="price">{brl(myOrder.amount)}<small>Reservada para você · {myOrder.ref}</small></span><Link className="btn" href="/colecionador/aquisicoes">Acompanhar aquisição <Icon n="right" /></Link></div>
             : a.status !== "published" ? <div className="d-buy"><span className="price">{brl(a.price)}<small>{STATUS[a.status][0]} por outro membro</small></span><Notice>Salve nos favoritos: se a reserva cair, você vê a obra voltar à vitrine.</Notice></div>
@@ -67,13 +55,32 @@ export default async function ObraColecionador({ params }: { params: Promise<{ s
               </div> : null}
               {a.ship_included ? <p className="frete hint"><Icon n="truck" /> <span><b>Frete incluso no preço.</b> A artista embala e envia com seguro, sem custo extra pra você.</span></p> : <FreteQuote workId={a.id} cep={(await myKyc())?.cep || ""} />}
             </>}
+  </>);
+  return (
+    <div className="wrap gallery">
+      <Link className="backlink" href="/colecionador"><Icon n="left" />Acervo</Link>
+      <nav className="crumbs" aria-label="Trilha"><Link href="/colecionador">Acervo</Link><span aria-hidden="true">/</span><Link href={`/colecionador/artistas/${ar.member_code}`}>{ar.display_name}</Link><span aria-hidden="true">/</span><span aria-current="page">{a.title}</span></nav>
+      <article className="detail">
+        <div className="detail-media"><SwipeNav prev={prev ? `/colecionador/obras/${prev.slug}` : undefined} next={next ? `/colecionador/obras/${next.slug}` : undefined}>
+          <Zoomable a={a} caption={`${a.title} · ${ar.display_name} · ${a.year}`}><Slab a={a} label={a.status === "published" ? "Disponível na rede" : STATUS[a.status][0]} /></Zoomable></SwipeNav></div>
+        <div className="detail-info ob">
+          <div className="d-no"><span className="g-tags"><span>{catNo(a.no)} · {CAT[a.cat]}</span><KindBadges a={{ ...a, prints: prints.length > 0 }} /></span>{!adm && <FavButton variant="link" workId={a.id} on={favs.includes(a.id)} title={a.title} />}</div>
+          <header className="ob-head">
+            <h1 className="d-title">{a.title}</h1>
+            <p className="ob-by"><Link href={`/colecionador/artistas/${ar.member_code}`}>{ar.display_name}</Link>, {a.year}</p>
+            <p className="ob-line">{a.medium} · {dims(a)}</p>
+          </header>
+          <section className="ob-buy" aria-label="Aquisição">
+          {prints.length > 0 && !adm ? <BuyModes original={originalBuy} print={<BuyerPrints options={prints} artist={ar.display_name} />}
+            initial={a.status === "published" || myOrder ? "original" : "print"}
+            originalLabel={myOrder ? "Reservada para você" : a.status === "published" ? `Peça única · ${brl(a.price)}` : a.status === "sold" ? "Vendida" : "Reservada"}
+            printLabel={`A partir de ${brlCents(Math.min(...prints.map((x) => x.price_cents)))}`} /> : originalBuy}
             <ul className="ob-trust">
               <li><Icon n="lock" /><span><b>Pagamento em custódia</b>O valor só é repassado à artista depois da entrega.</span></li>
               <li><Icon n="shield" /><span><b>Certificado PONCI</b>Autenticidade e procedência registradas na rede.</span></li>
               <li><Icon n="swap" /><span><b>7 dias para desistir</b>Depois de receber a obra, conforme o CDC.</span></li>
             </ul>
           </section>
-          {prints.length > 0 && <BuyerPrints options={prints} artist={ar.display_name} />}
           {a.description?.length > 0 && <div className="d-desc">{a.description.map((p, k) => <p key={k}>{p}</p>)}</div>}
           <section className="ob-label" aria-label="Ficha técnica">
             <p className="lab">Ficha técnica</p>

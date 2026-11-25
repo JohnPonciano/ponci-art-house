@@ -2062,3 +2062,21 @@ p.frete.hint{display:flex;gap:8px;align-items:flex-start;font-size:14px}p.frete.
 .pr-main-fee input{max-width:220px;font-size:20px}
 .pr-you{display:flex;flex-direction:column;gap:2px;font:700 15px/1.2 var(--grot);font-variant-numeric:tabular-nums;padding-top:6px}
 .pr-more summary{cursor:pointer;color:var(--ink)}
+.obp-confirm{display:flex;flex-direction:column;gap:8px;border:var(--b);padding:14px;background:var(--paper)}
+/* pedidos de print */
+.po-sec{margin:0 0 clamp(72px,10vw,140px);border-top:var(--b);padding-top:16px;display:flex;flex-direction:column}
+.po-sec > .lab{color:var(--ink);margin-bottom:8px}
+.po{border-bottom:var(--b);padding:18px 0;display:flex;flex-direction:column;gap:14px}
+.po-top{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;align-items:flex-start}
+.po-tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.po-t{display:block;font:800 clamp(1.4rem,2.4vw,2.2rem)/.95 var(--grot);font-stretch:75%;text-transform:uppercase}
+.po-m{display:block;font:400 12.5px/1.5 var(--mono);color:var(--muted);margin-top:6px}
+.po-track{border-top:0}
+.po-ship{display:flex;align-items:center;gap:6px;font-size:14px}
+.po-ship a{text-decoration:underline}
+.po-acts{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center}
+.po-addr{font:400 14px/1.5 var(--mono);border-left:2px solid var(--ink);padding-left:12px;margin:4px 0 8px}
+.po-track{grid-template-columns:repeat(5,minmax(0,1fr))}
+@media (max-width:720px){ .po-track{grid-template-columns:1fr} .po-track li{border-left:0;border-top:1px solid var(--hair);padding-left:0} }
+.pa-ordem{display:flex;flex-direction:column;gap:10px;width:100%}
+.pa-ordem pre{white-space:pre-wrap;font:400 13px/1.5 var(--mono);background:var(--field);border:1px solid var(--hair);padding:12px;margin:0;max-width:720px;overflow-wrap:anywhere}

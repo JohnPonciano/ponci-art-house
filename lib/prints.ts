@@ -72,3 +72,55 @@ export async function adminPrintData() {
     offers: ((of.data as any[]) || []).map((o) => ({ ...o, work: one(o.work), artist: one(o.artist) })) as AdminPrintOffer[],
   };
 }
+
+/* ---------- pedidos de print ---------- */
+export type PrintOrderStatus = "awaiting_payment" | "in_production" | "shipped" | "delivered" | "cancelled";
+export type PrintOrder = {
+  id: string; ref: string; work_id: string; product_name: string; size_label: string; w_cm: number; h_cm: number; price_cents: number; artist_fee_cents: number;
+  edition: "open" | "limited"; edition_max: number | null; edition_no: number | null; signed: boolean; numbered: boolean; status: PrintOrderStatus;
+  carrier: string | null; tracking_code: string | null; expires_at: string; paid_at: string | null; shipped_at: string | null; delivered_at: string | null;
+  cancelled_at: string | null; cancel_reason: string | null; payout_at: string | null; created_at: string; sent_to_supplier_at?: string | null; supplier_ref?: string | null;
+  ship_to: Record<string, string> | null; work?: { title: string; slug: string; image_path: string | null; artist?: { display_name: string; member_code: string } | null } | null;
+};
+const one = (x: any) => (Array.isArray(x) ? x[0] : x) ?? null;
+
+/** Pedidos de print do comprador (os mais recentes primeiro). */
+export async function myPrintOrders(meId: string): Promise<PrintOrder[]> {
+  const sb = await createClient();
+  const { data, error } = await sb.from("print_orders").select("*,work:works(title,slug,image_path,artist:profiles!works_artist_id_fkey(display_name,member_code))")
+    .eq("buyer_id", meId).order("created_at", { ascending: false }).limit(100);
+  if (error) return [];
+  return ((data as any[]) || []).map((o) => ({ ...o, w_cm: Number(o.w_cm), h_cm: Number(o.h_cm), work: o.work ? { ...one(o.work), artist: one(one(o.work)?.artist) } : null }));
+}
+
+/** Vendas de print da artista (endereço do comprador só quando ela precisa enviar). */
+export async function artistPrintOrders() {
+  const sb = await createClient();
+  const { data, error } = await sb.rpc("artist_print_orders");
+  if (error) return [] as (PrintOrder & { buyer_city: string })[];
+  const rows = ((data as any[]) || []);
+  const ids = [...new Set(rows.map((r) => r.work_id))];
+  const { data: ws } = ids.length ? await sb.from("works").select("id,title,slug,image_path").in("id", ids) : { data: [] as any[] };
+  const by = Object.fromEntries(((ws as any[]) || []).map((w) => [w.id, w]));
+  return rows.map((r) => ({ ...r, w_cm: Number(r.w_cm), h_cm: Number(r.h_cm), work: by[r.work_id] || null })) as (PrintOrder & { buyer_city: string })[];
+}
+
+/** Admin: pedidos de print com obra, artista, comprador e gráfica; link temporário do arquivo-mestre para os pagos. */
+export async function adminPrintOrders() {
+  const sb = await createClient();
+  const { data, error } = await sb.from("print_orders")
+    .select("*,work:works(title,slug),artist:profiles!print_orders_artist_id_fkey(display_name,member_code,private:profile_private(email),kyc(legal_name,phone,cep,street,number,complement,district,city,uf)),buyer:profiles!print_orders_buyer_id_fkey(member_code,private:profile_private(full_name,email)),supplier:print_suppliers(name,contact),offer:print_offers(master_path,master_w,master_h)")
+    .order("created_at", { ascending: false }).limit(200);
+  if (error) return [];
+  const rows = ((data as any[]) || []).map((o) => ({
+    ...o, w_cm: Number(o.w_cm), h_cm: Number(o.h_cm), work: one(o.work), supplier: one(o.supplier), offer: one(o.offer),
+    artist: { ...one(o.artist), email: one(one(o.artist)?.private)?.email || "", address: one(one(o.artist)?.kyc) || null }, buyer: { ...one(o.buyer), name: one(one(o.buyer)?.private)?.full_name || "", email: one(one(o.buyer)?.private)?.email || "" },
+  }));
+  // link do arquivo para a gráfica (7 dias), só para pedidos pagos e ainda não despachados
+  await Promise.all(rows.filter((o) => o.status === "in_production" && o.offer?.master_path).map(async (o) => {
+    const { data: u } = await sb.storage.from("print-masters").createSignedUrl(o.offer.master_path, 7 * 24 * 3600, { download: true });
+    o.master_url = u?.signedUrl || null;
+  }));
+  return rows as (PrintOrder & { master_url?: string | null; supplier: { name: string; contact: string } | null; offer: { master_w: number; master_h: number } | null;
+    artist: { display_name: string; member_code: string; email: string; address: Record<string, string> | null }; buyer: { member_code: string; name: string; email: string } })[];
+}

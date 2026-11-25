@@ -2,13 +2,15 @@ import { requireMember } from "@/lib/supabase/server";
 import { ordersForArtist, currentCommissionPct } from "@/lib/data";
 import { PageHead, Empty } from "@/components/ui";
 import { OrderBlock } from "@/components/area";
-import { brl, commissionOf, netOf, fmtPct } from "@/lib/format";
+import { brl, brlCents, commissionOf, netOf, fmtPct } from "@/lib/format";
+import { artistPrintOrders } from "@/lib/prints";
+import { PrintOrderCard } from "@/components/prints/PrintOrders";
 
 export const metadata = { title: "Vendas" };
 
 export default async function Vendas() {
   const me = await requireMember("artist");
-  const [os, pct] = await Promise.all([ordersForArtist(me.id), currentCommissionPct()]);
+  const [os, pct, prs] = await Promise.all([ordersForArtist(me.id), currentCommissionPct(), artistPrintOrders()]);
   const gross = os.filter((o) => !o.cancelled_at).reduce((s, o) => s + o.amount, 0);
   const net = (l: typeof os) => l.reduce((s, o) => s + netOf(o), 0);
   return (
@@ -24,6 +26,9 @@ export default async function Vendas() {
       <div style={{ margin: "clamp(28px,4vw,48px) 0 clamp(72px,10vw,140px)", borderTop: "var(--b)" }}>
         {os.length ? os.map((o) => <OrderBlock key={o.id} o={o} side="artist" />) : <Empty sm title="Nenhuma venda ainda." body="Quando você aceitar uma proposta ou alguém reservar pelo preço, a venda aparece aqui." />}
       </div>
+      {prs.length > 0 && <section className="po-sec" aria-labelledby="av-pr">
+        <h2 className="lab" id="av-pr">Prints vendidos · {brlCents(prs.filter((p) => p.status !== "awaiting_payment").reduce((t, p) => t + p.artist_fee_cents, 0))} para você</h2>
+        {prs.map((o) => <PrintOrderCard key={o.id} o={o} side="artist" />)}</section>}
     </div>
   );
 }

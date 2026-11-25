@@ -34,6 +34,8 @@ export default async function ObraColecionador({ params }: { params: Promise<{ s
   const i = cat.findIndex((x) => x.id === a.id);
   const prev = i >= 0 && cat.length > 1 ? cat[(i - 1 + cat.length) % cat.length] : null, next = i >= 0 && cat.length > 1 ? cat[(i + 1) % cat.length] : null;
   const rel = [...cat.filter((x) => x.artist_id === a.artist_id && x.id !== a.id), ...cat.filter((x) => x.artist_id !== a.artist_id && x.cat === a.cat && x.id !== a.id)].slice(0, 8);
+  const kyc = prints.length ? await myKyc() : null;
+  const shipTo = kyc?.completed_at && kyc.street && kyc.cep ? `${kyc.street}, ${kyc.number || "s/n"}${kyc.complement ? ` · ${kyc.complement}` : ""} · ${kyc.city}/${kyc.uf} · CEP ${kyc.cep}` : null;
   const originalBuy = (<>
           {adm ? <div className="d-buy"><p className="ob-price">{brl(a.price)}<small>{STATUS[a.status][0]} · {ar.accepts_offers ? "aceita propostas" : "preço fixo"}</small></p><Notice icon="shield">Você está vendo como admin. Reserva, propostas e favoritos ficam com os membros.</Notice><a className="btn ghost" href={`/admin/curadoria`}>Abrir na curadoria <Icon n="right" /></a></div>
             : myOrder ? <div className="d-buy"><span className="price">{brl(myOrder.amount)}<small>Reservada para você · {myOrder.ref}</small></span><Link className="btn" href="/colecionador/aquisicoes">Acompanhar aquisição <Icon n="right" /></Link></div>
@@ -71,7 +73,7 @@ export default async function ObraColecionador({ params }: { params: Promise<{ s
             <p className="ob-line">{a.medium} · {dims(a)}</p>
           </header>
           <section className="ob-buy" aria-label="Aquisição">
-          {prints.length > 0 && !adm ? <BuyModes original={originalBuy} print={<BuyerPrints options={prints} artist={ar.display_name} />}
+          {prints.length > 0 && !adm ? <BuyModes original={originalBuy} print={<BuyerPrints options={prints} artist={ar.display_name} shipTo={shipTo} />}
             initial={a.status === "published" || myOrder ? "original" : "print"}
             originalLabel={myOrder ? "Reservada para você" : a.status === "published" ? `Peça única · ${brl(a.price)}` : a.status === "sold" ? "Vendida" : "Reservada"}
             printLabel={`A partir de ${brlCents(Math.min(...prints.map((x) => x.price_cents)))}`} /> : originalBuy}

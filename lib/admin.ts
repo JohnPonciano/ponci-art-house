@@ -134,3 +134,10 @@ export async function salesAttention(): Promise<number> {
   const { data: rq } = await sb.from("member_requests").select("order_id,kind,status").not("order_id", "is", null).in("status", ["aberta", "em_andamento"]);
   return (data as any[]).filter((o) => saleState({ ...o, reqs: ((rq as any[]) || []).filter((r) => r.order_id === o.id) }).alert).length;
 }
+/** Pedidos de print que pedem ação do admin (confirmar pagamento ou mandar para a gráfica). */
+export async function printAttention(): Promise<number> {
+  const sb = await createClient();
+  const { data, error } = await sb.from("print_orders").select("status,sent_to_supplier_at,signed").in("status", ["awaiting_payment", "in_production"]);
+  if (error || !data) return 0;
+  return (data as any[]).filter((o) => o.status === "awaiting_payment" || (!o.sent_to_supplier_at)).length;
+}

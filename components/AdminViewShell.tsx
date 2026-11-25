@@ -4,18 +4,18 @@ import { Header, Footer } from "./Chrome";
 import { TabBar } from "./TabBar";
 import { Icon } from "./Icon";
 import { getAdmin } from "@/lib/supabase/server";
-import { counts, salesAttention } from "@/lib/admin";
+import { counts, salesAttention, printAttention } from "@/lib/admin";
 
 /** Menu do admin, organizado: trabalho do dia (topo), ver como membro e registros (submenu). */
 export async function adminNav(com: string) {
-  const [c, sales] = await Promise.all([counts(), salesAttention()]);
+  const [c, sales, prints] = await Promise.all([counts(), salesAttention(), printAttention()]);
   const nav = [
     { href: "/admin", label: "Painel" },
     { href: "/admin/pedidos", label: "Pedidos", badge: c.reqs || undefined },
     { href: "/admin/membros", label: "Membros", badge: c.pend || undefined },
     { href: "/admin/curadoria", label: "Curadoria", badge: c.review || undefined },
     { href: "/admin/vendas", label: "Vendas", badge: sales || undefined },
-    { href: "/admin/prints", label: "Prints" },
+    { href: "/admin/prints", label: "Prints", badge: prints || undefined },
     { href: "/admin/instagram", label: "Instagram" },
     { href: "/admin/diario", label: "Moderação" },
   ];

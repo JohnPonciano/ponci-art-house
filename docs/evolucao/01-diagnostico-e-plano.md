@@ -164,3 +164,10 @@ Cada fase termina testada e no ar antes da próxima.
   
   Telas: `/admin/prints`, seção "Prints" na obra do artista, "Também em print" na obra para o colecionador e etiqueta PRINT no acervo. Obras com original vendido e prints ativos continuam no acervo.
 - **Próximo, Fase 2b: compra do print.** Pedido, confirmação manual de pagamento com número da edição alocado nesse momento, produção, envio (gráfica direto, ou via artista se assinado), entrega e repasse.
+- **Fase 2b, concluída (25/11).** Migração `20261128120000_pedidos_print.sql`, já aplicada pelo conector do Supabase.
+  - **Compra:** em 1 clique, com o endereço do cadastro; a vaga da edição limitada fica guardada por 48 h.
+  - **Pagamento:** confirmado pelo admin. Isso numera o exemplar automaticamente e avisa comprador e artista por e-mail.
+  - **Gráfica:** ordem pronta para copiar, com link temporário do arquivo.
+  - **Envio:** pela gráfica ou, se assinado, pela artista. Comprador confirma o recebimento e o admin registra o repasse.
+  - **Telas:** etiquetas Original/Print, escolha original × print na obra e "liberar prints" em 3 passos com valor único.
+  - **Catálogo:** WePrint, enxuto: Rag e Lustre × A4, A3, A2, 50×70.

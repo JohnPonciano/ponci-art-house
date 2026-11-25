@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { PageHead, Empty } from "@/components/ui";
 import { Icon } from "@/components/Icon";
-import { adminPrintData } from "@/lib/prints";
+import { adminPrintData, adminPrintOrders } from "@/lib/prints";
+import { AdminPrintOrder } from "@/components/prints/AdminPrintOrders";
 import { brlCents, cm, dateBR } from "@/lib/format";
 import { CostForm, CostEnd, EditToggle, NewToggle, OfferModeration } from "@/components/admin-prints";
 
@@ -9,7 +10,7 @@ export const metadata = { title: "Prints" };
 const ST: Record<string, [string, string]> = { draft: ["Rascunho", "t-open"], active: ["À venda", "t-pub"], paused: ["Pausado", "t-closed"] };
 
 export default async function Prints() {
-  const d = await adminPrintData();
+  const [d, orders] = await Promise.all([adminPrintData(), adminPrintOrders()]);
   if (!d.ready) return (
     <div className="wrap"><PageHead title="Prints" label="Impressão sob demanda" intro="Os prints ainda não foram ativados no banco." count="" />
       <div style={{ margin: "32px 0 120px" }}><Empty sm title="Falta rodar a migração de prints." body="Depois do SQL, esta tela cadastra gráficas, papéis, tamanhos e custos, e mostra as ofertas dos artistas." /></div></div>);
@@ -19,10 +20,15 @@ export default async function Prints() {
     !d.sizes.some((z) => z.active) && "tamanho", !d.costs.length && "custo"].filter(Boolean) as string[];
   return (
     <div className="wrap">
-      <PageHead title="Prints" label="Impressão sob demanda" count={`${live} à venda`}
+      <PageHead title="Prints" label="Impressão sob demanda" count={`${live} à venda · ${orders.filter((o) => o.status === "awaiting_payment").length} aguardando pagamento`}
         intro="Gráficas homologadas, papéis, tamanhos e custos reais. O artista escolhe papel, tamanho e quanto quer receber; o preço sai das regras comerciais. Nada aqui vem preenchido." />
       {missing.length > 0 && <p className="sale-alert" style={{ marginTop: 24 }}><Icon n="info" />Para artistas poderem publicar prints, falta cadastrar: {missing.join(", ")}.
         {!d.rulesReady && <> Defina comissão, taxa de pagamento e impostos dos prints em <Link href="/admin/regras">Regras comerciais</Link>.</>}</p>}
+
+      <section className="pa-sec" aria-labelledby="pa-po">
+        <div className="ig-head"><h2 className="lab" id="pa-po">Pedidos de print{orders.filter((o) => o.status === "awaiting_payment" || o.status === "in_production").length ? ` · ${orders.filter((o) => o.status === "awaiting_payment" || o.status === "in_production").length} pedem ação` : ""}</h2></div>
+        {orders.length ? <ol className="ig-list">{orders.map((o) => <AdminPrintOrder key={o.id} o={o} />)}</ol> : <Empty sm title="Nenhum pedido de print ainda." body="Quando alguém comprar um print, ele aparece aqui com o próximo passo." />}
+      </section>
 
       <section className="pa-sec" aria-labelledby="pa-of">
         <div className="ig-head"><h2 className="lab" id="pa-of">Ofertas dos artistas</h2></div>

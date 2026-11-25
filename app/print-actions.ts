@@ -54,7 +54,7 @@ import { brlCents } from "@/lib/format";
 async function site() { const { headers } = await import("next/headers"); const h = await headers(); return `https://${h.get("x-forwarded-host") || h.get("host") || "ponci.art"}`; }
 /** E-mail de aviso: nunca bloqueia o fluxo (se falhar, o pedido segue igual). */
 async function notify(to: string | undefined, subject: string, lines: string[]) {
-  if (!to) return;
+  if (!to || to.endsWith("@demo.ponci.art")) return;   // contas demo não têm caixa de e-mail
   const text = lines.join("\n\n");
   const html = `<div style="font-family:Helvetica,Arial,sans-serif;font-size:15px;line-height:1.55;color:#121211;max-width:560px">${lines.map((l) => `<p>${l.replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" })[c]!)}</p>`).join("")}<p style="color:#5D5B56">PONCI · ponci.art</p></div>`;
   try { await sendMail({ to, subject, text, html }); } catch { /* aviso é opcional */ }

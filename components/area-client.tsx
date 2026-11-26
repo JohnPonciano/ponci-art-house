@@ -40,7 +40,7 @@ export function ArtistProposalActions({ id, current, price }: { id: string; curr
   const [mode, setMode] = useState<"" | "accept" | "counter">("");
   const [val, setVal] = useState(brl(Math.round((current + price) / 2 / 500) * 500)); const [msg, setMsg] = useState("");
   if (mode === "accept") return (<>
-    <span className="hint">Aceitar {brl(current)}? A obra será reservada e as outras propostas encerradas.</span>
+    <span className="hint">Aceitar {brl(current)}? A obra sai da galeria, o comprador tem 3 dias para pagar e as outras propostas são encerradas.</span>
     <button className="btn sm ocre" type="button" disabled={pending} onClick={() => run(() => A.respondProposal(id, "accept"), "Proposta aceita. A obra foi reservada.")}>Confirmar <Icon n="check" /></button>
     <button className="linkbtn" type="button" onClick={() => setMode("")}>Cancelar</button></>);
   if (mode === "counter") return (
@@ -62,7 +62,7 @@ export function BuyerProposalActions({ id, status, current, slug }: { id: string
   const { run, pending, router } = useAct(); const [ask, setAsk] = useState(false);
   if (status === "open") return <button className="linkbtn" type="button" disabled={pending} onClick={() => run(() => A.respondProposal(id, "withdraw"), "Proposta retirada.")}>Retirar proposta</button>;
   if (ask) return (<>
-    <span className="hint">Aceitar {brl(current)}? A obra fica reservada para você.</span>
+    <span className="hint">Aceitar {brl(current)}? A obra fica guardada pra você por 3 dias, até o pagamento.</span>
     <button className="btn sm ocre" type="button" disabled={pending} onClick={() => run(() => A.respondProposal(id, "accept"), "Contraproposta aceita. Obra reservada.", () => router.push("/colecionador/aquisicoes"))}>Confirmar <Icon n="check" /></button>
     <button className="linkbtn" type="button" onClick={() => setAsk(false)}>Cancelar</button></>);
   return (<>
@@ -102,7 +102,7 @@ export function OfferForm({ workId, price, label }: { workId: string; price: num
   function submit(e: React.FormEvent) {
     e.preventDefault(); const n = parseMoney(v);
     if (n < Math.ceil(price * 0.5)) return setErr(`Propostas abaixo de 50% do preço (${brl(price * 0.5)}) não são enviadas.`);
-    if (n >= price) return setErr("Para pagar o preço cheio, use “Reservar pelo preço”.");
+    if (n >= price) return setErr("Para pagar o preço cheio, use “Comprar”.");
     setErr(""); run(() => A.makeProposal(workId, n, msg), "Proposta enviada à artista.", () => { setV(""); setMsg(""); });
   }
   return (

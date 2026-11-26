@@ -27,7 +27,7 @@ export const PSTATUS: Record<string, [string, string]> = {
   declined: ["Recusada", "t-declined"], closed: ["Encerrada", "t-closed"], withdrawn: ["Retirada", "t-withdrawn"],
 };
 export const STAGES: [string, string][] = [
-  ["Reservada", "Obra retirada da vitrine"], ["Pagamento em custódia", "Valor retido pela PONCI"],
+  ["Comprada", "3 dias para pagar"], ["Pagamento em custódia", "Valor retido pela PONCI"],
   ["Em transporte", "Despachada pela artista, com seguro"], ["Entregue", "Certificado emitido"],
 ];
 export const EVENT_LABEL: Record<string, string> = {

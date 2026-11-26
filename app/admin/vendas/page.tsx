@@ -16,7 +16,7 @@ const FILTERS: [string, string][] = [
 
 /* Colunas do quadro: uma por etapa real do pedido. */
 const COLS: { k: string; t: string; hint: string }[] = [
-  { k: "awaiting", t: "Aguardando pagamento", hint: "Prazo: 48 h após a reserva" },
+  { k: "awaiting", t: "Aguardando pagamento", hint: "Prazo: 3 dias após a compra; sem pagamento, a obra volta sozinha para a galeria" },
   { k: "toship", t: "Para despachar", hint: "Prazo: 5 dias úteis após o pagamento" },
   { k: "transit", t: "Em transporte", hint: "Até a colecionadora confirmar" },
   { k: "grace", t: "Em arrependimento", hint: "7 dias depois da entrega" },
@@ -41,7 +41,7 @@ export default async function Vendas({ searchParams }: { searchParams: Promise<{
   const n = (k: string) => (k === "all" ? all.length : k === "attention" ? att.length : all.filter((o) => o.st.key === k).length);
   return (
     <div className="wrap">
-      <PageHead title="Vendas" label="Pedidos e repasses" intro="Cada venda, do contrato ao repasse. Os alertas seguem os prazos do contrato: pagamento em 48 h, envio em 5 dias úteis, 7 dias de arrependimento depois da entrega."
+      <PageHead title="Vendas" label="Pedidos e repasses" intro="Cada venda, do contrato ao repasse. Prazos: pagamento em 3 dias (sem pagamento, o pedido cai sozinho e a obra volta para a galeria), envio em 5 dias úteis, 7 dias de arrependimento depois da entrega."
         count={`${live.length} ${live.length === 1 ? "venda" : "vendas"}${att.length ? ` · ${att.length} com alerta` : ""}`} />
       <div className="stats" style={{ ["--n" as any]: 5 }}>
         <div><span className="lab">Vendido (bruto)</span><b className="money">{brl(sum(live))}</b></div>

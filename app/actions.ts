@@ -61,10 +61,12 @@ export async function createWork(v: {
   title: string; year: number; cat: string; medium: string; h: number; w: number; edition?: string; price: number;
   description: string; gen: any; image_path?: string | null; img_w?: number | null; img_h?: number | null; reproduction?: boolean;
   depth_cm?: number | null; weight_kg?: number | null; ship_included?: boolean;
+  prints_wanted?: boolean; print_master?: { path: string; w: number; h: number } | null;
 }): Promise<Result<{ slug: string }>> {
   const me = await getMe();
   if (!me || me.role !== "artist") return { ok: false, error: "Somente artistas cadastram obras." };
   if (v.image_path && !v.image_path.startsWith(me.id + "/")) return { ok: false, error: "Imagem inválida." };
+  if (v.print_master && !v.print_master.path.startsWith(me.id + "/")) return { ok: false, error: "Arquivo de impressão inválido." };
   const sb = await createClient();
   const base = slugify(v.title);
   for (let i = 0; i < 5; i++) {
@@ -78,6 +80,8 @@ export async function createWork(v: {
       ...(v.depth_cm && v.depth_cm >= 1 && v.depth_cm <= 300 ? { depth_cm: Math.round(v.depth_cm) } : {}),
       ...(v.weight_kg && v.weight_kg > 0 && v.weight_kg <= 300 ? { weight_kg: v.weight_kg } : {}),
       ...(v.ship_included ? { ship_included: true } : {}),
+      ...(v.prints_wanted ? { prints_wanted: true } : {}),
+      ...(v.print_master ? { print_master_path: v.print_master.path, print_master_w: Math.round(v.print_master.w), print_master_h: Math.round(v.print_master.h) } : {}),
     });
     if (!error) return done({ slug }) as any;
     if (error.code !== "23505") return fail(error) as any;

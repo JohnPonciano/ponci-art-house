@@ -16,9 +16,14 @@ const key = (p: string, s: string) => `${p}|${s}`;
 const STATUS = { draft: ["Rascunho", "t-open"], active: ["À venda", "t-pub"], paused: ["Pausado", "t-closed"] } as const;
 
 /** Configuração de prints de uma obra aprovada: edição, papéis e tamanhos, remuneração, arquivo-mestre e autorização. */
-export function ArtistPrints({ workId, userId, products, sizes, rulesReady, saved }: {
+/* valores sugeridos para a artista por tamanho (ela pode mudar); fora da tabela, cresce com a área */
+const SUGGEST: Record<string, number> = { A4: 4000, A3: 6000, A2: 10000, "50 × 70": 14000 };
+const suggest = (z: PrintSize) => SUGGEST[z.label] ?? Math.round((4000 * Math.pow((z.w_cm * z.h_cm) / 623.7, 0.6)) / 500) * 500;
+
+export function ArtistPrints({ workId, userId, products, sizes, rulesReady, saved, prefill = null, wanted = false }: {
   workId: string; userId: string; products: PrintProduct[]; sizes: PrintSize[]; rulesReady: boolean;
   saved: { offer: PrintOffer; sizes: PrintOfferSize[] } | null;
+  prefill?: { path: string; w: number; h: number } | null; wanted?: boolean;
 }) {
   const toast = useToast(); const router = useRouter(); const [pending, start] = useTransition();
   const o = saved?.offer;
@@ -26,14 +31,17 @@ export function ArtistPrints({ workId, userId, products, sizes, rulesReady, save
   const money = (c: number) => (c / 100).toLocaleString("pt-BR", { minimumFractionDigits: 2 });
   const [pick, setPick] = useState<Record<string, string>>(() => saved?.sizes.length
     ? Object.fromEntries(saved.sizes.map((s) => [key(s.product_id, s.size_id), money(s.artist_fee_cents)]))
-    : products[0] ? Object.fromEntries(sizes.map((z) => [key(products[0].id, z.id), ""])) : {});
+    : products[0] ? Object.fromEntries(sizes.map((z) => [key(products[0].id, z.id), money(suggest(z))])) : {});
   const [fee, setFee] = useState(() => (saved?.sizes[0] ? money(saved.sizes[0].artist_fee_cents) : ""));
-  const [custom, setCustom] = useState(() => new Set((saved?.sizes || []).map((s) => s.artist_fee_cents)).size > 1);
+  // sem oferta salva: começa com um valor sugerido por tamanho (A4 menor, 50×70 maior)
+  const [custom, setCustom] = useState(() => !saved?.sizes.length || new Set(saved.sizes.map((s) => s.artist_fee_cents)).size > 1);
   const eff = (k: string) => (custom ? pick[k] : fee);
-  const [master, setMaster] = useState<{ path: string; w: number; h: number; name?: string } | null>(o?.master_path ? { path: o.master_path, w: o.master_w!, h: o.master_h! } : null);
+  const [master, setMaster] = useState<{ path: string; w: number; h: number; name?: string } | null>(o?.master_path ? { path: o.master_path, w: o.master_w!, h: o.master_h! }
+    : prefill ? { ...prefill, name: "Foto enviada no cadastro" } : null);
   const [upl, setUpl] = useState(""); const [quotes, setQuotes] = useState<Record<string, Quote | string>>({});
   const [auth, setAuth] = useState<{ body: string; sha256: string } | null>(null); const [agree, setAgree] = useState(false);
-  const [open, setOpen] = useState(!!o);
+  const [open, setOpen] = useState(!!o || wanted);
+  const ready = !o && wanted && !!prefill;   // tudo encaminhado no cadastro: só conferir e autorizar
   const locked = (o?.sold_count || 0) > 0;
   const dpi = useMemo(() => Object.fromEntries(products.map((p) => [p.id, p.min_dpi])), [products]);
 
@@ -99,6 +107,8 @@ export function ArtistPrints({ workId, userId, products, sizes, rulesReady, save
       {o && <p className="pr-state"><span className={"tag " + STATUS[o.status][1]}>{STATUS[o.status][0]}</span>
         {o.sold_count > 0 && <span>{o.sold_count} vendido{o.sold_count > 1 ? "s" : ""}{o.edition === "limited" ? ` de ${o.edition_max}` : ""}</span>}
         {o.status === "active" && <button type="button" className="linkbtn" disabled={pending} onClick={() => start(async () => { const r = await P.pausePrintOffer(o.id); toast(r.ok ? "Venda de prints pausada." : r.error!); router.refresh(); })}>Pausar venda</button>}</p>}
+      {ready && <p className="pr-ready"><b>Seus prints estão prontos.</b> Usamos a foto que você enviou e já sugerimos quanto você recebe em cada tamanho. Se estiver tudo certo, é só clicar em “Revisar e autorizar”.</p>}
+      {!o && wanted && !prefill && <p className="pr-ready"><b>Quase lá.</b> Falta só o arquivo em alta resolução: envie no passo 1 abaixo. Os valores já estão sugeridos.</p>}
       {o?.paused_reason && <p className="sale-alert"><Icon n="info" />A PONCI pausou estes prints: {o.paused_reason}</p>}
       {locked && <p className="hint">Já houve venda: tipo de edição, tiragem, assinatura e numeração ficam como estão.</p>}
 

@@ -14,7 +14,7 @@ export default async function Favoritos() {
   const list = cat.filter((a) => ids.includes(a.id));
   return (
     <div className="wrap">
-      <PageHead title="Favoritos" label="Lista de interesse" intro="Obras que você guardou. Se uma reserva cair ou o preço mudar, elas continuam aqui." count={`${list.length} ${list.length === 1 ? "obra" : "obras"}`} />
+      <PageHead title="Favoritos" label="Lista de interesse" intro="Obras que você guardou. Se uma compra não for paga ou o preço mudar, elas continuam aqui." count={`${list.length} ${list.length === 1 ? "obra" : "obras"}`} />
       <div style={{ marginTop: "clamp(28px,4vw,48px)" }}>
         {list.length ? <div className="board cat">{list.map((a) => <WorkCard key={a.id} a={a} href={`/colecionador/obras/${a.slug}`} sub={a.artist?.display_name} fav
             foot={<><span className="price">{brl(a.price)}<small>{a.status === "published" ? "Disponível" : "Indisponível no momento"}</small></span><span className="go">Ver <Icon n="right" /></span></>} />)}</div>

@@ -59,7 +59,7 @@ export function SwipeNav({ prev, next, children }: { prev?: string; next?: strin
 }
 
 /** Barra fixa de compra no celular: aparece quando o bloco de compra sai da tela. */
-export function StickyBuy({ price, label = "Reservar" }: { price: string; label?: string }) {
+export function StickyBuy({ price, label = "Comprar" }: { price: string; label?: string }) {
   const [show, setShow] = useState(false);
   useEffect(() => {
     const el = document.getElementById("comprar"); if (!el) return;

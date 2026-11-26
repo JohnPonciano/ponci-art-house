@@ -70,6 +70,8 @@ update public.ig_posts set publish_at = now() - interval '2 days' where label = 
 select public.ig_tick();
 select pg_temp.confere((select status='failed' and error like 'O horário passou%' from public.ig_posts where label='O que a gente procura'), 'atrasada mais de 24 h não sai no escuro');
 -- ===== ações do admin =====
+-- (independe da data do dia: garante que este post ainda está na fila)
+update public.ig_posts set status = 'scheduled', publish_at = now() + interval '2 days', error = null where label = 'Arte pra morar junto';
 select pg_temp.como('00000000-0000-0000-0000-0000000000f1','admin@ponci.art','aal2');
 set role authenticated;
 select public.admin_ig_action((select id from public.ig_posts where label='Olhe de perto'), 'retry');
@@ -77,8 +79,9 @@ select pg_temp.confere((select status='scheduled' and error is null from public.
 select public.admin_ig_action((select id from public.ig_posts where label='Estamos conhecendo artistas'), 'cancel');
 select pg_temp.confere((select status='cancelled' from public.ig_posts where label='Estamos conhecendo artistas'), 'cancelar');
 select pg_temp.espera_erro($$select public.admin_ig_save((select id from public.ig_posts where label='Conhece alguém que pinta demais?'), array['https://ponci.art/kit/a.jpg'], 'x', now())$$,'já saiu','não edita o que já saiu');
-select public.admin_ig_save((select id from public.ig_posts where label='Arte pra morar junto'), array['https://ponci.art/kit/post-05-arte-pra-morar-junto.jpg'], 'Legenda nova', '2026-11-26 19:30-03');
-select pg_temp.confere((select caption='Legenda nova' and publish_at='2026-11-26 22:30+00' from public.ig_posts where label='Arte pra morar junto'), 'edita legenda e horário');
+select set_config('t.quando', to_char(date_trunc('minute', now() + interval '3 days'), 'YYYY-MM-DD HH24:MI:SSOF'), false);
+select public.admin_ig_save((select id from public.ig_posts where label='Arte pra morar junto'), array['https://ponci.art/kit/post-05-arte-pra-morar-junto.jpg'], 'Legenda nova', current_setting('t.quando')::timestamptz);
+select pg_temp.confere((select caption='Legenda nova' and publish_at = current_setting('t.quando')::timestamptz from public.ig_posts where label='Arte pra morar junto'), 'edita legenda e horário');
 select public.admin_ig_action((select id from public.ig_posts where label='Arte pra morar junto'), 'now');
 select pg_temp.confere((select publish_at <= now() from public.ig_posts where label='Arte pra morar junto'), 'publicar agora');
 reset role;

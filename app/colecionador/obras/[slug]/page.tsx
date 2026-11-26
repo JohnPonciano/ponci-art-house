@@ -41,13 +41,13 @@ export default async function ObraColecionador({ params }: { params: Promise<{ s
   const originalBuy = (<>
           {adm ? <div className="d-buy"><p className="ob-price">{brl(a.price)}<small>{STATUS[a.status][0]} · {ar.accepts_offers ? "aceita propostas" : "preço fixo"}</small></p><Notice icon="shield">Você está vendo como admin. Reserva, propostas e favoritos ficam com os membros.</Notice><a className="btn ghost" href={`/admin/curadoria`}>Abrir na curadoria <Icon n="right" /></a></div>
             : myOrder ? <div className="d-buy"><span className="price">{brl(myOrder.amount)}<small>Reservada para você · {myOrder.ref}</small></span><Link className="btn" href="/colecionador/aquisicoes">Acompanhar aquisição <Icon n="right" /></Link></div>
-            : a.status !== "published" ? <div className="d-buy"><span className="price">{brl(a.price)}<small>{STATUS[a.status][0]} por outro membro</small></span><Notice>Salve nos favoritos: se a reserva cair, você vê a obra voltar à vitrine.</Notice></div>
+            : a.status !== "published" ? <div className="d-buy"><span className="price">{brl(a.price)}<small>{a.status === "sold" ? "Vendida" : "Comprada por outro membro"}</small></span><Notice>{a.status === "sold" ? "O original já foi para a casa de alguém." : "Se o pagamento não sair em 3 dias, ela volta pra galeria. Salve nos favoritos pra ver."}</Notice></div>
             : <>
               <StickyBuy price={brl(a.price)} />
               <div className="d-buy" id="comprar">
                 <p className="ob-price">{brl(a.price)}<small>Preço definido pela artista{ar.accepts_offers ? " · aceita propostas" : " · preço fixo"}{a.ship_included ? " · frete incluso" : ""}</small></p>
-                <ActButton action="reserveWork" args={[a.id]} ok="Obra reservada para você." go="/colecionador/aquisicoes"
-                  confirm={<>Reservar <b>{a.title}</b> por {brl(a.price)}? A obra sai da vitrine e você tem 48 h para concluir o pagamento em custódia.</>}>Reservar pelo preço <Icon n="right" /></ActButton>
+                <ActButton action="reserveWork" args={[a.id]} ok="Obra comprada! Você tem 3 dias para pagar." go="/colecionador/aquisicoes"
+                  confirm={<>Comprar <b>{a.title}</b> por {brl(a.price)}? A obra sai da galeria e fica guardada pra você por 3 dias. Se o pagamento não for feito nesse prazo, ela volta pra galeria.</>}>Comprar · {brl(a.price)} <Icon n="right" /></ActButton>
               </div>
               {ar.accepts_offers || mine ? <div className="offer" id="oferta">
                 <p className="lab" style={{ color: "var(--ink)" }}>{mine ? `Negociação ${mine.ref} · ${PSTATUS[mine.status][0]}` : "Ou faça uma proposta"}</p>

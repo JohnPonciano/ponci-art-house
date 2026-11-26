@@ -75,3 +75,38 @@ select pg_temp.espera_erro($$select public.admin_post_as_ponci('t','b','geral','
 select pg_temp.confere(public.admin_post_as_ponci('Aviso','Texto do aviso.','agenda_invalida','[{"path":"/comunidade/oficial/boas-vindas-1.jpg","w":1080,"h":1350}]') is not null, 'admin publica como PONCI');
 reset role;
 select pg_temp.confere((select topic='geral' from public.posts where title='Aviso'), 'espaço inválido vira Conversa');
+
+-- ===== compra simples: assinatura automática da artista e prazo de 3 dias =====
+set session_replication_role = replica;
+insert into public.works(id,slug,artist_id,title,year,cat,medium,h,w,price,status,description) values
+ ('00000000-0000-0000-0000-00000000dd01','compra-simples','00000000-0000-0000-0000-0000000000a1','Compra simples',2026,'painting','Óleo',50,40,7000,'published','{"D."}');
+set session_replication_role = origin;
+select pg_temp.como('00000000-0000-0000-0000-0000000000b1','colecionadora@demo.ponci.art');
+set role authenticated;
+select public.reserve_work('00000000-0000-0000-0000-00000000dd01');
+reset role;
+select pg_temp.confere((select count(*) = 3 and bool_or(party = 'artista' and method = 'automatica') from public.contract_signatures s join public.contracts c on c.id = s.contract_id join public.orders o on o.id = c.order_id where o.work_id = '00000000-0000-0000-0000-00000000dd01'),
+  'compra pelo preço: artista assina automaticamente');
+select pg_temp.confere((select pay_until between now() + interval '71 hours' and now() + interval '73 hours' from public.orders where work_id = '00000000-0000-0000-0000-00000000dd01'), 'prazo de pagamento de 3 dias');
+select pg_temp.como('00000000-0000-0000-0000-0000000000b1','colecionadora@demo.ponci.art');
+set role authenticated;
+select pg_temp.confere(public.advance_order((select id from public.orders where work_id = '00000000-0000-0000-0000-00000000dd01')) = 1, 'comprador já pode pagar sem esperar a artista');
+reset role;
+-- outra compra não paga vence e a obra volta para a galeria
+set session_replication_role = replica;
+insert into public.works(id,slug,artist_id,title,year,cat,medium,h,w,price,status,description) values
+ ('00000000-0000-0000-0000-00000000dd02','vence','00000000-0000-0000-0000-0000000000a1','Vence',2026,'painting','Óleo',50,40,7000,'published','{"D."}');
+set session_replication_role = origin;
+select pg_temp.como('00000000-0000-0000-0000-0000000000b1','colecionadora@demo.ponci.art');
+set role authenticated;
+select public.reserve_work('00000000-0000-0000-0000-00000000dd02');
+reset role;
+select pg_temp.confere((select status = 'reserved' from public.works where id = '00000000-0000-0000-0000-00000000dd02'), 'comprada: sai da galeria');
+select pg_temp.confere(public.expire_unpaid_orders() = 0, 'dentro do prazo nada vence');
+update public.orders set pay_until = now() - interval '1 minute' where work_id = '00000000-0000-0000-0000-00000000dd02';
+select pg_temp.confere(public.expire_unpaid_orders() = 1, 'depois de 3 dias sem pagamento, vence');
+select pg_temp.confere((select w.status = 'published' and o.cancelled_at is not null and o.cancel_reason like 'Pagamento não feito em 3 dias%'
+  from public.works w join public.orders o on o.work_id = w.id where w.id = '00000000-0000-0000-0000-00000000dd02'), 'obra volta para a galeria e pedido fica cancelado com motivo');
+select pg_temp.confere((select status = 'reserved' from public.works where id = '00000000-0000-0000-0000-00000000dd01'), 'compra paga não é afetada');
+-- arquivo de impressão do cadastro precisa estar na pasta da artista
+select pg_temp.espera_erro($$update public.works set print_master_path = 'outra/pasta/x.jpg' where id = '00000000-0000-0000-0000-00000000dd01'$$, 'works_print_master_owner_ck', 'arquivo de impressão só na pasta da artista');

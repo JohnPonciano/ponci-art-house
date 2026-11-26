@@ -17,6 +17,7 @@ export type Work = {
   edition: string | null; price: number; description: string[]; status: string; gen: any; image_path: string | null;
   img_w: number | null; img_h: number | null; created_at: string; artist_id: string; reproduction?: boolean;
   curation_note?: string | null; changes_requested_at?: string | null; depth_cm?: number | null; weight_kg?: number | null; ship_included?: boolean; prints?: boolean;
+  prints_wanted?: boolean; print_master_path?: string | null; print_master_w?: number | null; print_master_h?: number | null;
   artist?: { id: string; display_name: string; city: string; practice: string; bio: string; member_code?: string; accepts_offers?: boolean };
 };
 export type PEvent = { id: number; actor: string; kind: string; amount: number | null; msg: string; created_at: string };
@@ -29,7 +30,7 @@ export type OrderContract = { id: string; ref: string; sha256: string; signature
 export type Order = {
   id: string; ref: string; amount: number; via: string; stage: number; created_at: string; delivered_at: string | null; work: Work;
   paid_at?: string | null; shipped_at?: string | null; carrier?: string | null; tracking_code?: string | null;
-  cancelled_at?: string | null; cancel_reason?: string | null; payout_at?: string | null; commission_pct?: number | string | null;
+  cancelled_at?: string | null; cancel_reason?: string | null; payout_at?: string | null; commission_pct?: number | string | null; pay_until?: string | null;
   contract?: OrderContract | null;
   buyer?: { member_code: string; city: string; full_name?: string };
 };
@@ -59,7 +60,8 @@ export async function catalogue(): Promise<Work[]> {
   const po = await sb.from("print_offers").select("work_id").eq("status", "active");
   const withPrints = new Set(((po.data as any[]) || []).map((r) => r.work_id as string));
   let q = sb.from("works").select(`${WORK_COLS},${ARTIST}`).order("created_at", { ascending: false });
-  q = withPrints.size ? q.or(`status.in.(published,reserved),and(status.eq.sold,id.in.(${[...withPrints].join(",")}))`) : q.in("status", ["published", "reserved"]);
+  // original comprado (aguardando pagamento) ou vendido sai da galeria; se tiver print à venda, fica como "apenas print"
+  q = withPrints.size ? q.or(`status.eq.published,and(status.in.(reserved,sold),id.in.(${[...withPrints].join(",")}))`) : q.eq("status", "published");
   const { data } = await q;
   return ((data as any) || []).map((w: any) => ({ ...w, artist: one(w.artist), prints: withPrints.has(w.id) }));
 }

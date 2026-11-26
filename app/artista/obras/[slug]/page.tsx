@@ -57,7 +57,8 @@ export default async function ObraArtista({ params }: { params: Promise<{ slug: 
       </article>
       {a.status !== "review" && !a.reproduction && cat.ready && <section className="sub-sec" aria-labelledby="pr-t">
         <SecHead n="—" eyebrow="Reproduções autorizadas" title={<>Prints <em>{pr?.offer.status === "active" ? "à venda" : "sob demanda"}</em></>} id="pr-t" />
-        <ArtistPrints workId={a.id} userId={me.id} products={cat.products} sizes={cat.sizes} rulesReady={cat.rulesReady} saved={pr} />
+        <ArtistPrints workId={a.id} userId={me.id} products={cat.products} sizes={cat.sizes} rulesReady={cat.rulesReady} saved={pr}
+          prefill={a.print_master_path && a.print_master_w && a.print_master_h ? { path: a.print_master_path, w: a.print_master_w, h: a.print_master_h } : null} wanted={!!a.prints_wanted} />
       </section>}
       <section className="sub-sec" aria-labelledby="op-t">
         <SecHead n="—" eyebrow="Propostas para esta obra" title={props.length ? `${props.length} ${props.length === 1 ? "proposta" : "propostas"}` : <>Nenhuma <em>ainda</em></>} id="op-t" href="/artista/propostas" linkText="Todas as propostas" />

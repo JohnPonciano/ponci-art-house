@@ -20,7 +20,7 @@ export function GalleryCard({ a, fav, size = "m" }: { a: Work; fav?: boolean; si
           <h3 className="g-title">{a.title}</h3>
           <span className="g-artist">{a.artist?.display_name}</span>
           <span className="g-meta">{a.medium} · {dims(a)}</span>
-          <span className="g-price">{a.status === "sold" ? (a.prints ? "Original vendido · prints à venda" : "Vendida") : sold ? "Indisponível no momento" : brl(a.price)}</span>
+          <span className="g-price">{a.status === "published" ? brl(a.price) : a.prints ? "Apenas print disponível" : a.status === "sold" ? "Vendida" : "Indisponível no momento"}</span>
         </div>
       </Link>
       {fav != null && <FavButton workId={a.id} on={fav} title={a.title} />}

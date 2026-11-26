@@ -2098,3 +2098,55 @@ p.frete.hint{display:flex;gap:8px;align-items:flex-start;font-size:14px}p.frete.
 .nw-more{border-top:1px solid var(--hair);padding-top:12px}
 .nw-more summary{cursor:pointer;color:var(--ink);margin-bottom:8px}
 .pr-ready{border-left:3px solid var(--ocre);padding:8px 0 8px 12px;font-size:14.5px}
+/* ---------- loja: sacola, checkout, pedido ---------- */
+.buy2{display:flex;flex-direction:column;gap:10px}
+.buy2 .btn{width:100%;justify-content:space-between}
+.ck{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(300px,1fr);gap:clamp(20px,3vw,48px);align-items:start}
+.ck-items ul,.od-items ul{list-style:none;margin:0;padding:0;border-top:var(--b)}
+.ck-items li,.od-items li{display:grid;grid-template-columns:96px 1fr auto;gap:16px;align-items:start;padding:16px 0;border-bottom:1px solid var(--hair)}
+.ck-items li.off{opacity:.6}
+.ck-img{display:block;width:96px;height:96px;background:var(--slab-lt)}
+.ck-img img{width:100%;height:100%;object-fit:cover;display:block}
+.ck-info{display:flex;flex-direction:column;gap:4px;align-items:flex-start;font-size:14px;min-width:0}
+.ck-info b{font:800 18px/1.1 var(--grot);text-transform:uppercase;font-stretch:85%}
+.ck-info > span:not(.tag){color:var(--muted)}
+.ck-label{font:400 12.5px/1.4 var(--mono)}
+.ck-price{font:800 18px/1 var(--grot);font-variant-numeric:tabular-nums;white-space:nowrap}
+.ck-sum{position:sticky;top:96px;border:var(--b);background:var(--field);padding:clamp(16px,2vw,24px);display:flex;flex-direction:column;gap:14px}
+.ck-sum dl,.od-total{display:grid;grid-template-columns:1fr auto;gap:8px 16px;margin:0;font-variant-numeric:tabular-nums}
+.ck-sum dd,.od-total dd{margin:0;text-align:right}
+.ck-total{font:900 22px/1 var(--grot)!important;border-top:var(--b);padding-top:12px}
+.ck-block{border-top:1px solid var(--hair);padding-top:12px;font-size:14px;display:flex;flex-direction:column;gap:6px;align-items:flex-start}
+.ck-go{width:100%;justify-content:space-between;min-height:56px}
+.ck-trust{display:flex;gap:8px;align-items:center;font-size:13px;color:var(--muted)}
+.ck-trust .ico{width:16px;height:16px;flex:none}
+.ck-empty{border-top:var(--b);padding:clamp(28px,4vw,56px) 0;display:flex;flex-direction:column;gap:14px;align-items:flex-start}
+.ck-empty h2{font:800 clamp(1.8rem,3vw,2.6rem)/1 var(--grot);text-transform:uppercase}
+.od{padding-top:clamp(24px,4vw,56px)}
+.od-head{display:flex;flex-direction:column;gap:12px;border-bottom:var(--b);padding-bottom:clamp(20px,3vw,36px);margin-bottom:clamp(16px,2vw,24px)}
+.od-sub{max-width:64ch;font-size:16px}
+.od-pay{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.od-total{max-width:360px;margin:16px 0 0 auto;padding-top:12px}
+.od-total dt:last-of-type,.od-total dd:last-of-type{font:900 22px/1 var(--grot);border-top:var(--b);padding-top:10px}
+.mp-sec{margin-top:clamp(24px,3vw,40px)}
+.mp-sec > .lab{color:var(--ink);margin-bottom:10px}
+.mp-list{list-style:none;margin:0;padding:0;border-top:var(--b)}
+.mp-card{display:grid;grid-template-columns:auto 1fr auto auto auto;gap:14px 20px;align-items:center;padding:14px 0;border-bottom:1px solid var(--hair);color:inherit;text-decoration:none}
+.mp-card:hover{background:var(--field)}
+.mp-thumbs{display:flex}
+.mp-thumbs img{width:52px;height:52px;object-fit:cover;border:2px solid var(--paper);margin-left:-14px;background:var(--slab-lt)}
+.mp-thumbs img:first-child{margin-left:0}
+.mp-info{display:flex;flex-direction:column;gap:4px;min-width:0}
+.mp-info b{font:800 16px/1 var(--grot)}
+.mp-info span{font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mp-total{font:800 16px/1 var(--grot);font-variant-numeric:tabular-nums}
+.mp-go{display:flex;align-items:center;gap:6px;font:500 12px/1 var(--mono);text-transform:uppercase;letter-spacing:.06em}
+@media (max-width:860px){
+  .ck{grid-template-columns:1fr}
+  .ck-sum{position:static}
+  .mp-card{grid-template-columns:auto 1fr;}
+  .mp-card .tag,.mp-total,.mp-go{grid-column:2}
+}
+@media (max-width:520px){ .ck-items li,.od-items li{grid-template-columns:72px 1fr} .ck-img{width:72px;height:72px} .ck-price{grid-column:2} }
+.od-mail{display:flex;gap:8px;align-items:center;font-size:15px}.od-mail .ico{width:18px;height:18px;flex:none}
+.ck-sum dl,.od-total{column-gap:0}.ck-sum dd,.od-total dd{padding-left:16px}

@@ -30,7 +30,7 @@ export type OrderContract = { id: string; ref: string; sha256: string; signature
 export type Order = {
   id: string; ref: string; amount: number; via: string; stage: number; created_at: string; delivered_at: string | null; work: Work;
   paid_at?: string | null; shipped_at?: string | null; carrier?: string | null; tracking_code?: string | null;
-  cancelled_at?: string | null; cancel_reason?: string | null; payout_at?: string | null; commission_pct?: number | string | null; pay_until?: string | null;
+  cancelled_at?: string | null; cancel_reason?: string | null; payout_at?: string | null; commission_pct?: number | string | null; pay_until?: string | null; checkout_id?: string | null;
   contract?: OrderContract | null;
   buyer?: { member_code: string; city: string; full_name?: string };
 };

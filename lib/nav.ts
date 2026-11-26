@@ -5,5 +5,5 @@ export const ARTIST_NAV: NavItem[] = [
 ];
 export const BUYER_NAV: NavItem[] = [
   { href: "/colecionador", label: "Acervo" }, { href: "/colecionador/comunidade", label: "Comunidade" }, { href: "/colecionador/favoritos", label: "Favoritos" },
-  { href: "/colecionador/propostas", label: "Propostas" }, { href: "/colecionador/aquisicoes", label: "Aquisições" }, { href: "/conta#convites", label: "Convidar" }, { href: "/conta", label: "Conta" },
+  { href: "/colecionador/propostas", label: "Propostas" }, { href: "/colecionador/aquisicoes", label: "Meus pedidos" }, { href: "/colecionador/sacola", label: "Sacola" }, { href: "/conta#convites", label: "Convidar" }, { href: "/conta", label: "Conta" },
 ];

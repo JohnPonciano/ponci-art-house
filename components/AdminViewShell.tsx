@@ -14,6 +14,7 @@ export async function adminNav(com: string) {
     { href: "/admin/pedidos", label: "Pedidos", badge: c.reqs || undefined },
     { href: "/admin/membros", label: "Membros", badge: c.pend || undefined },
     { href: "/admin/curadoria", label: "Curadoria", badge: c.review || undefined },
+    { href: "/admin/pagamentos", label: "Pagamentos" },
     { href: "/admin/vendas", label: "Vendas", badge: sales || undefined },
     { href: "/admin/prints", label: "Prints", badge: prints || undefined },
     { href: "/admin/instagram", label: "Instagram" },

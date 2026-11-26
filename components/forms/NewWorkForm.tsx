@@ -21,7 +21,7 @@ const PRINT_MIN: [number, number] = [3508, 2480];
 
 export function NewWorkForm({ userId, pct }: { userId: string; pct: number }) {
   const router = useRouter(); const toast = useToast(); const [pending, start] = useTransition();
-  const [v, setV] = useState({ title: "", medium: "", cat: "painting", h: "", w: "", price: "", year: String(YEAR), desc: "", edition: "", repro: false, inc: false, depth: "", weight: "", prints: true });
+  const [v, setV] = useState({ title: "", medium: "", cat: "painting", h: "", w: "", price: "", year: String(YEAR), desc: "", edition: "", repro: false, inc: true, depth: "", weight: "", prints: true });
   const [err, setErr] = useState<Record<string, string>>({}); const [status, setStatus] = useState("");
   const [photo, setPhoto] = useState<{ blob: Blob; thumb: Blob; url: string; w: number; h: number; file: File; ow: number; oh: number } | null>(null);
   const [over, setOver] = useState(false);
@@ -118,7 +118,7 @@ export function NewWorkForm({ userId, pct }: { userId: string; pct: number }) {
             <Field name="w" label="Largura (cm)" inputMode="decimal" placeholder="Ex.: 80" value={v.w} onChange={on("w")} error={err.w} />
           </div>
 
-          <Field name="price" label="5 · Preço do original" placeholder="R$ 0" inputMode="numeric" aside={price ? `Você recebe ${brl(price - Math.round((price * pct) / 100))}` : ""}
+          <Field name="price" label="5 · Preço do original (com frete)" placeholder="R$ 0" inputMode="numeric" aside={price ? `Você recebe ${brl(price - Math.round((price * pct) / 100))}` : ""}
             value={v.price} onChange={on("price")} onBlur={() => price && setV({ ...v, price: brl(price) })} error={err.price} />
 
           {!v.repro && <label className="check nw-prints"><input type="checkbox" checked={v.prints} onChange={(e) => setV({ ...v, prints: e.target.checked })} />
@@ -134,8 +134,7 @@ export function NewWorkForm({ userId, pct }: { userId: string; pct: number }) {
             </div>
             <Field as="textarea" name="desc" rows={3} label="Sobre a obra" placeholder="O que ela investiga, como foi feita… (ajuda a curadoria e quem compra)" value={v.desc} onChange={on("desc")} />
             <Field name="edition" label="Edição" placeholder="Obra única" value={v.edition} onChange={on("edition")} />
-            <label className="check"><input type="checkbox" checked={v.inc} onChange={(e) => setV({ ...v, inc: e.target.checked })} />
-              <span><b>Frete incluso no preço.</b> Desmarcado, quem compra paga o frete. Você embala e despacha (<a href="/guia-de-envio" target="_blank" style={{ textDecoration: "underline" }}>guia</a>).</span></label>
+            <p className="hint"><b>Frete grátis para quem compra:</b> o preço já inclui o envio. Você embala e despacha com rastreio (<a href="/guia-de-envio" target="_blank" style={{ textDecoration: "underline" }}>guia de embalagem</a>).</p>
             <div className="two">
               <Field name="depth" label="Profundidade (cm)" inputMode="numeric" placeholder="Ex.: 4" value={v.depth} onChange={on("depth")} />
               <Field name="weight" label="Peso embalada (kg)" inputMode="decimal" placeholder="Ex.: 3,5" value={v.weight} onChange={on("weight")} />

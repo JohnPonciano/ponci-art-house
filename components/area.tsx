@@ -83,7 +83,8 @@ export function OrderBlock({ o, side }: { o: Order; side: "artist" | "buyer" }) 
         <ContractStrip o={o} side={side} />
         {o.stage >= 2 && o.carrier && <ShipInfo o={o} />}
         {!o.cancelled_at && side === "buyer" && <div className="acts">{
-          o.stage === 0 ? (!bothSigned(o) ? <span className="hint">O pagamento libera depois que as duas partes assinarem o contrato.</span> : <>
+          o.stage === 0 && o.checkout_id ? <span className="hint">Aguardando o pagamento do pedido (em Pedidos, acima).</span>
+          : o.stage === 0 ? (!bothSigned(o) ? <span className="hint">O pagamento libera depois que as duas partes assinarem o contrato.</span> : <>
             <ActButton action="advanceOrder" args={[o.id]} ok="Pagamento em custódia confirmado." className="btn sm">Pagar em custódia <Icon n="right" /></ActButton>
             <span className="hint">{o.pay_until ? `Pague até ${dateBR(o.pay_until)} às ${new Date(o.pay_until).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit", timeZone: "America/Sao_Paulo" })}. Depois disso, a obra volta para a galeria. ` : ""}O valor fica retido pela PONCI e só vai para a artista depois que você receber a obra.</span></>)
           : o.stage === 1 ? <span className="hint">Pagamento em custódia. Agora a artista embala e despacha a obra; o rastreio aparece aqui.</span>

@@ -44,8 +44,8 @@ export function PrintOrderCard({ o, side }: { o: PrintOrder & { buyer_city?: str
 
       {side === "buyer" && !off && <div className="po-acts">
         {o.status === "awaiting_payment" && <>
-          <span className="hint">As instruções de pagamento chegam no seu e-mail{o.edition === "limited" ? `; seu exemplar fica guardado até ${dateBR(o.expires_at)}` : ""}. A produção começa quando o pagamento é confirmado.</span>
-          {ask ? <span className="pr-acts"><button type="button" className="btn sm ocre" disabled={pending} onClick={() => run(() => P.cancelPrintOrder(o.id), "Pedido cancelado.")}>Cancelar pedido</button><button type="button" className="linkbtn" onClick={() => setAsk(false)}>Voltar</button></span>
+          <span className="hint">{o.checkout_id ? "Aguardando o pagamento do pedido (em Pedidos, acima)." : <>As instruções de pagamento chegam no seu e-mail{o.edition === "limited" ? `; seu exemplar fica guardado até ${dateBR(o.expires_at)}` : ""}. A produção começa quando o pagamento é confirmado.</>}</span>
+          {o.checkout_id ? null : ask ? <span className="pr-acts"><button type="button" className="btn sm ocre" disabled={pending} onClick={() => run(() => P.cancelPrintOrder(o.id), "Pedido cancelado.")}>Cancelar pedido</button><button type="button" className="linkbtn" onClick={() => setAsk(false)}>Voltar</button></span>
             : <button type="button" className="linkbtn" onClick={() => setAsk(true)}>Cancelar pedido</button>}</>}
         {o.status === "in_production" && <span className="hint">{o.signed ? "Impressão em andamento. Depois, a artista assina e despacha pra você." : "Impressão em andamento. A gráfica despacha direto pra você."}</span>}
         {o.status === "shipped" && <button type="button" className="btn sm" disabled={pending} onClick={() => run(() => P.confirmPrintReceived(o.id), "Recebimento confirmado. Aproveite o print!")}>Recebi o print <Icon n="check" /></button>}

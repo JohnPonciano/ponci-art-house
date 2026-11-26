@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { requireMember, isAdminView, myKyc } from "@/lib/supabase/server";
-import { FreteQuote } from "@/components/Frete";
+import { requireMember, isAdminView } from "@/lib/supabase/server";
 import { catalogue, favoriteIds, ordersForBuyer, proposalsForBuyer, workBySlug } from "@/lib/data";
 import { Slab, Notice, KindBadges } from "@/components/ui";
 import { GalleryCard, Room } from "@/components/Gallery";
@@ -15,6 +14,7 @@ import { Zoomable } from "@/components/Lightbox";
 import { SwipeNav, StickyBuy } from "@/components/Explore";
 import { BuyerPrints } from "@/components/prints/BuyerPrints";
 import { BuyModes } from "@/components/prints/BuyModes";
+import { BuyButtons } from "@/components/shop/BuyButtons";
 import { brlCents } from "@/lib/format";
 import { printOptions, workIsDemo } from "@/lib/prints";
 import { brl, catNo, CAT, dateBR, dims, dimsIn, EVENT_LABEL, firstName, PSTATUS, STATUS } from "@/lib/format";
@@ -34,20 +34,18 @@ export default async function ObraColecionador({ params }: { params: Promise<{ s
   const i = cat.findIndex((x) => x.id === a.id);
   const prev = i >= 0 && cat.length > 1 ? cat[(i - 1 + cat.length) % cat.length] : null, next = i >= 0 && cat.length > 1 ? cat[(i + 1) % cat.length] : null;
   const rel = [...cat.filter((x) => x.artist_id === a.artist_id && x.id !== a.id), ...cat.filter((x) => x.artist_id !== a.artist_id && x.cat === a.cat && x.id !== a.id)].slice(0, 8);
-  const kyc = prints.length ? await myKyc() : null;
   const demoWork = prints.length ? await workIsDemo(a.id) : false;
   const canBuyPrint = !demoWork || me.email.endsWith("@demo.ponci.art");
-  const shipTo = kyc?.completed_at && kyc.street && kyc.cep ? `${kyc.street}, ${kyc.number || "s/n"}${kyc.complement ? ` · ${kyc.complement}` : ""} · ${kyc.city}/${kyc.uf} · CEP ${kyc.cep}` : null;
   const originalBuy = (<>
           {adm ? <div className="d-buy"><p className="ob-price">{brl(a.price)}<small>{STATUS[a.status][0]} · {ar.accepts_offers ? "aceita propostas" : "preço fixo"}</small></p><Notice icon="shield">Você está vendo como admin. Reserva, propostas e favoritos ficam com os membros.</Notice><a className="btn ghost" href={`/admin/curadoria`}>Abrir na curadoria <Icon n="right" /></a></div>
             : myOrder ? <div className="d-buy"><span className="price">{brl(myOrder.amount)}<small>Reservada para você · {myOrder.ref}</small></span><Link className="btn" href="/colecionador/aquisicoes">Acompanhar aquisição <Icon n="right" /></Link></div>
             : a.status !== "published" ? <div className="d-buy"><span className="price">{brl(a.price)}<small>{a.status === "sold" ? "Vendida" : "Comprada por outro membro"}</small></span><Notice>{a.status === "sold" ? "O original já foi para a casa de alguém." : "Se o pagamento não sair em 3 dias, ela volta pra galeria. Salve nos favoritos pra ver."}</Notice></div>
             : <>
-              <StickyBuy price={brl(a.price)} />
+              <StickyBuy price={brl(a.price)} label="Comprar" />
               <div className="d-buy" id="comprar">
-                <p className="ob-price">{brl(a.price)}<small>Preço definido pela artista{ar.accepts_offers ? " · aceita propostas" : " · preço fixo"}{a.ship_included ? " · frete incluso" : ""}</small></p>
-                <ActButton action="reserveWork" args={[a.id]} ok="Obra comprada! Você tem 3 dias para pagar." go="/colecionador/aquisicoes"
-                  confirm={<>Comprar <b>{a.title}</b> por {brl(a.price)}? A obra sai da galeria e fica guardada pra você por 3 dias. Se o pagamento não for feito nesse prazo, ela volta pra galeria.</>}>Comprar · {brl(a.price)} <Icon n="right" /></ActButton>
+                <p className="ob-price">{brl(a.price)}<small>Obra original · peça única · frete grátis{ar.accepts_offers ? " · aceita propostas" : ""}</small></p>
+                <BuyButtons kind="original" work={a.id} price={brl(a.price)} title={a.title} />
+                <p className="hint">Frete grátis para todo o Brasil. Depois da compra, você tem 3 dias para pagar; a obra fica guardada pra você.</p>
               </div>
               {ar.accepts_offers || mine ? <div className="offer" id="oferta">
                 <p className="lab" style={{ color: "var(--ink)" }}>{mine ? `Negociação ${mine.ref} · ${PSTATUS[mine.status][0]}` : "Ou faça uma proposta"}</p>
@@ -57,7 +55,7 @@ export default async function ObraColecionador({ params }: { params: Promise<{ s
                 <p className="hint">A artista vê seu código de membro ({me.member_code}) e sua cidade. Seu nome só é revelado se a venda for fechada.</p></>
                   : <p className="hint">A artista passou a trabalhar com preço fixo. Novas propostas não são aceitas.</p>}
               </div> : null}
-              {a.ship_included ? <p className="frete hint"><Icon n="truck" /> <span><b>Frete incluso no preço.</b> A artista embala e envia com seguro, sem custo extra pra você.</span></p> : <FreteQuote workId={a.id} cep={(await myKyc())?.cep || ""} />}
+              <p className="frete hint"><Icon n="truck" /> <span><b>Frete grátis.</b> A artista embala e envia com seguro, com rastreio.</span></p>
             </>}
   </>);
   return (
@@ -75,7 +73,7 @@ export default async function ObraColecionador({ params }: { params: Promise<{ s
             <p className="ob-line">{a.medium} · {dims(a)}</p>
           </header>
           <section className="ob-buy" aria-label="Aquisição">
-          {prints.length > 0 && !adm ? <BuyModes original={originalBuy} print={<BuyerPrints options={prints} artist={ar.display_name} shipTo={shipTo} demo={demoWork} canBuy={canBuyPrint} />}
+          {prints.length > 0 && !adm ? <BuyModes original={originalBuy} print={<BuyerPrints options={prints} artist={ar.display_name} workId={a.id} demo={demoWork} canBuy={canBuyPrint} />}
             initial={a.status === "published" || myOrder ? "original" : "print"}
             originalLabel={myOrder ? "Reservada para você" : a.status === "published" ? `Peça única · ${brl(a.price)}` : a.status === "sold" ? "Vendida" : "Reservada"}
             printLabel={`A partir de ${brlCents(Math.min(...prints.map((x) => x.price_cents)))}`} /> : originalBuy}

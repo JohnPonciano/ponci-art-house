@@ -80,7 +80,7 @@ export type PrintOrder = {
   edition: "open" | "limited"; edition_max: number | null; edition_no: number | null; signed: boolean; numbered: boolean; status: PrintOrderStatus;
   carrier: string | null; tracking_code: string | null; expires_at: string; paid_at: string | null; shipped_at: string | null; delivered_at: string | null;
   cancelled_at: string | null; cancel_reason: string | null; payout_at: string | null; created_at: string; sent_to_supplier_at?: string | null; supplier_ref?: string | null;
-  ship_to: Record<string, string> | null; work?: { title: string; slug: string; image_path: string | null; artist?: { display_name: string; member_code: string } | null } | null;
+  ship_to: Record<string, string> | null; checkout_id?: string | null; work?: { title: string; slug: string; image_path: string | null; artist?: { display_name: string; member_code: string } | null } | null;
 };
 const one = (x: any) => (Array.isArray(x) ? x[0] : x) ?? null;
 

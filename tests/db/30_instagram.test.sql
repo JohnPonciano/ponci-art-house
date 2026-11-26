@@ -35,6 +35,8 @@ select pg_temp.espera_erro($$select public.admin_ig_save(null, array['https://po
 reset role;
 select pg_temp.confere((select count(*)=1 from vault.secrets where name='ig_access_token'), 'token guardado no cofre');
 
+-- independe da data do dia: tudo que está na fila vai para o futuro; cada teste traz o seu post para agora
+update public.ig_posts set publish_at = now() + interval '30 days' where status = 'scheduled';
 -- ===== post simples: do container ao link =====
 update public.ig_posts set publish_at = now() - interval '1 minute' where label = 'Conhece alguém que pinta demais?';
 select public.ig_tick();

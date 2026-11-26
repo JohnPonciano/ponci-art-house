@@ -2081,3 +2081,8 @@ p.frete.hint{display:flex;gap:8px;align-items:flex-start;font-size:14px}p.frete.
 .pa-ordem{display:flex;flex-direction:column;gap:10px;width:100%}
 .pa-ordem pre{white-space:pre-wrap;font:400 13px/1.5 var(--mono);background:var(--field);border:1px solid var(--hair);padding:12px;margin:0;max-width:720px;overflow-wrap:anywhere}
 .obp-demo{font-size:14px;border-left:3px solid var(--ocre);padding:8px 0 8px 12px}
+/* escala dinâmica: original × print */
+.scale rect,.scale image{transition:x .35s var(--ease),y .35s var(--ease),width .35s var(--ease),height .35s var(--ease)}
+.sc-paper{fill:#FBFAF7;stroke:var(--hair);stroke-width:.6}
+.scale.is-print .sc-work.img{stroke:var(--hair)}
+.scale figcaption b{color:var(--ink);font-weight:600}

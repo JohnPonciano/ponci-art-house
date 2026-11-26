@@ -5,7 +5,7 @@ import { FreteQuote } from "@/components/Frete";
 import { catalogue, favoriteIds, ordersForBuyer, proposalsForBuyer, workBySlug } from "@/lib/data";
 import { Slab, Notice, KindBadges } from "@/components/ui";
 import { GalleryCard, Room } from "@/components/Gallery";
-import { Scale } from "@/components/Scale";
+import { ScaleLive } from "@/components/ScaleLive";
 import { FollowBtn } from "@/components/diary-client";
 import { myFollows } from "@/lib/diary";
 import { initials } from "@/lib/format";
@@ -97,7 +97,7 @@ export default async function ObraColecionador({ params }: { params: Promise<{ s
           </section>
           <section className="ob-scale" aria-label="Em escala">
             <p className="lab">Em escala</p>
-            <Scale a={a} />
+            <ScaleLive a={a} />
           </section>
           <section className="ob-artist" aria-label="Sobre a artista">
             <span className="ob-av" aria-hidden="true">{initials(ar.display_name)}</span>

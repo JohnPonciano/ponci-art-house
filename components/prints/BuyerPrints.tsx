@@ -1,5 +1,6 @@
 "use client";
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
+import { setScalePaper } from "@/components/ScaleLive";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/Toast";
@@ -18,6 +19,9 @@ export function BuyerPrints({ options, artist, shipTo, canBuy = true, demo = fal
     toast(`Pedido ${r.data!.ref} feito. As instruções de pagamento chegam no seu e-mail.`); router.push("/colecionador/aquisicoes#prints");
   });
   const o = options[0], cur = options[sel];
+  // o boneco de escala da página acompanha o tamanho escolhido; ao sair do print, volta para a obra original
+  useEffect(() => { setScalePaper({ w: cur.w_cm, h: cur.h_cm, label: cur.label }); }, [cur.w_cm, cur.h_cm, cur.label]);
+  useEffect(() => () => setScalePaper(null), []);
   const edition = o.edition === "limited"
     ? `Edição limitada de ${o.edition_max}${o.remaining != null ? ` · ${o.remaining === 1 ? "resta 1" : `restam ${o.remaining}`}` : ""}`
     : "Edição aberta";

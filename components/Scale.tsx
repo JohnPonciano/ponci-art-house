@@ -9,8 +9,10 @@ export function Scale({ a, paper }: { a: { h: number; w: number; title: string; 
   const land = a.w > a.h;
   const pw = paper ? (land ? Math.max(paper.w, paper.h) : Math.min(paper.w, paper.h)) : a.w;
   const ph = paper ? (land ? Math.min(paper.w, paper.h) : Math.max(paper.w, paper.h)) : a.h;
-  const P = 170, floor = 232, W = Math.max(300, pw + 150), H = 250;
-  const cy = Math.max(ph / 2 + 8, Math.min(150, floor - ph / 2 - 12));   // centro na altura dos olhos, sem sair da parede
+  // 1 unidade = 1 cm. Parede cresce para obras muito altas; o centro da obra fica a 1,50 m do chão (padrão de galeria),
+  // a não ser que a obra seja alta demais para isso (aí ela encosta a 10 cm do chão).
+  const P = 170, H = Math.max(250, ph + 40, 150 + ph / 2 + 26), floor = H - 18, W = Math.max(300, pw + 150);
+  const cy = Math.min(floor - ph / 2 - 10, Math.max(ph / 2 + 8, floor - 150));
   const ax = 20, ay = floor - (floor - cy) - ph / 2, px = Math.min(W - 40, ax + pw + 55);
   // imagem dentro do papel, sem corte, com margem de ~6% do lado menor
   const m = paper ? Math.min(pw, ph) * 0.06 : 0, r = a.w / a.h;

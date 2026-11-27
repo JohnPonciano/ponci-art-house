@@ -6,8 +6,9 @@ import { SaleActions } from "@/components/admin-client";
 import { ArtImage } from "@/components/ArtImage";
 import { Icon } from "@/components/Icon";
 import { brl, dateBR, commissionOf, netOf, fmtPct, orderPct } from "@/lib/format";
+import { PedidosTabs } from "@/components/admin-tabs";
 
-export const metadata = { title: "Vendas" };
+export const metadata = { title: "Pedidos · Originais" };
 
 const FILTERS: [string, string][] = [
   ["attention", "Precisa de atenção"], ["awaiting", "Aguardando pagamento"], ["toship", "Para despachar"], ["transit", "Em transporte"],
@@ -41,8 +42,9 @@ export default async function Vendas({ searchParams }: { searchParams: Promise<{
   const n = (k: string) => (k === "all" ? all.length : k === "attention" ? att.length : all.filter((o) => o.st.key === k).length);
   return (
     <div className="wrap">
-      <PageHead title="Vendas" label="Pedidos e repasses" intro="Cada venda, do contrato ao repasse. Prazos: pagamento em 3 dias (sem pagamento, o pedido cai sozinho e a obra volta para a galeria), envio em 5 dias úteis, 7 dias de arrependimento depois da entrega."
+      <PageHead title="Pedidos" label="Obras originais" intro="Cada venda, do contrato ao repasse. Prazos: pagamento em 3 dias (sem pagamento, o pedido cai sozinho e a obra volta para a galeria), envio em 5 dias úteis, 7 dias de arrependimento depois da entrega."
         count={`${live.length} ${live.length === 1 ? "venda" : "vendas"}${att.length ? ` · ${att.length} com alerta` : ""}`} />
+      <PedidosTabs cur="originais" />
       <div className="stats" style={{ ["--n" as any]: 5 }}>
         <div><span className="lab">Vendido (bruto)</span><b className="money">{brl(sum(live))}</b></div>
         <div><span className="lab">Comissão PONCI</span><b className="money">{brl(live.filter((o) => o.stage === 3).reduce((s, o) => s + commissionOf(o), 0))}</b></div>

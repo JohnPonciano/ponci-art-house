@@ -3,8 +3,9 @@ import { Icon } from "@/components/Icon";
 import { adminCheckouts } from "@/lib/shop";
 import { MpConnect, MarkPaid } from "@/components/admin-pay";
 import { brlCents, dateBR } from "@/lib/format";
+import { PedidosTabs } from "@/components/admin-tabs";
 
-export const metadata = { title: "Pagamentos" };
+export const metadata = { title: "Pedidos" };
 const ST: Record<string, [string, string]> = { awaiting_payment: ["Aguardando pagamento", "t-rev"], paid: ["Pago", "t-pub"], expired: ["Vencido", "t-closed"], cancelled: ["Cancelado", "t-declined"], problem: ["Problema", "t-declined"] };
 const ago = (iso: string) => { const m = Math.round((Date.now() - new Date(iso).getTime()) / 6e4); return m < 1 ? "agora" : m < 60 ? `há ${m} min` : m < 1440 ? `há ${Math.round(m / 60)} h` : `há ${Math.round(m / 1440)} dias`; };
 
@@ -15,8 +16,9 @@ export default async function Pagamentos() {
   const waiting = d.checkouts.filter((c) => c.status === "awaiting_payment"), problems = d.checkouts.filter((c) => c.status === "problem");
   return (
     <div className="wrap">
-      <PageHead title="Pagamentos" label="Mercado Pago" count={`${waiting.length} aguardando · ${problems.length} com problema`}
-        intro="O comprador paga com Pix ou cartão no Mercado Pago. O aviso de pagamento é conferido na API do Mercado Pago (valor e pedido) antes de liberar as obras." />
+      <PageHead title="Pedidos" label="Pagamentos" count={`${waiting.length} aguardando · ${problems.length} com problema`}
+        intro="Cada compra vira um pedido PED-. O comprador paga com Pix ou cartão no Mercado Pago; o pagamento é conferido na API (valor e pedido) antes de liberar as obras." />
+      <PedidosTabs cur="pagamentos" />
       <section className="ig-status" aria-label="Conexão">
         <div>
           <p className="lab">Conexão</p>

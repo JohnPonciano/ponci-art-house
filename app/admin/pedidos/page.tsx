@@ -11,7 +11,7 @@ export default async function Pedidos({ searchParams }: { searchParams: Promise<
   const n = (s: string) => rs.filter((r) => r.status === s).length;
   return (
     <div className="wrap">
-      <PageHead title="Pedidos" label="Pedidos de convite" intro="Quem preencheu o formulário da página principal. Ao aprovar, um código de uso único é gerado; a conta criada com ele entra já ativa." count={`${n("pending")} pendentes`} />
+      <PageHead title="Entradas" label="Pedidos de convite" intro="Quem preencheu o formulário da página principal. Ao aprovar, um código de uso único é gerado; a conta criada com ele entra já ativa." count={`${n("pending")} pendentes`} />
       <div className="filters"><div className="frow" role="group" aria-label="Situação"><span className="lab">Situação</span>
         <Chips base="/admin/pedidos" cur={f} items={[["pending", "Pendentes", n("pending")], ["approved", "Aprovados", n("approved")], ["rejected", "Recusados", n("rejected")], ["all", "Todos", rs.length]]} /></div></div>
       <div style={{ margin: "clamp(24px,3vw,40px) 0 clamp(72px,10vw,140px)" }}>

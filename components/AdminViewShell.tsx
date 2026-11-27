@@ -11,19 +11,17 @@ export async function adminNav(com: string) {
   const [c, sales, prints] = await Promise.all([counts(), salesAttention(), printAttention()]);
   const nav = [
     { href: "/admin", label: "Painel" },
-    { href: "/admin/pedidos", label: "Pedidos", badge: c.reqs || undefined },
+    { href: "/admin/pedidos", label: "Entradas", badge: c.reqs || undefined },
     { href: "/admin/membros", label: "Membros", badge: c.pend || undefined },
     { href: "/admin/curadoria", label: "Curadoria", badge: c.review || undefined },
-    { href: "/admin/pagamentos", label: "Pagamentos" },
-    { href: "/admin/vendas", label: "Vendas", badge: sales || undefined },
-    { href: "/admin/prints", label: "Prints", badge: prints || undefined },
+    { href: "/admin/pagamentos", label: "Pedidos", badge: sales + prints || undefined },
     { href: "/admin/instagram", label: "Instagram" },
     { href: "/admin/diario", label: "Moderação" },
   ];
   const view = [{ href: "/colecionador", label: "Acervo" }, { href: com, label: "Comunidade" }];
   const records = [
     { href: "/admin/solicitacoes", label: "LGPD", badge: c.sol || undefined }, { href: "/admin/compliance", label: "Compliance" },
-    { href: "/admin/convites", label: "Convites" }, { href: "/admin/regras", label: "Regras comerciais" }, { href: "/admin/documentos", label: "Documentos" }, { href: "/admin/auditoria", label: "Auditoria" },
+    { href: "/admin/convites", label: "Convites" }, { href: "/admin/prints", label: "Catálogo de prints" }, { href: "/admin/regras", label: "Regras comerciais" }, { href: "/admin/documentos", label: "Documentos" }, { href: "/admin/auditoria", label: "Auditoria" },
     { href: "/seguranca", label: "Segurança" }, { href: "/admin/conta", label: "Senha" },
   ];
   return { nav, view, records };

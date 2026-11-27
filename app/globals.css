@@ -2150,3 +2150,6 @@ p.frete.hint{display:flex;gap:8px;align-items:flex-start;font-size:14px}p.frete.
 @media (max-width:520px){ .ck-items li,.od-items li{grid-template-columns:72px 1fr} .ck-img{width:72px;height:72px} .ck-price{grid-column:2} }
 .od-mail{display:flex;gap:8px;align-items:center;font-size:15px}.od-mail .ico{width:18px;height:18px;flex:none}
 .ck-sum dl,.od-total{column-gap:0}.ck-sum dd,.od-total dd{padding-left:16px}
+.ped-tabs{display:flex;gap:0;border-bottom:var(--b);margin:clamp(16px,2vw,24px) 0}
+.ped-tabs a{padding:12px 18px;font:600 13px/1 var(--grot);text-transform:uppercase;letter-spacing:.04em;color:var(--muted);border-bottom:3px solid transparent;margin-bottom:-2px}
+.ped-tabs a[aria-current="page"]{color:var(--ink);border-bottom-color:var(--ink)}

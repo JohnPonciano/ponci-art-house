@@ -71,20 +71,6 @@ export async function artists() {
   return data || [];
 }
 
-const P_SEL = (extraWork = "") =>
-  `id,ref,status,created_at,work:works!inner(${WORK_COLS}${extraWork}),buyer:profiles!proposals_buyer_id_fkey(member_code,city),events:proposal_events(id,actor,kind,amount,msg,created_at)`;
-
-export async function proposalsForArtist(artistId: string): Promise<Proposal[]> {
-  const sb = await createClient();
-  const { data } = await sb.from("proposals").select(P_SEL()).eq("work.artist_id", artistId).order("created_at", { ascending: false });
-  return ((data as any) || []).map(normProposal);
-}
-export async function proposalsForBuyer(buyerId: string): Promise<Proposal[]> {
-  const sb = await createClient();
-  const { data } = await sb.from("proposals").select(P_SEL(`,${ARTIST}`)).eq("buyer_id", buyerId).order("created_at", { ascending: false });
-  return ((data as any) || []).map(normProposal);
-}
-
 const O_SEL = (extraWork = "") =>
   `*,work:works!inner(${WORK_COLS}${extraWork}),buyer:profiles!orders_buyer_id_fkey(member_code,city,private:profile_private(full_name)),contract:contracts(id,ref,sha256,signatures:contract_signatures(party,name,signed_at,method))`;
 function normOrder(o: any): Order {

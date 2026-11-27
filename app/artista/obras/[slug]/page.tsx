@@ -1,12 +1,9 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requireMember } from "@/lib/supabase/server";
-import { ordersForArtist, proposalsForArtist, workBySlug, currentCommissionPct } from "@/lib/data";
+import { ordersForArtist, workBySlug, currentCommissionPct } from "@/lib/data";
 import { SecHead, Slab, Tag, Notice, Reprod } from "@/components/ui";
-import { ReprodToggle } from "@/components/OffersToggle";
 import { EditWorkForm } from "@/components/forms/EditWorkForm";
-import { FreteDados } from "@/components/Frete";
-import { Ledger, ArtistProposalRow } from "@/components/area";
 import { ActButton, PriceForm } from "@/components/area-client";
 import { Icon } from "@/components/Icon";
 import { Zoomable } from "@/components/Lightbox";
@@ -22,8 +19,8 @@ export default async function ObraArtista({ params }: { params: Promise<{ slug: 
   const me = await requireMember("artist");
   const a = await workBySlug((await params).slug);
   if (!a || a.artist_id !== me.id) notFound();
-  const [ps, os, pct, cat, pr] = await Promise.all([proposalsForArtist(me.id), ordersForArtist(me.id), currentCommissionPct(), printCatalog(), myPrintOffer(a.id)]);
-  const props = ps.filter((p) => p.work.id === a.id), o = os.find((x) => x.work.id === a.id);
+  const [os, pct, cat, pr] = await Promise.all([ordersForArtist(me.id), currentCommissionPct(), printCatalog(), myPrintOffer(a.id)]);
+  const o = os.find((x) => x.work.id === a.id);
   return (
     <div className="wrap">
       <nav className="crumbs" aria-label="Trilha"><Link href="/artista">Ateliê</Link><span aria-hidden="true">/</span><Link href="/artista/obras">Obras</Link><span aria-hidden="true">/</span><span aria-current="page">{a.title}</span></nav>
@@ -37,8 +34,6 @@ export default async function ObraArtista({ params }: { params: Promise<{ slug: 
             <dt>Dimensões</dt><dd>{dims(a)}<small>{dimsIn(a)}</small></dd>
             <dt>Edição</dt><dd>{a.edition || (a.reproduction ? "Reprodução" : "Obra única")}</dd><dt>Categoria</dt><dd>{CAT[a.cat]}</dd><dt>Cadastro</dt><dd>{dateBR(a.created_at)}</dd>
           </dl>
-          {a.status !== "sold" && <ReprodToggle workId={a.id} initial={!!a.reproduction} />}
-          {a.status !== "sold" && <FreteDados workId={a.id} depth={a.depth_cm} weight={a.weight_kg} included={a.ship_included} />}
           {a.description?.length > 0 && <div className="d-desc">{a.description.map((p, i) => <p key={i}>{p}</p>)}</div>}
           {a.status === "review" && <div className="d-buy">
             <span className="price">{brl(a.price)}<small>Preço proposto</small></span>
@@ -60,10 +55,6 @@ export default async function ObraArtista({ params }: { params: Promise<{ slug: 
         <ArtistPrints workId={a.id} userId={me.id} products={cat.products} sizes={cat.sizes} rulesReady={cat.rulesReady} saved={pr}
           prefill={a.print_master_path && a.print_master_w && a.print_master_h ? { path: a.print_master_path, w: a.print_master_w, h: a.print_master_h } : null} wanted={!!a.prints_wanted} />
       </section>}
-      <section className="sub-sec" aria-labelledby="op-t">
-        <SecHead n="—" eyebrow="Propostas para esta obra" title={props.length ? `${props.length} ${props.length === 1 ? "proposta" : "propostas"}` : <>Nenhuma <em>ainda</em></>} id="op-t" href="/artista/propostas" linkText="Todas as propostas" />
-        {props.length > 0 && <Ledger empty={["", ""]}>{props.map((p) => <ArtistProposalRow key={p.id} p={p} />)}</Ledger>}
-      </section>
     </div>
   );
 }

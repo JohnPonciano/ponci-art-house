@@ -6,7 +6,7 @@ import { PendingMember } from "@/components/PendingMember";
 import { KycBanner } from "@/components/KycBanner";
 import { getMe, pendingDocs, myKyc, adminAsBuyer } from "@/lib/supabase/server";
 import { AdminViewShell } from "@/components/AdminViewShell";
-import { favoriteIds, proposalsForBuyer } from "@/lib/data";
+import { favoriteIds } from "@/lib/data";
 import { activity } from "@/lib/diary";
 import { cartCount } from "@/lib/shop";
 
@@ -24,12 +24,11 @@ export default async function ColecionadorLayout({ children }: { children: React
   if (docs.length) redirect("/aceite?next=/colecionador");
   if (me.status !== "active")
     return <AreaShell me={me} nav={[]} tag={"Área do colecionador"}><PendingMember me={me} /></AreaShell>;
-  const [ps, favs, act, bag] = await Promise.all([proposalsForBuyer(me.id), favoriteIds(me.id), activity(), cartCount(me.id)]);
-  const c = ps.filter((p) => p.status === "countered").length;
+  const [favs, act, bag] = await Promise.all([favoriteIds(me.id), activity(), cartCount(me.id)]);
   const com = communityHome((await headers()).get("host"));
   const nav = [
     { href: "/colecionador", label: "Acervo" }, { href: com, label: "Comunidade", badge: act.unseen || undefined }, { href: "/colecionador/favoritos", label: "Favoritos", badge: favs.length || undefined },
-    { href: "/colecionador/propostas", label: "Propostas", badge: c || undefined }, { href: "/colecionador/aquisicoes", label: "Meus pedidos" }, { href: "/colecionador/sacola", label: "Sacola", badge: bag || undefined },
+    { href: "/colecionador/aquisicoes", label: "Meus pedidos" }, { href: "/colecionador/sacola", label: "Sacola", badge: bag || undefined },
   ];
   return <AreaShell me={me} nav={[...nav, { href: "/conta#convites", label: "Convidar" }, { href: "/conta", label: "Conta" }]} tag="Área do colecionador">{!kyc?.completed_at && <KycBanner />}{children}</AreaShell>;
 }

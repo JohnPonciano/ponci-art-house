@@ -44,8 +44,8 @@ export default async function Home() {
             <Photo k="atelie" className="door-photo" alt="Pintor trabalhando numa tela no ateliê" pos="center 30%" />
             <div className="door-body">
               <h3>Para <em>artistas</em></h3>
-              <p>Publique obras para um público pequeno e qualificado. Você define o preço, recebe propostas e decide com quem negociar.</p>
-              <Ticks items={[["Ateliê digital", "Cadastre obras com técnica, dimensões, edição, preço e fotografia."], ["Curadoria antes da vitrine", "Cada obra é revisada antes de aparecer para os colecionadores."], ["Propostas e contrapropostas", "Aceite, recuse ou responda com outro valor, tudo registrado."], ["Repasse garantido", "O pagamento fica em custódia e é liberado na entrega."]]} />
+              <p>Publique obras para um público pequeno e qualificado. Você define o preço; a PONCI cuida do pagamento, do contrato e da vitrine.</p>
+              <Ticks items={[["Ateliê digital", "Cadastre obras com técnica, dimensões, edição, preço e fotografia."], ["Curadoria antes da vitrine", "Cada obra é revisada antes de aparecer para os colecionadores."], ["Prints sob demanda", "Libere reproduções impressas da obra e continue ganhando depois que o original for vendido."], ["Repasse garantido", "O pagamento fica em custódia e é liberado na entrega."]]} />
               <Link className="btn" href="/artista">Entrar na área do artista <Icon n="right" /></Link>
             </div>
           </article>
@@ -55,7 +55,7 @@ export default async function Home() {
             <div className="door-body">
               <h3>Para <em>colecionadores</em></h3>
               <p>Acesse obras que não estão em nenhuma outra vitrine, com preço visível, documentação completa e contato direto com quem fez.</p>
-              <Ticks items={[["Acervo fechado", "Somente membros veem preços e disponibilidade."], ["Compra direta ou proposta", "Reserve pelo preço ou, se a artista aceitar negociar, envie uma proposta."], ["Lista de interesse", "Guarde obras e acompanhe mudanças de status."], ["Procedência", "Certificado de autenticidade emitido pela rede."]]} />
+              <Ticks items={[["Acervo fechado", "Somente membros veem preços e disponibilidade."], ["Compra simples", "Original ou print, na sacola, com Pix ou cartão e frete grátis."], ["Lista de interesse", "Guarde obras e acompanhe mudanças de status."], ["Procedência", "Certificado de autenticidade emitido pela rede."]]} />
               <Link className="btn inv" href="/colecionador">Entrar na área do colecionador <Icon n="right" /></Link>
             </div>
           </article>
@@ -70,7 +70,7 @@ export default async function Home() {
             <div className="g-label"><span className="g-tags"><span className="g-no">{catNo(a.no)} · {a.year}</span><KindBadges a={{ ...a, status: "published" }} /></span><h3 className="g-title">{a.title}</h3><span className="g-artist">{a.artist_name}</span>
               <span className="g-meta">{a.medium} · {dims(a)}</span><span className="g-price locked"><Icon n="lock" /> Preço para membros</span></div>
           </Link></article>))}</Rail></div>
-        <div style={{ marginTop: 16 }}><Notice icon="lock">Preços, disponibilidade e propostas ficam visíveis apenas para membros.</Notice></div>
+        <div style={{ marginTop: 16 }}><Notice icon="lock">Preços e disponibilidade ficam visíveis apenas para membros.</Notice></div>
       </section>
 
       <section className="manifesto" id="rede" aria-labelledby="man-t"><div className="wrap">
@@ -91,7 +91,7 @@ export default async function Home() {
         <ol className="steps" style={{ marginTop: 0, borderTop: 0 }}>{[
           ["Convite", "Artistas enviam portfólio; colecionadores entram por indicação ou verificação. Todo membro é aprovado pela PONCI."],
           ["Curadoria", "A artista cadastra a obra com preço. A curadoria revisa documentação e imagens antes de publicar."],
-          ["Negociação privada", "O colecionador reserva pelo preço ou envia uma proposta. A artista aceita, recusa ou faz contraproposta."],
+          ["Compra direta", "O colecionador compra o original ou um print pela sacola e paga com Pix ou cartão. O contrato já sai assinado."],
           ["Custódia e entrega", "O pagamento fica retido até a entrega. A artista embala e despacha com seguro, você acompanha pelo rastreio e a obra chega com certificado de autenticidade."],
         ].map((s, i) => <li key={s[0]}><span className="n">{i + 1}</span><h3>{s[0]}</h3><p>{s[1]}</p></li>)}</ol>
         <div className="rules" style={{ marginTop: "clamp(36px,5vw,64px)", borderTop: "var(--b)" }}>
@@ -108,7 +108,7 @@ export default async function Home() {
           ["Por que a rede é fechada?", "Para proteger quem cria. Hoje, robôs de inteligência artificial varrem a internet copiando imagens para treinar máquinas que depois imitam o estilo dos artistas, sem pedir, sem pagar e sem dar crédito. Aqui, as obras completas só aparecem para membros, e o site barra os robôs de IA. É proteção, não elitismo: a porta é fechada para robô, não para gente. E uma rede menor ainda permite verificar quem vende, quem compra e o que é vendido."],
           ["As obras ficam protegidas de inteligência artificial?", "Fazemos o que está ao nosso alcance: o acervo completo só abre para membros logados, a vitrine pública mostra só miniaturas, os robôs de coleta das empresas de IA são barrados e a PONCI não vende nem licencia obras para treino. Nenhuma proteção na internet é absoluta, mas fechar a porta tira as obras do caminho da coleta em massa. IA é ferramenta para facilitar a vida, não para sobrescrever o trabalho de ninguém."],
           ["Quem pode ser artista na PONCI?", "Artistas com produção consistente, de qualquer estágio de carreira. A curadoria olha o trabalho, não o currículo. O convite é por portfólio."],
-          ["Como um colecionador entra?", "Por indicação de um membro ou por verificação direta de identidade. Depois disso, o acervo completo, os preços e as propostas ficam disponíveis."],
+          ["Como um colecionador entra?", "Por indicação de um membro ou por verificação direta de identidade. Depois disso, o acervo completo e os preços ficam disponíveis."],
           ["A artista sabe quem está fazendo a proposta?", "Durante a negociação, o colecionador aparece por um código verificado (ex.: COL-0105) e pela cidade. O nome é revelado às duas partes quando a venda é fechada."],
           ["Como funciona o pagamento?", "O colecionador paga à PONCI, que retém o valor em custódia. Com a entrega confirmada, o valor, menos a comissão, é repassado à artista."],
         ].map((q, i) => <details key={i}><summary><span>{pad(i + 1)}</span><b>{q[0]}</b><Icon n="plus" /></summary><p className="ans">{q[1]}</p></details>)}</div>

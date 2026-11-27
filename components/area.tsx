@@ -4,8 +4,8 @@ import { ArtImage } from "./ArtImage";
 import { Icon } from "./Icon";
 import { Slab, Tag, Empty, Reprod } from "./ui";
 import { brl, catNo, dateBR, dims, pad, STAGES, netOf } from "@/lib/format";
-import type { Order, Proposal, Work } from "@/lib/data";
-import { ActButton, ArtistProposalActions, BuyerProposalActions, CopyCode, FavButton, ShipForm, SignButton } from "./area-client";
+import type { Order, Work } from "@/lib/data";
+import { ActButton, CopyCode, FavButton, ShipForm, SignButton } from "./area-client";
 import { RequestForm } from "./forms/RequestForm";
 
 export function WorkCard({ a, href, foot, sub, fav }: { a: Work; href: string; foot: ReactNode; sub?: string; fav?: boolean | null }) {
@@ -25,44 +25,8 @@ export function WorkCard({ a, href, foot, sub, fav }: { a: Work; href: string; f
   );
 }
 
-export function Ledger({ children, empty }: { children: ReactNode[]; empty: [string, string] }) {
-  if (!children.length) return <Empty sm title={empty[0]} body={empty[1]} />;
-  return <div className="ledger"><div className="lrow head"><span>Ref.</span><span>Obra</span><span></span><span>Mensagem</span><span>Valor</span><span>Ação</span></div>{children}</div>;
-}
 
-export function ArtistProposalRow({ p }: { p: Proposal }) {
-  const a = p.work, diff = Math.round((p.current / a.price - 1) * 100);
-  return (
-    <div className="lrow">
-      <span className="l-ref">{p.ref}<small>{dateBR(p.created_at)}</small></span>
-      <Link className="l-thumb" href={`/artista/obras/${a.slug}`} aria-hidden="true" tabIndex={-1}><ArtImage a={a} max={240} /></Link>
-      <span className="l-main"><Link href={`/artista/obras/${a.slug}`}><b>{a.title}</b></Link>{a.reproduction && <Reprod a={a} />}<span>{p.buyer?.member_code} · {p.buyer?.city}</span><span>{p.last?.actor === "artist" ? "Você respondeu" : p.last?.actor === "system" ? "Sistema" : "Colecionador"} · {dateBR(p.last?.created_at)}</span></span>
-      <span className="l-msg">{p.last?.msg ? `“${p.last.msg}”` : ""}</span>
-      <span className="l-val">{brl(p.current)}<small>{p.last?.actor === "artist" ? "Sua contraproposta" : "Oferta"}</small><small>{diff >= 0 ? "+" : ""}{diff}% do preço ({brl(a.price)})</small></span>
-      <span className="l-act">{p.status === "open" ? <ArtistProposalActions id={p.id} current={p.current} price={a.price} /> : <>
-        <Tag s={p.status} kind="proposal" />{p.status === "countered" && <span className="hint">Aguardando o colecionador.</span>}
-        {p.status === "accepted" && <Link className="linkbtn" href="/artista/vendas">Ver venda</Link>}</>}</span>
-    </div>
-  );
-}
 
-export function BuyerProposalRow({ p }: { p: Proposal }) {
-  const a = p.work;
-  return (
-    <div className="lrow">
-      <span className="l-ref">{p.ref}<small>{dateBR(p.created_at)}</small></span>
-      <Link className="l-thumb" href={`/colecionador/obras/${a.slug}`} aria-hidden="true" tabIndex={-1}><ArtImage a={a} max={240} /></Link>
-      <span className="l-main"><Link href={`/colecionador/obras/${a.slug}`}><b>{a.title}</b></Link>{a.reproduction && <Reprod a={a} />}<span>{a.artist?.display_name}</span><span>{p.last?.actor === "artist" ? "Artista respondeu" : p.last?.actor === "system" ? "Sistema" : "Você"} · {dateBR(p.last?.created_at)}</span></span>
-      <span className="l-msg">{p.last?.msg ? `“${p.last.msg}”` : ""}</span>
-      <span className="l-val">{brl(p.current)}<small>{p.last?.actor === "artist" ? "Contraproposta" : "Sua oferta"}</small><small>Preço: {brl(a.price)}</small></span>
-      <span className="l-act">
-        {(p.status === "open" || p.status === "countered") && <Tag s={p.status} kind="proposal" />}
-        {p.status === "open" || p.status === "countered" ? <BuyerProposalActions id={p.id} status={p.status} current={p.current} slug={a.slug} />
-          : <><Tag s={p.status} kind="proposal" />{p.status === "accepted" && <Link className="linkbtn" href="/colecionador/aquisicoes">Ver aquisição</Link>}</>}
-      </span>
-    </div>
-  );
-}
 
 export function OrderBlock({ o, side }: { o: Order; side: "artist" | "buyer" }) {
   const a = o.work;
@@ -73,7 +37,7 @@ export function OrderBlock({ o, side }: { o: Order; side: "artist" | "buyer" }) 
         <div className="top">
           <div><b>{a.title}</b>{a.reproduction && <> <Reprod a={a} /></>}
             {side === "buyer" && <span>{a.artist?.display_name} · {a.year} · {dims(a)}</span>}
-            <span>{o.ref} · {dateBR(o.created_at)} · {o.via === "direct" ? "Compra pelo preço" : "Proposta aceita"}</span>
+            <span>{o.ref} · {dateBR(o.created_at)} · {o.checkout_id ? "Compra pela sacola" : "Compra direta"}</span>
             {side === "artist" && <span>Colecionador: {o.buyer?.full_name || "—"} ({o.buyer?.member_code}) · {o.buyer?.city}</span>}</div>
           <div className="price" style={{ textAlign: "right" }}>{brl(o.amount)}<small>{side === "artist" ? `Líquido para você: ${brl(netOf(o))}` : o.stage === 0 ? "Aguardando pagamento" : o.stage < 3 ? "Em custódia" : "Concluída"}</small></div>
         </div>
@@ -84,9 +48,7 @@ export function OrderBlock({ o, side }: { o: Order; side: "artist" | "buyer" }) 
         {o.stage >= 2 && o.carrier && <ShipInfo o={o} />}
         {!o.cancelled_at && side === "buyer" && <div className="acts">{
           o.stage === 0 && o.checkout_id ? <span className="hint">Aguardando o pagamento do pedido (em Pedidos, acima).</span>
-          : o.stage === 0 ? (!bothSigned(o) ? <span className="hint">O pagamento libera depois que as duas partes assinarem o contrato.</span> : <>
-            <ActButton action="advanceOrder" args={[o.id]} ok="Pagamento em custódia confirmado." className="btn sm">Pagar em custódia <Icon n="right" /></ActButton>
-            <span className="hint">{o.pay_until ? `Pague até ${dateBR(o.pay_until)} às ${new Date(o.pay_until).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit", timeZone: "America/Sao_Paulo" })}. Depois disso, a obra volta para a galeria. ` : ""}O valor fica retido pela PONCI e só vai para a artista depois que você receber a obra.</span></>)
+          : o.stage === 0 ? <span className="hint">Aguardando pagamento{o.pay_until ? ` até ${dateBR(o.pay_until)}` : ""}: a PONCI envia as instruções por e-mail. Depois disso, sem pagamento, a obra volta para a galeria.</span>
           : o.stage === 1 ? <span className="hint">Pagamento em custódia. Agora a artista embala e despacha a obra; o rastreio aparece aqui.</span>
           : o.stage === 2 ? <>
             <ActButton action="advanceOrder" args={[o.id]} ok="Recebimento confirmado. Certificado emitido." className="btn sm"

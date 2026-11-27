@@ -119,3 +119,10 @@ select pg_temp.espera_erro($$select public.checkout_create(null, null, null)$$, 
 select pg_temp.espera_erro($$select public.checkout_status(gen_random_uuid())$$, 'não encontrado', 'não vê pedido de outra pessoa');
 reset role;
 select pg_temp.confere((select ship_included from public.works where slug = 'loja-1') is not null and (select column_default like 'true%' from information_schema.columns where table_name = 'works' and column_name = 'ship_included'), 'frete incluso é o padrão das obras novas');
+
+-- ===== propostas desativadas =====
+select pg_temp.confere((select count(*) = 0 from public.proposals where status in ('open','countered')), 'nenhuma negociação aberta');
+select pg_temp.como('00000000-0000-0000-0000-0000000000b1','colecionadora@demo.ponci.art');
+set role authenticated;
+select pg_temp.espera_erro($$select public.make_proposal('00000000-0000-0000-0000-00000000ee03', 4000, 'oi')$$, 'preço fixo', 'nova proposta é recusada');
+reset role;

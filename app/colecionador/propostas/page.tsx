@@ -1,21 +1,3 @@
-import { requireMember } from "@/lib/supabase/server";
-import { proposalsForBuyer } from "@/lib/data";
-import { PageHead } from "@/components/ui";
-import { Ledger, BuyerProposalRow } from "@/components/area";
-
-export const metadata = { title: "Propostas" };
-
-export default async function Propostas() {
-  const me = await requireMember("buyer");
-  const ps = await proposalsForBuyer(me.id);
-  return (
-    <div className="wrap">
-      <PageHead title="Propostas" label="Negociação privada" intro="Acompanhe o que você ofereceu e responda às contrapropostas das artistas."
-        count={(() => { const c = ps.filter((p) => p.status === "countered").length, o = ps.filter((p) => p.status === "open").length;
-          return <>{c} {c === 1 ? "contraproposta" : "contrapropostas"} para responder<br />{o} {o === 1 ? "aguarda" : "aguardam"} a artista</>; })()} />
-      <div style={{ margin: "clamp(28px,4vw,48px) 0 clamp(72px,10vw,140px)" }}>
-        <Ledger empty={["Nenhuma proposta ainda.", "Abra uma obra do acervo para fazer a primeira."]}>{ps.map((p) => <BuyerProposalRow key={p.id} p={p} />)}</Ledger>
-      </div>
-    </div>
-  );
-}
+import { redirect } from "next/navigation";
+// Propostas foram desativadas: a PONCI trabalha com preço fixo (comprar agora / sacola).
+export default function Propostas() { redirect("/colecionador/aquisicoes"); }

@@ -1,14 +1,14 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requireMember, isAdminView } from "@/lib/supabase/server";
-import { catalogue, favoriteIds, ordersForBuyer, proposalsForBuyer, workBySlug } from "@/lib/data";
+import { catalogue, favoriteIds, ordersForBuyer, workBySlug } from "@/lib/data";
 import { Slab, Notice, KindBadges } from "@/components/ui";
 import { GalleryCard, Room } from "@/components/Gallery";
 import { ScaleLive } from "@/components/ScaleLive";
 import { FollowBtn } from "@/components/diary-client";
 import { myFollows } from "@/lib/diary";
 import { initials } from "@/lib/format";
-import { ActButton, FavButton, OfferForm } from "@/components/area-client";
+import { ActButton, FavButton } from "@/components/area-client";
 import { Icon } from "@/components/Icon";
 import { Zoomable } from "@/components/Lightbox";
 import { SwipeNav, StickyBuy } from "@/components/Explore";
@@ -27,8 +27,7 @@ export default async function ObraColecionador({ params }: { params: Promise<{ s
   const me = await requireMember("buyer");
   const a = await workBySlug((await params).slug);
   if (!a || a.status === "review") notFound();
-  const [ps, os, favs, cat, follows, prints] = await Promise.all([proposalsForBuyer(me.id), ordersForBuyer(me.id), favoriteIds(me.id), catalogue(), myFollows(me.id), printOptions(a.id)]);
-  const mine = ps.find((p) => p.work.id === a.id && (p.status === "open" || p.status === "countered"));
+  const [os, favs, cat, follows, prints] = await Promise.all([ordersForBuyer(me.id), favoriteIds(me.id), catalogue(), myFollows(me.id), printOptions(a.id)]);
   const myOrder = os.find((o) => o.work.id === a.id);
   const ar = a.artist!; const adm = isAdminView(me);
   const i = cat.findIndex((x) => x.id === a.id);
@@ -37,24 +36,16 @@ export default async function ObraColecionador({ params }: { params: Promise<{ s
   const demoWork = prints.length ? await workIsDemo(a.id) : false;
   const canBuyPrint = !demoWork || me.email.endsWith("@demo.ponci.art");
   const originalBuy = (<>
-          {adm ? <div className="d-buy"><p className="ob-price">{brl(a.price)}<small>{STATUS[a.status][0]} · {ar.accepts_offers ? "aceita propostas" : "preço fixo"}</small></p><Notice icon="shield">Você está vendo como admin. Reserva, propostas e favoritos ficam com os membros.</Notice><a className="btn ghost" href={`/admin/curadoria`}>Abrir na curadoria <Icon n="right" /></a></div>
+          {adm ? <div className="d-buy"><p className="ob-price">{brl(a.price)}<small>{STATUS[a.status][0]}</small></p><Notice icon="shield">Você está vendo como admin. Compras e favoritos ficam com os membros.</Notice><a className="btn ghost" href={`/admin/curadoria`}>Abrir na curadoria <Icon n="right" /></a></div>
             : myOrder ? <div className="d-buy"><span className="price">{brl(myOrder.amount)}<small>Reservada para você · {myOrder.ref}</small></span><Link className="btn" href="/colecionador/aquisicoes">Acompanhar aquisição <Icon n="right" /></Link></div>
             : a.status !== "published" ? <div className="d-buy"><span className="price">{brl(a.price)}<small>{a.status === "sold" ? "Vendida" : "Comprada por outro membro"}</small></span><Notice>{a.status === "sold" ? "O original já foi para a casa de alguém." : "Se o pagamento não sair em 3 dias, ela volta pra galeria. Salve nos favoritos pra ver."}</Notice></div>
             : <>
               <StickyBuy price={brl(a.price)} label="Comprar" />
               <div className="d-buy" id="comprar">
-                <p className="ob-price">{brl(a.price)}<small>Obra original · peça única · frete grátis{ar.accepts_offers ? " · aceita propostas" : ""}</small></p>
+                <p className="ob-price">{brl(a.price)}<small>Obra original · peça única · frete grátis</small></p>
                 <BuyButtons kind="original" work={a.id} price={brl(a.price)} title={a.title} />
-                <p className="hint">Frete grátis para todo o Brasil. Depois da compra, você tem 3 dias para pagar; a obra fica guardada pra você.</p>
+                <p className="hint">Depois da compra, você tem 3 dias para pagar; a obra fica guardada pra você.</p>
               </div>
-              {ar.accepts_offers || mine ? <div className="offer" id="oferta">
-                <p className="lab" style={{ color: "var(--ink)" }}>{mine ? `Negociação ${mine.ref} · ${PSTATUS[mine.status][0]}` : "Ou faça uma proposta"}</p>
-                {mine && <ul className="thread">{mine.events.map((h) => <li key={h.id}><span>{h.actor === "artist" ? firstName(ar.display_name) : h.actor === "system" ? "Sistema" : "Você"}<br />{dateBR(h.created_at)}</span>
-                  <div>{h.amount != null && <><b>{brl(h.amount)}</b> · </>}<span className="lab">{EVENT_LABEL[h.kind]}</span>{h.msg && <p>{h.msg}</p>}</div></li>)}</ul>}
-                {ar.accepts_offers ? <><OfferForm workId={a.id} price={a.price} label={mine ? "Nova proposta" : "Sua proposta"} />
-                <p className="hint">A artista vê seu código de membro ({me.member_code}) e sua cidade. Seu nome só é revelado se a venda for fechada.</p></>
-                  : <p className="hint">A artista passou a trabalhar com preço fixo. Novas propostas não são aceitas.</p>}
-              </div> : null}
               <p className="frete hint"><Icon n="truck" /> <span><b>Frete grátis.</b> A artista embala e envia com seguro, com rastreio.</span></p>
             </>}
   </>);

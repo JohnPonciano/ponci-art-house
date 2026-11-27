@@ -35,41 +35,8 @@ export function ActButton({ action, args, ok, className = "btn", children, go, c
 }
 
 /* Artista: aceitar / contrapropor / recusar */
-export function ArtistProposalActions({ id, current, price }: { id: string; current: number; price: number }) {
-  const { run, pending } = useAct();
-  const [mode, setMode] = useState<"" | "accept" | "counter">("");
-  const [val, setVal] = useState(brl(Math.round((current + price) / 2 / 500) * 500)); const [msg, setMsg] = useState("");
-  if (mode === "accept") return (<>
-    <span className="hint">Aceitar {brl(current)}? A obra sai da galeria, o comprador tem 3 dias para pagar e as outras propostas são encerradas.</span>
-    <button className="btn sm ocre" type="button" disabled={pending} onClick={() => run(() => A.respondProposal(id, "accept"), "Proposta aceita. A obra foi reservada.")}>Confirmar <Icon n="check" /></button>
-    <button className="linkbtn" type="button" onClick={() => setMode("")}>Cancelar</button></>);
-  if (mode === "counter") return (
-    <form className="inline-form" onSubmit={(e) => { e.preventDefault(); const n = parseMoney(val); if (n < 500) return; run(() => A.respondProposal(id, "counter", n, msg), "Contraproposta enviada."); }}>
-      <label className="lab" htmlFor={"cv-" + id}>Seu valor</label>
-      <input id={"cv-" + id} inputMode="numeric" value={val} onChange={(e) => setVal(e.target.value)} onBlur={() => { const n = parseMoney(val); if (n) setVal(brl(n)); }} autoFocus required />
-      <input placeholder="Mensagem (opcional)" aria-label="Mensagem" value={msg} onChange={(e) => setMsg(e.target.value)} />
-      <button className="btn sm" type="submit" disabled={pending}>Enviar <Icon n="swap" /></button>
-      <button className="linkbtn" type="button" onClick={() => setMode("")}>Cancelar</button>
-    </form>);
-  return (<>
-    <button className="btn sm" type="button" onClick={() => setMode("accept")}>Aceitar <Icon n="check" /></button>
-    <button className="btn sm ghost" type="button" onClick={() => setMode("counter")}>Contrapropor <Icon n="swap" /></button>
-    <button className="linkbtn" type="button" disabled={pending} onClick={() => run(() => A.respondProposal(id, "decline"), "Proposta recusada.")}>Recusar</button></>);
-}
 
 /* Colecionador: responder contraproposta / retirar */
-export function BuyerProposalActions({ id, status, current, slug }: { id: string; status: string; current: number; slug: string }) {
-  const { run, pending, router } = useAct(); const [ask, setAsk] = useState(false);
-  if (status === "open") return <button className="linkbtn" type="button" disabled={pending} onClick={() => run(() => A.respondProposal(id, "withdraw"), "Proposta retirada.")}>Retirar proposta</button>;
-  if (ask) return (<>
-    <span className="hint">Aceitar {brl(current)}? A obra fica guardada pra você por 3 dias, até o pagamento.</span>
-    <button className="btn sm ocre" type="button" disabled={pending} onClick={() => run(() => A.respondProposal(id, "accept"), "Contraproposta aceita. Obra reservada.", () => router.push("/colecionador/aquisicoes"))}>Confirmar <Icon n="check" /></button>
-    <button className="linkbtn" type="button" onClick={() => setAsk(false)}>Cancelar</button></>);
-  return (<>
-    <button className="btn sm" type="button" onClick={() => setAsk(true)}>Aceitar {brl(current)}</button>
-    <Link className="btn sm ghost" href={`/colecionador/obras/${slug}`}>Nova proposta</Link>
-    <button className="linkbtn" type="button" disabled={pending} onClick={() => run(() => A.respondProposal(id, "decline"), "Contraproposta recusada.")}>Recusar</button></>);
-}
 
 /* Favorito */
 export function FavButton({ workId, on, title, variant = "card" }: { workId: string; on: boolean; title: string; variant?: "card" | "link" }) {
@@ -97,27 +64,6 @@ export function PriceForm({ workId, price, pct }: { workId: string; price: numbe
 }
 
 /* Proposta (colecionador) */
-export function OfferForm({ workId, price, label }: { workId: string; price: number; label: string }) {
-  const { run, pending } = useAct(); const [v, setV] = useState(""); const [msg, setMsg] = useState(""); const [err, setErr] = useState("");
-  function submit(e: React.FormEvent) {
-    e.preventDefault(); const n = parseMoney(v);
-    if (n < Math.ceil(price * 0.5)) return setErr(`Propostas abaixo de 50% do preço (${brl(price * 0.5)}) não são enviadas.`);
-    if (n >= price) return setErr("Para pagar o preço cheio, use “Comprar”.");
-    setErr(""); run(() => A.makeProposal(workId, n, msg), "Proposta enviada à artista.", () => { setV(""); setMsg(""); });
-  }
-  return (
-    <form className="offer" onSubmit={submit} noValidate>
-      <div className="row">
-        <div className={"field" + (err ? " bad" : "")}><label className="lab" htmlFor="i-amount">{label}</label>
-          <input id="i-amount" inputMode="numeric" placeholder={brl(Math.round((price * 0.9) / 500) * 500)} value={v} onChange={(e) => setV(e.target.value)} onBlur={() => { const n = parseMoney(v); if (n) setV(brl(n)); }} aria-describedby="e-amount" />
-          <p className="err" id="e-amount">{err}</p></div>
-        <button className="btn ghost" type="submit" disabled={pending}>{pending ? "…" : "Enviar"}</button>
-      </div>
-      <div className="field"><label className="lab" htmlFor="i-msg">Mensagem para a artista</label>
-        <textarea id="i-msg" rows={3} placeholder="Onde a obra vai viver, dúvidas sobre moldura, transporte…" value={msg} onChange={(e) => setMsg(e.target.value)} /></div>
-    </form>
-  );
-}
 
 /* Assinatura eletrônica do contrato da venda */
 export function SignButton({ contractId, label = "Assinar contrato" }: { contractId: string; label?: string }) {

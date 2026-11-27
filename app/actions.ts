@@ -29,8 +29,6 @@ export async function requestAccess(v: Record<string, string>): Promise<Result<{
 }
 
 /* ---------- Colecionador ---------- */
-export const makeProposal = async (workId: string, amount: number, msg: string) =>
-  rpc("make_proposal", { p_work: workId, p_amount: Math.round(amount), p_msg: msg || "" });
 export async function reserveWork(workId: string) {
   const m = await reqMeta();
   return rpc("reserve_work", { p_work: workId, p_ip: m.ip, p_ua: m.ua });
@@ -47,10 +45,6 @@ export async function toggleFavorite(workId: string, on: boolean): Promise<Resul
 }
 
 /* ---------- Propostas (ambos os lados) ---------- */
-export async function respondProposal(id: string, kind: string, amount?: number, msg?: string) {
-  const m = await reqMeta();
-  return rpc("respond_proposal", { p_proposal: id, p_kind: kind, p_amount: amount ?? null, p_msg: msg || "", p_ip: m.ip, p_ua: m.ua });
-}
 
 /* ---------- Artista ---------- */
 export const updatePrice = async (workId: string, price: number) => rpc("update_work_price", { p_work: workId, p_price: Math.round(price) });
@@ -107,13 +101,7 @@ export async function updateWorkReview(workId: string, v: {
   if (v.description.trim().length < 40) return { ok: false, error: "A descrição precisa de pelo menos 40 caracteres." };
   return rpc("update_work_review", { p_work: workId, p: { ...v, h: Math.round(v.h), w: Math.round(v.w), price: Math.round(v.price) } });
 }
-export const setWorkReproduction = async (workId: string, on: boolean) => rpc("set_work_reproduction", { p_work: workId, p_on: on });
 
-export async function setAcceptsOffers(on: boolean): Promise<Result> {
-  const me = await getMe(); if (!me || me.role !== "artist") return { ok: false, error: "Somente artistas." };
-  const { error } = await (await createClient()).from("profiles").update({ accepts_offers: on }).eq("id", me.id);
-  return error ? fail(error) : done();
-}
 
 /* ---------- Responsabilidade: aceites, cadastro, contratos, solicitações ---------- */
 export async function acceptDocuments(ids: string[]): Promise<Result<number>> {
@@ -160,22 +148,3 @@ export async function updateProfileSettings(v: ProfileSettingsInput): Promise<Re
   return done();
 }
 
-/* ---------- Frete ---------- */
-export async function quoteShipping(workId: string, cep: string): Promise<import("@/lib/frete").FreteResult> {
-  const { quoteFrete } = await import("@/lib/frete");
-  const to = (cep || "").replace(/\D/g, "");
-  if (to.length !== 8) return { ok: false, error: "Informe um CEP com 8 números." };
-  const sb = await createClient();
-  const [{ data: from, error: oe }, { data: w }] = await Promise.all([
-    sb.rpc("ship_origin", { p_work: workId }),
-    sb.from("works").select("*").eq("id", workId).maybeSingle(),
-  ]);
-  if (!w) return { ok: false, error: "Obra não encontrada." };
-  if ((w as any).ship_included) return { ok: false, big: true, error: "Frete incluso no preço: a artista embala e envia com seguro, sem custo extra pra você." };
-  if (oe) return { ok: false, error: "O cálculo de frete ainda não foi ligado. A PONCI informa o frete antes do pagamento." };
-  if (!from) return { ok: false, error: "A artista ainda não completou o endereço de envio. A PONCI informa o frete antes do pagamento." };
-  return quoteFrete(from as string, to, w as any);
-}
-export async function setWorkShipping(workId: string, depth: number | null, weight: number | null, included?: boolean): Promise<Result> {
-  return rpc("set_work_shipping", { p_work: workId, p_depth: depth ? Math.round(depth) : null, p_weight: weight || null, p_included: included ?? null });
-}

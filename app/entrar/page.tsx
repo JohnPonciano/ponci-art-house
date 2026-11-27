@@ -25,8 +25,8 @@ export default async function Entrar({ searchParams }: { searchParams: Promise<{
       <div className="wrap">
         <PageHead title={toCommunity ? "Comunidade" : A ? "Artistas" : "Colecionadores"} label={toCommunity ? "Artistas e colecionadores" : A ? "Área do artista" : "Área do colecionador"}
           intro={toCommunity ? "Entre com a mesma conta da PONCI. Artista ou colecionador: o acesso é o mesmo do site principal."
-                   : A ? "Seu ateliê dentro da rede: cadastre obras, acompanhe a curadoria, responda propostas e veja seus repasses."
-                   : "O acervo fechado da rede: preços visíveis, propostas diretas às artistas e aquisição em custódia."}
+                   : A ? "Seu ateliê dentro da rede: cadastre obras, libere prints, acompanhe a curadoria e veja seus repasses."
+                   : "O acervo fechado da rede: preços visíveis, originais e prints com pagamento em custódia."}
           count={<>Acesso restrito<br />Somente membros</>} />
         <section className="gate" aria-labelledby="gate-t">
           <div className="gate-art"><Photo k={toCommunity ? "visita" : A ? "artista" : "galeria"} className="gate-photo" alt="" pos="center 35%" /></div>

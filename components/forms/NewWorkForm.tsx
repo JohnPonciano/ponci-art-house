@@ -135,12 +135,6 @@ export function NewWorkForm({ userId, pct }: { userId: string; pct: number }) {
             <Field as="textarea" name="desc" rows={3} label="Sobre a obra" placeholder="O que ela investiga, como foi feita… (ajuda a curadoria e quem compra)" value={v.desc} onChange={on("desc")} />
             <Field name="edition" label="Edição" placeholder="Obra única" value={v.edition} onChange={on("edition")} />
             <p className="hint"><b>Frete grátis para quem compra:</b> o preço já inclui o envio. Você embala e despacha com rastreio (<a href="/guia-de-envio" target="_blank" style={{ textDecoration: "underline" }}>guia de embalagem</a>).</p>
-            <div className="two">
-              <Field name="depth" label="Profundidade (cm)" inputMode="numeric" placeholder="Ex.: 4" value={v.depth} onChange={on("depth")} />
-              <Field name="weight" label="Peso embalada (kg)" inputMode="decimal" placeholder="Ex.: 3,5" value={v.weight} onChange={on("weight")} />
-            </div>
-            <label className="check"><input type="checkbox" checked={v.repro} onChange={(e) => setV({ ...v, repro: e.target.checked })} />
-              <span><b>Esta peça é uma reprodução</b> (impressão, pôster), não o original. Ela ganha a etiqueta REPROD.</span></label>
           </details>
 
           <p className="form-status" role="alert">{status}</p>
